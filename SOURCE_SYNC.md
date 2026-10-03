@@ -17,6 +17,7 @@ This branch is a reviewable mirror of the committed SGX automatic classification
 |---|---|---|---|
 | 2026-10-03T02:08:12Z | `41359626629ef32b8301f788ac1f80f432247244` | Source commit accepted as the verified handoff baseline; target snapshot scan and integrity checks are recorded in the corresponding target commit. | Freeze the real hybrid T1 and full stack handoff completion plan. |
 | 2026-10-03T02:09:13Z | `306f1c8130210320f444e6ebaa63d667f7a772e4` | Documentation only; mirror secret scan and integrity checks are recorded in the corresponding target commit. | Clarify the Worker backed T1, historical projection, and PCM WAV ASR boundaries. |
+| 2026-10-03T02:09:53Z | `84c8170eb03a6fa498105a3bdffc10fa922f8e0b` | Upstream focused Worker suite: 26 passed, 1 conditionally skipped, 0 failed. Mirror secret scan and integrity checks are recorded in the corresponding target commit. | Require per image person authorization before face extraction and align Worker/release Prompt defaults to `sgx-five-facets.16`. |
 
 ## Integrity rule
 
