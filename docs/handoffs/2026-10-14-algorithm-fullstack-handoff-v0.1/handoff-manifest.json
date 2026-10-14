@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "sgx-algorithm-fullstack-handoff-manifest-v0.1",
+  "packageVersion": "2026-10-14-algorithm-fullstack-handoff-v0.1",
+  "status": "candidate/pre-human",
+  "generatedAt": "2026-10-14",
+  "sourceRepository": "/Users/wenqingzhong/Documents/SGX",
+  "sourceFiles": {
+    "src/lib/algorithm-service/semantic-turn-shadow.ts": "5bc4c02e8b2f7c3fd7652be2f6a7a1bd9f28e70ced4bfb01caf5c5aeb3b96e47",
+    "src/lib/algorithm-service/composition.ts": "576c00e00c45111f881130ee824c6eb1661a47f12a18a4ab4e9179c404c91007",
+    "src/lib/turn-orchestrator/http-service.ts": "927d137fb6b0fbe7cc8ffd778dd4eda56a1538a862f34de3ec2ff3cd08d72bdd",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/stream/route.ts": "eea1a629fbc57316ebf59c055f362cc0c8e9e06e4de6f79298ce7096dd679c85",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/interrupts/route.ts": "780caf294b0104f2861d97aada2df62594113c426fe9bb47530bef7daa0c2935",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/view/route.ts": "1727239dd41ea6bfaf096c58a8c0bd8317480bee623538d21cbc97299fdf47d1",
+    "harness/live-baseline/v0.1/semantic-turn-shadow.test.mts": "83794ccfb490ae9400b218e5b26d8e8bbb59d286419745008fa5ad591eb56bdc",
+    "harness/live-baseline/v0.1/algorithm-composition.test.mts": "357ca61a302a77ad298afcc674c74190cc72ab7edc44fc461569cdd092768553",
+    "src/lib/turn-orchestrator/session-store.ts": "c05d2c0a5cf1542e06c3b8972414b5e4a893c7845542db6813b200109585e92d",
+    "src/lib/turn-orchestrator/orchestrator.ts": "5e412fa32f82ec759be12e1d6f3825775450d89522fbf0054c89e07470d4f177",
+    "src/lib/interview-policy/reducer.ts": "54e703ce797ab1850031ad7f88adefbf6abe900c7566d4ac44fa3452aa180b64",
+    "src/lib/interview-policy/continuation-v03.ts": "bc92030b71e58bc29a9dc56f45bbd3ff51b66a97c46effcb2d6b614f84143604",
+    "harness/live-baseline/v0.1/live-canary/run-http-owner-pause-switch-v20-revalidation.mjs": "f116ed8ca580b8ee245ae11bd6e89a674f1a8b28a77fd98f989a7912301204be"
+  },
+  "includedDocs": [
+    "README.md",
+    "http-contract-v0.1.md",
+    "docs/fullstack-candidate-handoff-note.md",
+    "docs/result-and-state-guide.md",
+    "docs/owner-real-model-smoke-cases.md",
+    "docs/owner-feedback-form.md",
+    "docs/testing-retry-version-rollback.md",
+    "docs/ownership-and-review.md",
+    "docs/owner-c1-c12-real-smoke-report.md"
+  ],
+  "examples": [
+    "examples/create-session.json",
+    "examples/stream-typed-text.json",
+    "examples/stream-voice.json",
+    "examples/interrupt.json",
+    "examples/view-response.json"
+  ],
+  "validation": {
+    "focusedTests": "30/30 composition tests pass after pause/switch fix",
+    "selectedTests": "31/31 interview offline acceptance + G5 orchestrator tests pass",
+    "typecheck": "npx tsc --noEmit --incremental false: pass",
+    "diffCheck": "git diff --check: pass",
+    "realShadow": "24/24 main-chain completed; initial paid run had 22 rejected and 2 missing before offline normalization; do not call this a repaired paid rerun",
+    "offlineReplay": "24/24 retained provider outputs normalize and strict-validate",
+    "phe08": "3/3 targeted real revalidation pass review pending",
+    "targetedRevalidation": "5/5 real HTTP turns pass on pre-human-2026-10-14-pause-switch-v20; S2 SWITCH_TOPIC, S3/S4 PAUSED, S5 ACTIVE",
+    "c1c12Run": "9 real model/voice rows completed; C6B/C7/C8 were blocked by old PAUSED gate and are explicitly not passed",
+    "canonicalMemory": "canonicalWriteCapability=false; canonicalWriteCount=0"
+  },
+  "exclusions": [
+    ".env.local",
+    "API keys and tokens",
+    "provider credentials",
+    "harness/live-baseline/v0.1/.local-runs",
+    "raw audio",
+    "production CanonicalMemory data"
+  ],
+  "nextGate": "owner-workbench-human-listening-and-story-profile-review",
+  "releaseRule": "Only after owner feedback, repair revalidation, build freeze and fullstack acceptance may this become a formal release package."
+}
