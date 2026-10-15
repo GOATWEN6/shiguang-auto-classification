@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "algorithm-stream-turn-v0.2",
+  "idempotencyKey": "demo-turn-001",
+  "source": "TYPED_TEXT",
+  "text": "我以前在纺织厂工作过。"
+}

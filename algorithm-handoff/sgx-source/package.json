@@ -1,0 +1,51 @@
+{
+  "name": "ai-memoir-assistant",
+  "version": "1.0.0",
+  "description": "AI 回忆录助手 - 面向老年用户的智能人生故事记录与回忆录生成系统",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -H 0.0.0.0",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test:algorithm-runtime": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test harness/live-baseline/v0.1/algorithm-runtime.test.mts",
+    "test:g2": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test harness/live-baseline/v0.1/g2-runtime-parity.test.mts harness/live-baseline/v0.1/g2-reference-store.test.mts",
+    "typecheck:g2": "tsc --noEmit --target es2022 --module esnext --moduleResolution bundler --strict --skipLibCheck --types node --allowJs --allowImportingTsExtensions src/lib/algorithm-runtime/*.ts src/lib/interview-policy/*.ts src/lib/memory-runtime/*.ts harness/live-baseline/v0.1/algorithm-runtime.test.mts harness/live-baseline/v0.1/g2-runtime-parity.test.mts harness/live-baseline/v0.1/g2-reference-store.test.mts",
+    "check:g2": "npm run test:algorithm-runtime && npm run test:g2 && npm run typecheck:g2",
+    "test:g3": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test harness/live-baseline/v0.1/g3-provider-runtime.test.mts harness/live-baseline/v0.1/g3-asr-runtime.test.mts",
+    "typecheck:g3": "tsc --noEmit --target es2022 --module esnext --moduleResolution bundler --strict --skipLibCheck --types node --allowJs --allowImportingTsExtensions src/lib/algorithm-runtime/*.ts src/lib/provider-runtime/*.ts src/lib/asr-runtime/*.ts harness/live-baseline/v0.1/g3-provider-runtime.test.mts harness/live-baseline/v0.1/g3-asr-runtime.test.mts",
+    "check:g3": "npm run check:g2 && npm run test:g3 && npm run typecheck:g3",
+    "test:g4": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --test harness/live-baseline/v0.1/g4-model-runtime.test.mts harness/live-baseline/v0.1/g4-response-runtime.test.mts harness/live-baseline/v0.1/g4-derived-artifact-runtime.test.mts",
+    "typecheck:g4": "tsc --noEmit --target es2022 --module esnext --moduleResolution bundler --strict --skipLibCheck --types node --allowJs --allowImportingTsExtensions src/lib/algorithm-runtime/*.ts src/lib/interview-policy/*.ts src/lib/memory-runtime/*.ts src/lib/model-runtime/*.ts src/lib/response-runtime/*.ts src/lib/derived-artifact-runtime/*.ts harness/live-baseline/v0.1/g4-model-runtime.test.mts harness/live-baseline/v0.1/g4-response-runtime.test.mts harness/live-baseline/v0.1/g4-derived-artifact-runtime.test.mts",
+    "check:g4": "npm run check:g3 && npm run test:g4 && npm run typecheck:g4",
+    "test:voice:realtime": "node scripts/voice-realtime-smoke.mjs",
+    "test:voice:secret": "node scripts/voice-secret-scan.mjs AGENTS.md docs harness scripts src"
+  },
+  "dependencies": {
+    "@ricky0123/vad-web": "^0.0.30",
+    "date-fns": "^3.6.0",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^0.460.0",
+    "next": "14.2.3",
+    "openai": "^4.52.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "uuid": "^10.0.0",
+    "ws": "8.22.0",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.14.2",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@types/uuid": "^10.0.0",
+    "@types/ws": "8.18.2",
+    "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-next": "14.2.3",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.4.5"
+  }
+}
