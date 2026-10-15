@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "sgx-algorithm-source-manifest-v0.2",
+  "status": "candidate/pre-human",
+  "sourceRepository": "SGX",
+  "sourceSnapshot": "working-tree-candidate-2026-10-15",
+  "note": "该清单用于全栈按明确路径接入；当前工作树含其他历史改动，禁止用 git add . 整体推送。请按目标分支重新生成 SHA 并完成代码评审。",
+  "requiredPaths": [
+    "src/app/api/algorithm/v0.1",
+    "src/app/algorithm-lab",
+    "src/lib/algorithm-service",
+    "src/lib/turn-orchestrator",
+    "src/lib/interview-policy",
+    "src/lib/memory-runtime",
+    "src/lib/asr-runtime",
+    "src/lib/voice",
+    "src/lib/response-runtime",
+    "src/lib/derived-artifact-runtime",
+    "harness/live-baseline/v0.1",
+    "scripts/public-test-gateway.mjs",
+    "package.json",
+    "package-lock.json",
+    "next.config.js"
+  ],
+  "excluded": [
+    ".env.local",
+    "keys",
+    "harness/live-baseline/v0.1/.local-runs",
+    "raw audio",
+    "production CanonicalMemory data"
+  ]
+}
