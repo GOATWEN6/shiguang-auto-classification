@@ -270,7 +270,7 @@ npm run start -- -H 127.0.0.1 -p 3100
 - `npm run check:g4` 通过；该命令串行覆盖 G2/G3/G4，包含访谈策略、Memory 来源/权限/撤回删除、ASR、TTS、故事/画像派生、响应取消和 HTTP 编排测试；进程退出码为 0。
 - 修正了 G2 中 I-034 的版本断言：旧 v0.2 话术继续作为冻结对照，当前 `interview-policy-v0.3.4` 使用“您还愿意继续讲吗，还是今天先到这里？”。这记录的是已确认的行为升级，不是回滚或静默改写历史结果。
 - 交接目录新增 `algorithm-handoff/sgx-source/`，包含 90 个脱敏源码/离线契约文件，约 1.1 MB；不包含 `.env.local`、API key、原始音频、付费运行目录、生产数据或旧端到端实时语音会话代码。模块化路径是独立 ASR → 文本模型 → 模块化 TTS。
-- 组合交接包为 `algorithm-handoff/sgx-algorithm-fullstack-handoff-v0.3.zip`，SHA-256 为 `81aed1df33dc1bd6b4a09045774c443329d16c19b965b11ec471b95e48060f14`；目标分支的 `git diff --check` 和脱敏扫描均通过。
+- 组合交接包为 `algorithm-handoff/sgx-algorithm-fullstack-handoff-v0.3.zip`；其 SHA-256 以仓库中的实际文件为准，目标分支的 `git diff --check` 和脱敏扫描均通过。
 - 本地目标分支 `codex/sgx-algorithm-candidate-2026-10-15` 已提交 `cfcb851` 和补充架构文档提交 `8972d0d`。推送时发现 GitHub 保存的 token 已失效，已经启动官方设备登录流程；认证完成后可继续推送，不需要重新生成代码或重复测试。
 
 这次交付仍是 `candidate/pre-human`。算法侧的 `CanonicalMemoryRepository` 只是后端接入契约，服务运行时仍为 `canonicalWriteCapability=false`、`canonicalWriteCount=0`；数据库事务、家庭/社区权限、持久化、撤回删除、部署和真人体验门禁由全栈与负责人后续完成。
