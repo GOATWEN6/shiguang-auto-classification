@@ -11,10 +11,10 @@
   "budget": {
     "programHardCapCny": 400,
     "batchCapCny": 364.48,
-    "reservedCny": 214.4,
+    "reservedCny": 260.24,
     "priorExposureCny": 35.52,
-    "cumulativeReservedCny": 249.92,
-    "remainingProgramCny": 150.08,
+    "cumulativeReservedCny": 295.76,
+    "remainingProgramCny": 104.24,
     "billingState": "PENDING"
   },
   "includedDocs": [
@@ -38,7 +38,7 @@
     "typecheck": "npx tsc --noEmit --incremental false: pass",
     "diffCheck": "git diff --check: pass",
     "focusedOffline": "62/62 composition + offline interview acceptance + G5 orchestrator tests pass",
-    "voiceSmoke": "158/158 local realtime voice contract checks pass",
+    "voiceSmoke": "159/159 local realtime voice contract checks pass",
     "voiceExperienceOverlay": "assistant name 小叙; browser ASR 1.8s default and 2.6s incomplete-speech cap; auto-send/review toggle",
     "targetedRealRevalidation": "5/5 pause/switch/continue turns pass on pre-human-2026-10-14-pause-switch-v20",
     "semanticShadow": "historical paid 24-turn main chain; repaired outputs 24/24 offline normalization only",
