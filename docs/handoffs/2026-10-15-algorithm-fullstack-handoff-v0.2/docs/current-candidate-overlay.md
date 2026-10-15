@@ -8,11 +8,12 @@
 - API 合同：`algorithm-http-v0.1`
 - 服务：`g5-real-internal-v0.18`
 - InterviewPolicy：`interview-policy-v0.3.4`
-- Build：`pre-human-2026-10-15-candidate-v22`
+- Build：`pre-human-2026-10-15-candidate-v23`
 - `canonicalWriteCapability=false`
 - `storage=process_memory_fictional_only`
 - 活动助手名称：`小叙`
 - 浏览器兼容 ASR：普通句子静默缓冲 1.8 秒；疑似未完句最多 2.6 秒
+- 语音输入选择：实时模式可切换“语音发原音频 / 语音转文字”；兼容模式明确只支持转写文字
 - 语音发送模式：默认自动发送转写文字，也可切换为先看文字再发送；实时 PCM 模式仍发送原始音频
 - 文字输入框：桌面/手机按回车发送，`Shift+Enter` 保留换行
 

@@ -4,7 +4,7 @@
   "status": "candidate/pre-human",
   "generatedAt": "2026-10-15",
   "sourceRepository": "SGX",
-  "currentBuildId": "pre-human-2026-10-15-candidate-v22",
+  "currentBuildId": "pre-human-2026-10-15-candidate-v23",
   "serviceVersion": "g5-real-internal-v0.18",
   "interviewPolicyVersion": "interview-policy-v0.3.4",
   "contractVersion": "algorithm-http-v0.1",
