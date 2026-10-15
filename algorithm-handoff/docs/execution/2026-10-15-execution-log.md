@@ -240,7 +240,7 @@ npm run start -- -H 127.0.0.1 -p 3100
 
 ### 还没有完成，不能标记为正式上线
 
-1. **GitHub 远端交付**：交接分支的本地提交已完成，提交号为 `cfcb851`；远端推送和 Pull Request 尚未验证成功。当前阻塞是本机 `GOATWEN6` GitHub token 已失效，不是代码或分支问题。认证恢复后只需重试该分支的 push。
+1. **GitHub 远端交付**：交接分支已成功推送，远端分支指向 `5707958`；Pull Request 尚未创建，原因是 GitHub CLI 的 API token 已失效。分支内容已在远端，不需要重新生成或重复上传。
 2. **产品后端接入**：全栈尚未完成业务鉴权、家庭/社区角色、会话主体绑定、幂等、限流、超时、错误展示和回滚接线。
 3. **正式 Memory**：当前 `storage=process_memory_fictional_only`、`canonicalWriteCount=0`、`canonicalWriteCapability=false`。事务数据库、版本链、权限、撤回/删除、索引和 outbox 仍需全栈实现。
 4. **持久部署**：当前本机进程和临时 Basic Auth 网关不是固定 staging；没有固定域名、TLS、进程守护、监控、日志轮换和稳定回滚环境。
@@ -271,6 +271,6 @@ npm run start -- -H 127.0.0.1 -p 3100
 - 修正了 G2 中 I-034 的版本断言：旧 v0.2 话术继续作为冻结对照，当前 `interview-policy-v0.3.4` 使用“您还愿意继续讲吗，还是今天先到这里？”。这记录的是已确认的行为升级，不是回滚或静默改写历史结果。
 - 交接目录新增 `algorithm-handoff/sgx-source/`，包含 90 个脱敏源码/离线契约文件，约 1.1 MB；不包含 `.env.local`、API key、原始音频、付费运行目录、生产数据或旧端到端实时语音会话代码。模块化路径是独立 ASR → 文本模型 → 模块化 TTS。
 - 组合交接包为 `algorithm-handoff/sgx-algorithm-fullstack-handoff-v0.3.zip`；其 SHA-256 以仓库中的实际文件为准，目标分支的 `git diff --check` 和脱敏扫描均通过。
-- 本地目标分支 `codex/sgx-algorithm-candidate-2026-10-15` 已提交 `cfcb851` 和补充架构文档提交 `8972d0d`。推送时发现 GitHub 保存的 token 已失效，已经启动官方设备登录流程；认证完成后可继续推送，不需要重新生成代码或重复测试。
+- 目标分支 `codex/sgx-algorithm-candidate-2026-10-15` 已连续提交 `cfcb851`、`8972d0d`、`7b0993c`、`ccd2f7a`、`5707958`，并已通过 SSH 推送到远端。当前只缺 Pull Request 页面创建；分支本身已完成上传。
 
 这次交付仍是 `candidate/pre-human`。算法侧的 `CanonicalMemoryRepository` 只是后端接入契约，服务运行时仍为 `canonicalWriteCapability=false`、`canonicalWriteCount=0`；数据库事务、家庭/社区权限、持久化、撤回删除、部署和真人体验门禁由全栈与负责人后续完成。
