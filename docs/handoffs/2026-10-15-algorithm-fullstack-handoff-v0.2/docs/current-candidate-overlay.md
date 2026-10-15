@@ -8,7 +8,7 @@
 - API 合同：`algorithm-http-v0.1`
 - 服务：`g5-real-internal-v0.18`
 - InterviewPolicy：`interview-policy-v0.3.4`
-- Build：`pre-human-2026-10-15-candidate-v21`
+- Build：`pre-human-2026-10-15-candidate-v22`
 - `canonicalWriteCapability=false`
 - `storage=process_memory_fictional_only`
 - 活动助手名称：`小叙`
