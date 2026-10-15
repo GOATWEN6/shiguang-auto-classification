@@ -5,7 +5,7 @@
 - 来源仓库：`GOATWEN6/SGX`
 - 候选包：`docs/handoffs/2026-10-15-algorithm-fullstack-handoff-v0.2/`
 - ZIP：`docs/handoffs/2026-10-15-algorithm-fullstack-handoff-v0.2.zip`
-- ZIP SHA-256：`e9bee1f5cef810abc3eaaf7b3876cc02152c22d36793eda5fab23c91ee70342c`
+- ZIP SHA-256：`cc8ab7b5d7e614e4c4595ac3b5061a924371bff77baba27b390e0fe33ab7ca81`
 - 当前状态：`candidate/pre-human`
 - 当前算法代码仍以 SGX 源仓库为权威；本分支不把 SGX 当前脏工作树整体镜像，也不把这份候选资料标记为生产发布。
 - `.env.local`、API Key、原始音频、生产 `CanonicalMemory` 数据和本地付费运行目录均未提交。

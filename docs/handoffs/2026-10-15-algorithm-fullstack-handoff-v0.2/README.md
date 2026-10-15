@@ -102,4 +102,4 @@
 
 ## 9. 2026-10-15 当前覆盖
 
-请先阅读 `docs/current-candidate-overlay.md`。它补充了当前 `v0.3.4` 策略、400 元预算、`/costs` 成本接口、62/62 离线验证、158/158 语音契约检查、最新 build、助手名称“小叙”、慢语速 ASR 缓冲、语音发送模式以及公网/持久化边界。当前包仍是 `candidate/pre-human`，不包含可直接生产部署的 `CanonicalMemory` 后端。
+请先阅读 `docs/current-candidate-overlay.md`。它补充了当前 `v0.3.4` 策略、400 元预算、`/costs` 成本接口、62/62 离线验证、160/160 语音契约检查、最新 build、助手名称“小叙”、慢语速 ASR 缓冲、原始音频/转写选择、语音发送模式以及公网/持久化边界。当前包仍是 `candidate/pre-human`，不包含可直接生产部署的 `CanonicalMemory` 后端。
