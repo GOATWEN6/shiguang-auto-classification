@@ -559,5 +559,14 @@
     "raw audio files",
     "production CanonicalMemory data",
     "src/lib/voice/realtime except the optional header websocket transport needed by the legacy MiniMax TTS adapter"
+  ],
+  "documentation": [
+    "algorithm-handoff/README.md",
+    "algorithm-handoff/docs/2026-10-15-algorithm-fullstack-handoff-v0.2/",
+    "algorithm-handoff/docs/architecture/2026-10-13-canonical-memory-formal-architecture-and-implementation-plan.md",
+    "algorithm-handoff/docs/architecture/2026-10-14-interview-baseline-1.0-delta-and-integration-plan.md",
+    "algorithm-handoff/docs/architecture/2026-10-13-interview-memory-operational-spec.md",
+    "algorithm-handoff/docs/architecture/2026-10-13-sgx-algorithm-system-overview.md",
+    "algorithm-handoff/docs/execution/2026-10-15-execution-log.md"
   ]
 }

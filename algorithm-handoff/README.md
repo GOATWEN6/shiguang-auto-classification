@@ -28,4 +28,6 @@
 3. 先做 `/health`、`/version`、幂等、错误恢复和 `view` 展示；
 4. 不把 `candidate/pre-human` 标记为生产版本，生产前仍需完成真人反馈、持久化 `CanonicalMemory`、认证、部署、回滚和安全评审。
 
+关键架构依据还放在 `docs/architecture/`：访谈 Baseline 1.0 差异与集成、Memory/CanonicalMemory 架构、访谈与 Memory 操作规格、整体算法系统总览；`docs/execution/` 保存本轮执行记录。
+
 文件完整性见 `source-manifest.json`。快照不包含 `.env.local`、API key、原始音频、付费运行目录或生产数据。
