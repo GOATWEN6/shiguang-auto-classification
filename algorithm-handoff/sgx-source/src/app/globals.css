@@ -1,0 +1,772 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/**
+ * AI 回忆录助手 - 全局样式
+ *
+ * 视觉方向：温暖、克制、治愈、柔和、细腻、真诚、安静
+ * 核心关键词：奶油感、木质感、原木焦糖、暖白、柔雾、轻拟物
+ */
+
+/* CSS 变量 - 设计系统 */
+:root {
+  /* 主色 - 低饱和暖焦糖木质色 */
+  --color-primary: #A67C52;
+  --color-primary-light: #C4A07A;
+  --color-primary-dark: #8B6543;
+  --color-primary-hover: #B8956A;
+  --color-primary-active: #967548;
+  --color-primary-soft: #E8DED3;
+
+  /* 中性色阶 */
+  --color-neutral-50: #FAF8F6;
+  --color-neutral-100: #F5F1EC;
+  --color-neutral-200: #EDE8E1;
+  --color-neutral-300: #D9D2C8;
+  --color-neutral-400: #B8AFA2;
+  --color-neutral-500: #948A7C;
+  --color-neutral-600: #6E6357;
+  --color-neutral-700: #504840;
+  --color-neutral-800: #3D362E;
+  --color-neutral-900: #2A241E;
+
+  /* 背景色阶 */
+  --color-bg-primary: #FEFCF9;
+  --color-bg-secondary: #F8F4EF;
+  --color-bg-tertiary: #F0EBE3;
+  --color-bg-card: #FFFFFF;
+  --color-bg-modal: #FEFCF9;
+
+  /* 文字色阶 */
+  --color-text-primary: #3D362E;
+  --color-text-secondary: #6E6357;
+  --color-text-tertiary: #948A7C;
+  --color-text-disabled: #B8AFA2;
+  --color-text-inverse: #FEFCF9;
+
+  /* 状态色 */
+  --color-success: #7B9E87;
+  --color-warning: #D4A574;
+  --color-error: #C17B7B;
+  --color-info: #B8A07A;
+
+  /* 边框色 */
+  --color-border-light: #EDE8E1;
+  --color-border: #D9D2C8;
+  --color-border-dark: #B8AFA2;
+  --color-border-focus: #A67C52;
+
+  /* 圆角 */
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+
+  /* 阴影 */
+  --shadow-card: 0 2px 8px rgba(61, 54, 46, 0.08);
+  --shadow-card-hover: 0 4px 16px rgba(61, 54, 46, 0.12);
+  --shadow-modal: 0 25px 50px -12px rgba(61, 54, 46, 0.25);
+
+  /* 过渡 */
+  --transition: 150ms ease-in-out;
+
+  /* 字号 - 适老友好 */
+  --font-size-base: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+}
+
+/* 高对比度模式 */
+.high-contrast {
+  --font-size-base: 1.375rem;
+  --font-size-lg: 1.625rem;
+  --font-size-xl: 2rem;
+  --color-bg-primary: #ffffff;
+  --color-text-primary: #000000;
+  --color-border: #000000;
+}
+
+/* 大字模式 */
+.large-text {
+  --font-size-base: 1.375rem;
+  --font-size-lg: 1.75rem;
+  --font-size-xl: 2.25rem;
+}
+
+/* 基础重置 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-size: var(--font-size-base);
+  line-height: 1.75;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 字体优化 */
+@layer base {
+  h1 {
+    @apply text-3xl font-semibold mb-6;
+    font-size: var(--font-size-xl);
+    color: var(--color-text-primary);
+    line-height: 1.3;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold mb-4;
+    font-size: var(--font-size-lg);
+    color: var(--color-text-primary);
+    line-height: 1.35;
+  }
+
+  h3 {
+    @apply text-xl font-medium mb-3;
+    color: var(--color-text-primary);
+  }
+
+  p {
+    @apply mb-4;
+    color: var(--color-text-primary);
+  }
+
+  /* 老年友好按钮样式 */
+  button {
+    @apply px-6 py-3 rounded-lg font-medium transition-all;
+    font-size: var(--font-size-base);
+    min-height: 48px;
+    cursor: pointer;
+    border: none;
+    background-color: var(--color-primary);
+    color: white;
+  }
+
+  button:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  button:active {
+    background-color: var(--color-primary-active);
+  }
+
+  button:disabled {
+    background-color: var(--color-neutral-300);
+    color: var(--color-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* 输入框样式 */
+  input, textarea, select {
+    @apply px-4 py-3 rounded-lg;
+    font-size: var(--font-size-base);
+    min-height: 48px;
+    border: 2px solid var(--color-border);
+    background-color: var(--color-bg-card);
+    color: var(--color-text-primary);
+    transition: border-color var(--transition);
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--color-border-focus);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}
+
+/* 组件样式 */
+@layer components {
+  /* 老年友好卡片 - 柔和木质感 */
+  .elder-card {
+    @apply rounded-lg p-6;
+    background-color: var(--color-bg-card);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-border-light);
+    font-size: var(--font-size-base);
+    transition: box-shadow var(--transition);
+  }
+
+  .elder-card:hover {
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* 对话气泡 - 用户 */
+  .bubble-user {
+    @apply rounded-2xl px-6 py-4 ml-auto max-w-[85%];
+    background-color: var(--color-primary-soft);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+  }
+
+  /* 对话气泡 - AI */
+  .bubble-ai {
+    @apply rounded-2xl px-6 py-4 mr-auto max-w-[85%];
+    background-color: var(--color-neutral-100);
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+  }
+
+  /* 进度条 */
+  .progress-bar {
+    @apply h-3 rounded-full overflow-hidden;
+    background-color: var(--color-neutral-200);
+  }
+
+  .progress-bar-fill {
+    @apply h-full transition-all duration-500;
+    background-color: var(--color-primary);
+  }
+
+  /* 导航项 */
+  .nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg;
+    font-size: var(--font-size-base);
+    color: var(--color-text-secondary);
+    transition: all var(--transition);
+  }
+
+  .nav-item:hover {
+    background-color: var(--color-neutral-100);
+    color: var(--color-text-primary);
+  }
+
+  .nav-item.active {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+  }
+
+  /* 主按钮 */
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800;
+    background-color: var(--color-primary);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-hover);
+  }
+
+  .btn-primary:active {
+    background-color: var(--color-primary-active);
+  }
+
+  /* 次要按钮 */
+  .btn-secondary {
+    @apply bg-gray-200 text-gray-800 hover:bg-gray-300 active:bg-gray-400;
+    background-color: var(--color-neutral-200);
+    color: var(--color-text-primary);
+  }
+
+  /* 轮廓按钮 */
+  .btn-outline {
+    @apply border-2 text-gray-700 hover:bg-gray-50;
+    border-color: var(--color-border);
+    background-color: transparent;
+  }
+
+  /* 危险按钮 */
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700;
+    background-color: var(--color-error);
+    color: white;
+  }
+
+  /* 敏感操作按钮 */
+  .btn-skip {
+    @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+    background-color: var(--color-neutral-100);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
+  }
+
+  /* 输入框组 */
+  .input-group {
+    @apply mb-4;
+  }
+
+  .input-group label {
+    @apply block mb-2 font-medium;
+    color: var(--color-text-primary);
+    font-size: var(--font-size-base);
+  }
+
+  .input-group input,
+  .input-group textarea,
+  .input-group select {
+    @apply w-full;
+  }
+
+  /* 标签 */
+  .tag {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm;
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+  }
+
+  .tag-success {
+    background-color: rgba(123, 158, 135, 0.2);
+    color: #5a7d65;
+  }
+
+  .tag-warning {
+    background-color: rgba(212, 165, 116, 0.2);
+    color: #9a7248;
+  }
+
+  .tag-error {
+    background-color: rgba(193, 123, 123, 0.2);
+    color: #8a5454;
+  }
+}
+
+/* 工具类 */
+@layer utilities {
+  /* 触摸友好 */
+  .touch-friendly {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  /* 文字选中高亮 */
+  ::selection {
+    background-color: var(--color-primary-soft);
+    color: var(--color-text-primary);
+  }
+
+  /* 滚动条美化 - 柔和风格 */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-neutral-100);
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-neutral-300);
+    border-radius: 5px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-neutral-400);
+  }
+
+  /* 文本 truncation */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* 文字颜色 */
+  .text-primary {
+    color: var(--color-text-primary);
+  }
+
+  .text-secondary {
+    color: var(--color-text-secondary);
+  }
+
+  .text-tertiary {
+    color: var(--color-text-tertiary);
+  }
+
+  /* 背景颜色 */
+  .bg-primary {
+    background-color: var(--color-bg-primary);
+  }
+
+  .bg-secondary {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .bg-card {
+    background-color: var(--color-bg-card);
+  }
+}
+
+/* 动画 - 轻柔舒缓 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes gentlePulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out;
+}
+
+.animate-gentle-pulse {
+  animation: gentlePulse 2s ease-in-out infinite;
+}
+
+/* 打印样式 */
+@media print {
+  body {
+    font-size: 12pt;
+    background-color: white;
+    color: black;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .elder-card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  :root {
+    --font-size-base: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.375rem;
+  }
+
+  .elder-card {
+    @apply p-4;
+  }
+
+  .bubble-user,
+  .bubble-ai {
+    @apply px-4 py-3;
+    max-width: 90%;
+  }
+}
+
+/* OnboardingV2 样式 */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   AI 内部分析调试面板（测试模式）
+   ============================================ */
+.debugPanel {
+  margin: 0.5rem 0 0.5rem 1.5rem;
+  border: 2px dashed #A67C52;
+  border-radius: 12px;
+  background: #FFFDF9;
+  overflow: hidden;
+  font-size: 0.85rem;
+}
+
+.debugHeader {
+  background: linear-gradient(135deg, #C4A07A 0%, #A67C52 100%);
+  color: white;
+  padding: 8px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.debugBody {
+  padding: 10px 14px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.debugSection {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #E8DED3;
+}
+
+.debugSection:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.debugLabel {
+  color: #8B6543;
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.78rem;
+}
+
+.debugValue {
+  color: #3D362E;
+  padding-left: 8px;
+  line-height: 1.6;
+}
+
+.debugValue > div {
+  margin-bottom: 2px;
+}
+
+.debugTag {
+  display: inline-block;
+  background: #E8DED3;
+  color: #6E6357;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+.debugCards {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.debugCard {
+  background: #F8F4EF;
+  border: 1px solid #E8DED3;
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.debugCardTitle {
+  font-weight: 600;
+  color: #8B6543;
+  margin-bottom: 3px;
+}
+
+.debugCardContent {
+  color: #6E6357;
+  font-size: 0.8rem;
+}
+
+.debugAdvance {
+  color: #C17B7B;
+  font-weight: 600;
+  margin-top: 4px;
+  padding: 4px 8px;
+  background: rgba(193, 123, 123, 0.1);
+  border-radius: 6px;
+}
+
+.debugEmpty {
+  color: #B8AFA2;
+  text-align: center;
+  padding: 10px;
+}
+
+.debugWrapper {
+  margin-top: 2px;
+}
+
+/* 阶段信息 */
+.debugPhaseInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.debugPhaseName {
+  font-size: 0.85rem;
+}
+
+.debugPhaseCount {
+  font-size: 0.78rem;
+  color: #8B6543;
+}
+
+.debugProgressBar {
+  height: 6px;
+  background: #E8DED3;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.debugProgressFill {
+  height: 100%;
+  background: linear-gradient(90deg, #A67C52, #C4A07A);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.debugVisitedPhases {
+  font-size: 0.75rem;
+  color: #948A7C;
+  margin-top: 4px;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .debugPanel {
+    margin: 0.5rem 0 0.5rem 0.5rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* ============================================
+   11阶段访谈导航条
+   ============================================ */
+.phaseNav {
+  background: white;
+  border-bottom: 1px solid #EDE8E1;
+  padding: 10px 16px 8px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.phaseNavHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.phaseNavLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #8B6543;
+}
+
+.phaseNavStats {
+  font-size: 0.72rem;
+  color: #A89F91;
+}
+
+.phaseBar {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: 2px;
+}
+
+.phaseBar::-webkit-scrollbar {
+  display: none;
+}
+
+.phaseDot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 40px;
+  flex-shrink: 0;
+}
+
+.phaseDotInner {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.phaseDotActive .phaseDotInner {
+  background: linear-gradient(135deg, #A67C52, #C4A07A);
+  color: white;
+  box-shadow: 0 2px 8px rgba(166, 124, 82, 0.4);
+  transform: scale(1.1);
+}
+
+.phaseDotPast .phaseDotInner {
+  background: #7B9E87;
+  color: white;
+}
+
+.phaseDotFuture .phaseDotInner {
+  background: #E8E2D9;
+  color: #A89F91;
+}
+
+.phaseDotLabel {
+  font-size: 0.58rem;
+  color: #948A7C;
+  margin-top: 2px;
+  white-space: nowrap;
+}
+
+.phaseDotActive .phaseDotLabel {
+  color: #8B6543;
+  font-weight: 600;
+}
+
+/* 响应式 */
+@media (max-width: 768px) {
+  .phaseNav {
+    padding: 8px 12px 6px;
+  }
+
+  .phaseDot {
+    min-width: 34px;
+  }
+
+  .phaseDotInner {
+    width: 22px;
+    height: 22px;
+    font-size: 0.6rem;
+  }
+
+  .phaseDotLabel {
+    font-size: 0.52rem;
+  }
+}

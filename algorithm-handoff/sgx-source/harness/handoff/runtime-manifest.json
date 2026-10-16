@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "sgx-handoff-runtime-manifest-v0.1",
+  "status": "candidate/pre-human",
+  "sourceBuildId": "pre-human-2026-10-15-candidate-v23",
+  "distributionBuildId": "pre-human-2026-10-15-candidate-v23-gitee.1",
+  "serviceVersion": "g5-real-internal-v0.18",
+  "contractVersion": "algorithm-http-v0.1",
+  "interviewPolicyVersion": "interview-policy-v0.3.4",
+  "architecture": "independent_streaming_asr_text_llm_modular_tts",
+  "fingerprintScope": "repository_startup_manifest_and_fictional_smoke_fixtures",
+  "sourceDifference": "Complete runtime dependencies and startup configuration; use repository fingerprint files; no interview or memory decision changes.",
+  "defaultExecutionMode": "LOCAL_FAKE",
+  "defaultPaidBudgetCny": 0,
+  "canonicalWriteCapability": false,
+  "storage": "process_memory_fictional_only",
+  "productionAuthenticationImplemented": false,
+  "evidenceBoundary": "v23 real-model evidence is historical. Distribution checks do not establish human experience, production readiness or a new paid baseline."
+}

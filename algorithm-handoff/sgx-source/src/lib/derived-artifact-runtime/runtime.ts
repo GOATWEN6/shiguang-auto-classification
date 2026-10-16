@@ -36,6 +36,11 @@ import type {
 
 const STORY_CONTENT_TYPES = new Set([
   'life_event',
+  // The Memory extractor uses `life_event_detail` for a concrete, sourced
+  // part of an event (for example, a daily work routine). It is still an
+  // ordinary life-event source for a story draft; excluding it made valid
+  // interview facts look like an authorization failure.
+  'life_event_detail',
   'photo_location_claim',
   'photo_metadata',
   'photo_person_relation',

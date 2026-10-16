@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "sgx-handoff-smoke-fixtures-v0.1",
+  "dataScope": "fixed_fictional",
+  "purpose": "repository startup fingerprint and zero-cost fake smoke inputs",
+  "cases": [
+    { "id": "S1", "mode": "DAILY_CHAT", "text": "今天在阳台给花浇了水。" },
+    { "id": "S2", "mode": "FORMAL_INTERVIEW", "text": "我愿意聊聊以前在工厂工作的经历。" },
+    { "id": "S3", "mode": "FORMAL_INTERVIEW", "text": "今天先聊到这里。" }
+  ],
+  "claim": "These fixtures are not the C1-C12 real-model results or human voice evaluation."
+}

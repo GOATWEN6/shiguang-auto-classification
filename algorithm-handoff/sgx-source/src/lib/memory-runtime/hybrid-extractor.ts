@@ -589,6 +589,19 @@ function mergeDeduplicated(
   return { proposals: merged, mergeCount };
 }
 
+function isGovernanceDuplicate(
+  proposal: HybridProposal,
+  mustExtractProposals: HybridProposal[],
+): boolean {
+  if (proposal.signals.governanceAction !== 'NONE') return false;
+  const proposalRefs = new Set(proposal.sourceEvidenceRefs);
+  const proposalAction = governanceFor(proposal.normalizedClaim);
+  if (proposalAction === 'NONE') return false;
+  return mustExtractProposals.some(mustExtract =>
+    mustExtract.signals.governanceAction === proposalAction
+    && mustExtract.sourceEvidenceRefs.some(ref => proposalRefs.has(ref)));
+}
+
 function conflictAnchor(proposal: HybridProposal): string | null {
   return clean(proposal.normalizedClaim).match(/photo-[a-z0-9-]+|[零一二三四五六七八九十百千万两0-9]+万元|[零一二三四五六七八九十百千万两0-9]+元/iu)?.[0] ?? null;
 }
@@ -647,8 +660,19 @@ export async function extractHybridCandidates(
   const semanticRejections: Array<{ index: number; reason: string }> = [];
   rawSemanticProposals.forEach((rawProposal, index) => {
     const result = sanitizeSemanticProposal(rawProposal, isolatedInput, evidenceByRef, index);
-    if (result.proposal) semanticProposals.push(result.proposal);
-    else semanticRejections.push({ index, reason: result.rejection });
+    if (!result.proposal) {
+      semanticRejections.push({ index, reason: result.rejection });
+      return;
+    }
+    // A provider may paraphrase a no-save/delete/privacy command as an
+    // ordinary preference. The deterministic must-extract governance proposal
+    // is authoritative; suppress only the same-evidence duplicate so ordinary
+    // facts from a mixed utterance remain eligible.
+    if (isGovernanceDuplicate(result.proposal, mustExtractProposals)) {
+      semanticRejections.push({ index, reason: 'governance_duplicate_suppressed' });
+      return;
+    }
+    semanticProposals.push(result.proposal);
   });
   const merged = mergeDeduplicated([...mustExtractProposals, ...semanticProposals]);
   return {

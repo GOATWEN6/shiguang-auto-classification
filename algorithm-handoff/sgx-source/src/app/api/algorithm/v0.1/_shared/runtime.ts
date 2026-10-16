@@ -126,8 +126,9 @@ function makeRuntime() {
   }) : null;
   const orchestrator = composition?.orchestrator ?? new TurnOrchestrator({ processing,
     asyncAdapters: { MEMORY: unusedAsyncAdapter(), STORY: unusedAsyncAdapter(), PROFILE: unusedAsyncAdapter() } });
-  const currentManifest = join(process.cwd(), 'harness/live-baseline/v0.1', real ? 'live-canary/manifest.json' : 'manifest.json');
-  const currentFixture = join(process.cwd(), 'harness/live-baseline/v0.1', real ? 'live-canary/run-http-first-batch.mjs' : 'g5-fixtures.json');
+  // 仓库交付使用随源码提供的启动清单，不依赖开发机的付费 runner 或私有运行目录。
+  const currentManifest = join(process.cwd(), 'harness/handoff/runtime-manifest.json');
+  const currentFixture = join(process.cwd(), 'harness/handoff/smoke-fixtures.json');
   const fileHash = (file: string) => createHash('sha256').update(readFileSync(file)).digest('hex');
   const runtimeFingerprint = (() => {
     if (!config) return undefined;
@@ -168,7 +169,7 @@ function makeRuntime() {
     },
     executionMode: real ? 'REAL_INTERNAL' : 'LOCAL_FAKE',
     providerStatus: () => ({ networkCalls: attempts.length, costCny: real ? null : 0 }),
-    metadata: { buildId: process.env.SGX_ALGORITHM_BUILD_ID?.trim() || 'local-uncommitted',
+    metadata: { buildId: process.env.SGX_ALGORITHM_BUILD_ID?.trim() || 'pre-human-2026-10-15-candidate-v23-gitee.1',
       manifestSha256: fileHash(currentManifest),
       fixtureSha256: fileHash(currentFixture),
       serviceVersion: real ? 'g5-real-internal-v0.18' : 'g5-local-fake-v0.1',
@@ -221,8 +222,8 @@ type Runtime = ReturnType<typeof makeRuntime>;
 // reloads modules without restarting the Node process; retaining the previous
 // global instance would otherwise keep the old provider/prompt functions alive
 // and make the public workbench test a different algorithm than the source.
-const globalRuntime = globalThis as typeof globalThis & { sgxAlgorithmRuntimeV22?: Runtime };
-const runtime = globalRuntime.sgxAlgorithmRuntimeV22 ??= makeRuntime();
+const globalRuntime = globalThis as typeof globalThis & { sgxAlgorithmRuntimeV25?: Runtime };
+const runtime = globalRuntime.sgxAlgorithmRuntimeV25 ??= makeRuntime();
 export const algorithmOrchestrator = runtime.orchestrator;
 export const algorithmHttpService = runtime.service;
 export const internalAlgorithmRuntime = runtime;

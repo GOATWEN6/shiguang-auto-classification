@@ -100,6 +100,13 @@ function hash(value: unknown): string {
 }
 
 function isOperationalSource(text: string): boolean {
+  const normalized = text.normalize('NFKC').replace(/\s+/gu, ' ').trim();
+  // Mode entry, topic handoff, and pause/continue are control intent. They
+  // may guide this session but must not become a durable preference, story
+  // fact, or profile field merely because the model paraphrases them.
+  if (/(?:我)?(?:愿意|想|可以)聊(?:聊|一聊)|(?:我们|我)?(?:说说|聊聊|谈谈).*(?:以前|过去|往事|经历|工作|日子|事情)|(?:这段|这个话题).*(?:先聊到这里|先到这里)|(?:休息好了|休息好|现在可以了|准备好了).*(?:继续|接着)|^(?:继续|继续吧|接着|接着吧|可以继续)[。！？!?]?$/u.test(normalized)) {
+    return true;
+  }
   const clauses = text.split(/[，,。；;]/u).map(clause => clause.trim()).filter(Boolean);
   return clauses.length > 0 && clauses.every(clause =>
     /(?:请|帮我).*(?:整理|生成|写|播放|查询)|(?:还记得|是否记得|有没有记得).*(?:喜欢|爱好|音乐)|(?:根据|结合).*(?:爱好|偏好)|(?:我们|我想).*(?:接着聊|继续聊|换.{0,8}话题)|(?:这段|工作|往事).*(?:先聊到这里|先到这里)/u.test(clause)
@@ -107,6 +114,20 @@ function isOperationalSource(text: string): boolean {
     || /^(?:麻烦|能不能|可以帮|我希望你|我想请|帮忙).*(?:整理|生成|制作|写|编写|播放|查询|总结).*(?:画像|爱好|故事|回忆|草稿)/u.test(clause)
     || /^(?:我们)?(?:接着|继续)聊(?:吧|一下)?$/u.test(clause)
     || /^(?:聊聊|聊一聊|想聊|再聊|可以聊)/u.test(clause));
+}
+
+/**
+ * A pure mode/control utterance has no user fact to extract. Avoid spending a
+ * Memory model call on it; explicit story/profile requests still run their
+ * independent derived jobs against already governed sources.
+ */
+function isPureOperationalSource(text: string): boolean {
+  const normalized = text.normalize('NFKC').replace(/\s+/gu, ' ').trim();
+  return /^(?:(?:我)?(?:愿意|想|可以)聊(?:聊|一聊).*(?:以前|过去|往事|经历|工作|日子|事情)[。！？!?]?|(?:这段|这个话题).*(?:先聊到这里|先到这里).*(?:我们|我)?(?:说说|聊聊|谈谈).*[。！？!?]?|(?:我)?(?:休息好了|休息好|现在可以了|准备好了).*?(?:继续|接着)(?:吧|一下)?[。！？!?]?|^(?:继续|继续吧|接着|接着吧|可以继续)[。！？!?]?)$/u.test(normalized);
+}
+
+function hasExplicitDerivedRequest(text: string): boolean {
+  return /(?:写|生成|整理|制作|编写|做|要|需要|想要).*(?:故事|回忆|画像|爱好)/u.test(text);
 }
 
 /** Operation requests cannot become durable preferences merely through a model paraphrase. */
@@ -703,10 +724,13 @@ export function createAlgorithmComposition(options: AlgorithmCompositionOptions)
       if (request.response.retentionIntent !== 'DEFAULT' || request.response.sessionControl !== 'CONTINUE'
         || request.response.action === 'SAFE_RESPONSE') return [];
       const evidenceRef = request.identity.evidenceRefs[0];
+      const evidence = evidenceStore.get(evidenceRef);
+      if (evidence && isPureOperationalSource(evidence.text) && !hasExplicitDerivedRequest(evidence.text)) {
+        return [];
+      }
       let resolve!: () => void;
       const promise = new Promise<void>(done => { resolve = done; });
       memoryDone.set(evidenceRef, { promise, resolve, status: 'pending' });
-      const evidence = evidenceStore.get(evidenceRef);
       const bound = boundFor(request.identity);
       const policy = evidence && decideInterviewNextAction(policyRequest(bound, evidence, null));
       if (policy?.reasonCodes.some(code => TOPIC_RESTRICTION_CODES.includes(code))) {
@@ -717,8 +741,10 @@ export function createAlgorithmComposition(options: AlgorithmCompositionOptions)
       // Treat an explicit request for both outputs as two independent jobs.
       // This keeps Story and Profile failures isolated: one result can still be
       // reviewed while the other retries or remains pending.
-      if (derivedPurposes.includes('story_draft') && /(?:写|生成|整理|制作|编写|做|要|需要|想要).*(?:故事|回忆)/u.test(evidence?.text ?? '')) kinds.push('STORY');
-      if (derivedPurposes.includes('profile_draft') && /(?:写|生成|整理|制作|编写|做|要|需要|想要).*(?:画像|爱好)/u.test(evidence?.text ?? '')) kinds.push('PROFILE');
+      if (derivedPurposes.includes('story_draft') && hasExplicitDerivedRequest(evidence?.text ?? '')
+        && /(?:故事|回忆)/u.test(evidence?.text ?? '')) kinds.push('STORY');
+      if (derivedPurposes.includes('profile_draft') && hasExplicitDerivedRequest(evidence?.text ?? '')
+        && /(?:画像|爱好)/u.test(evidence?.text ?? '')) kinds.push('PROFILE');
       return kinds.map(kind => ({ jobId: `${kind}:${request.identity.turnId}`, kind,
         inputRef: evidenceRef, payloadFingerprint: hash({ kind, evidenceRef }), evidenceRefs: [evidenceRef] }));
     },
