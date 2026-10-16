@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CollectiveLetterEditRequest",
+  "type": "object",
+  "required": ["letterText", "instruction", "letterRevision", "inputHash", "selection", "protectedRanges", "approvedFacts"],
+  "additionalProperties": false,
+  "properties": {
+    "letterText": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 30000,
+      "description": "30000 仅是原始请求的传输安全上限，不是业务正文上限。后端必须在调用 Provider 前按 NFC 后 Unicode code point、标点和空格计入、换行不计的口径校验业务长度不超过 3000；超限返回 INPUT_TOO_LONG。"
+    },
+    "instruction": {"type": "string", "minLength": 1, "maxLength": 1000},
+    "approvedFacts": {"type": "array", "items": {"$ref": "approved-material.json"}},
+    "letterRevision": {"type": "string", "minLength": 1},
+    "inputHash": {"type": "string", "minLength": 1},
+    "selection": {
+      "type": "object",
+      "required": ["start", "end", "selectedText"],
+      "additionalProperties": false,
+      "properties": {
+        "start": {"type": "integer", "minimum": 0},
+        "end": {"type": "integer", "minimum": 1},
+        "selectedText": {"type": "string", "minLength": 1}
+      }
+    },
+    "protectedRanges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["start", "end", "kind"],
+        "additionalProperties": false,
+        "properties": {
+          "start": {"type": "integer", "minimum": 0},
+          "end": {"type": "integer", "minimum": 1},
+          "kind": {"type": "string", "enum": ["SIGNATURE", "SOURCE", "DISPUTE_NOTICE", "AI_LABEL"]}
+        }
+      }
+    }
+  }
+}

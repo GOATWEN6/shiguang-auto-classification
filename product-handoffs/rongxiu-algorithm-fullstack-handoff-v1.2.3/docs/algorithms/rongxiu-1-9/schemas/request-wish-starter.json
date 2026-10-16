@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "WishStarterRequest",
+  "description": "纯静态本地函数输入，不是模型请求；已有实质正文时隐藏起笔。",
+  "type": "object",
+  "required": ["wish"],
+  "additionalProperties": false,
+  "properties": {
+    "recipientTitle": {"type": "string", "maxLength": 100},
+    "wish": {"type": "string", "maxLength": 4000},
+    "batchIndex": {"type": "integer", "minimum": 0, "maximum": 1, "default": 0}
+  }
+}

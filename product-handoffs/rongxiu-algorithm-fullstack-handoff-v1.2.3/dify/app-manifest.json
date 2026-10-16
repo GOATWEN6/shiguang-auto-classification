@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "rongxiu-dify-app-manifest-v1.2.3",
+  "purpose": "optional-prompt-debug-mapping",
+  "optionalDebugOnly": true,
+  "promptPackageVersion": "v1.2.3",
+  "sourceOfTruth": "../docs/algorithms/rongxiu-1-9/FULLSTACK_HANDOFF-v1.2.0.md",
+  "promptDesignSpec": "../docs/algorithms/rongxiu-1-9/00-prompt-design.md",
+  "technicalConfig": "workflow-config-v1.2.0.md",
+  "defaultAppType": "workflow",
+  "sharedSettings": {
+    "memory": false,
+    "knowledge": false,
+    "vision": false,
+    "externalTools": false,
+    "structuredOutput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": {"type": "string", "minLength": 1}
+      }
+    },
+    "candidateOnly": true
+  },
+  "modelRoutes": [
+    {
+      "purpose": "INTRODUCTION",
+      "mode": "polish",
+      "referenceName": "rongxiu-introduction-v1",
+      "promptVersion": "introduction-v1.2.0-content-review",
+      "modelInputFields": ["biography"],
+      "promptSpec": "../docs/algorithms/rongxiu-1-9/01-introduction.md"
+    },
+    {
+      "purpose": "CAPTION",
+      "mode": "polish",
+      "referenceName": "rongxiu-caption-v1",
+      "promptVersion": "caption-v1.2.0-content-review",
+      "modelInputFields": ["caption"],
+      "promptSpec": "../docs/algorithms/rongxiu-1-9/02-caption.md"
+    },
+    {
+      "purpose": "STORY",
+      "mode": "body",
+      "referenceName": "rongxiu-story-body-v1",
+      "promptVersion": "story-body-v1.2.0-content-review",
+      "modelInputFields": ["title", "body"],
+      "promptSpec": "../docs/algorithms/rongxiu-1-9/03-story-body.md"
+    },
+    {
+      "purpose": "WISH",
+      "mode": "polish",
+      "referenceName": "rongxiu-wish-polish-v1",
+      "promptVersion": "wish-polish-v1.2.0-content-review",
+      "modelInputFields": ["wish"],
+      "promptSpec": "../docs/algorithms/rongxiu-1-9/04-wish-polish.md"
+    },
+    {
+      "purpose": "COLLECTIVE_LETTER",
+      "mode": "generate",
+      "referenceName": "rongxiu-collective-letter-generate-v1",
+      "promptVersion": "collective-letter-generate-v1.2.3",
+      "modelInputFields": ["recipientLabel", "style", "materials"],
+      "backendOnlyFields": ["inputHash", "sourceRef", "approvalMetadata", "accountMapping", "requestId"],
+      "materialProjectionFields": ["sourceType", "authorLabel", "materialLabel", "narrativeAttribution", "text"],
+      "promptSpec": "../docs/algorithms/rongxiu-1-9/05-collective-letter-generate.md"
+    },
+    {
+      "purpose": "POST_EVENT_MESSAGE",
+      "mode": "polish",
+      "referenceName": "rongxiu-post-event-message-v1",
+      "promptVersion": "post-event-message-v1.2.0-content-review",
+      "modelInputFields": ["message"],
+      "promptSpec": "../docs/algorithms/rongxiu-1-9/06-post-event-message.md"
+    },
+    {
+      "purpose": "INVITATION_MESSAGE",
+      "mode": "polish",
+      "referenceName": "rongxiu-invitation-message-v1",
+      "promptVersion": "invitation-message-polish-v1.2.3",
+      "modelInputFields": ["mode", "recipientTitle", "draftMessage", "facts"],
+      "promptSpec": "../docs/algorithms/rongxiu-1-9/07-invitation-message.md"
+    },
+    {
+      "purpose": "COLLECTIVE_LETTER",
+      "mode": "edit",
+      "referenceName": "rongxiu-collective-letter-edit-v1",
+      "promptVersion": "collective-letter-edit-v1.2.3",
+      "modelInputFields": ["letterText", "instruction", "selection", "protectedRanges", "approvedFacts"],
+      "backendOnlyFields": ["letterRevision", "inputHash", "sourceRef", "approvalMetadata", "requestId"],
+      "materialProjectionFields": ["sourceType", "authorLabel", "materialLabel", "narrativeAttribution", "text"],
+      "promptSpec": "../docs/algorithms/rongxiu-1-9/09-collective-letter-edit.md"
+    }
+  ],
+  "nonModelCapabilities": [
+    {
+      "row": 8,
+      "purpose": "WISH",
+      "mode": "starter",
+      "implementation": "local-static-template",
+      "templateVersion": "v1.2.3",
+      "difyApp": false,
+      "providerCall": false,
+      "requestSchema": "../docs/algorithms/rongxiu-1-9/schemas/request-wish-starter.json",
+      "spec": "../docs/algorithms/rongxiu-1-9/08-wish-starter.md"
+    }
+  ]
+}

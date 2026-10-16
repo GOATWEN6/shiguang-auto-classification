@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InvitationMessageRequest",
+  "type": "object",
+  "required": ["mode", "recipientTitle", "draftMessage", "facts"],
+  "additionalProperties": false,
+  "properties": {
+    "mode": {"type": "string", "enum": ["polish"]},
+    "recipientTitle": {"type": "string", "minLength": 1, "maxLength": 100},
+    "draftMessage": {"type": "string", "minLength": 1, "maxLength": 4000, "pattern": "\\S"},
+    "facts": {"type": "string", "minLength": 1, "maxLength": 4000}
+  }
+}

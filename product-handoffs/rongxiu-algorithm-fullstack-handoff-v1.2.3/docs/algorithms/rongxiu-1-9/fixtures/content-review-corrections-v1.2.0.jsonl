@@ -1,0 +1,1 @@
+{"fixtureId":"content-04-normal-correction","purpose":"WISH","mode":"polish","input":{"wish":"李老师，祝您退休快乐！以后多出去走走，开心点。"},"originalReferenceText":"李老师，祝您退休快乐！以后多出去走走，开开心心地享受生活。","correctedReferenceText":"李老师，祝您退休快乐！以后多出去走走，开心点。","assertions":["仅text且非空","不新增事实","保留具体建议多出去走走","最小润色，不要求逐字匹配"],"status":"REFERENCE_CORRECTED","sourcePackage":"荣休礼_内容审阅与Prompt回传包_v1.2.0.zip"}

@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ApprovedMaterial",
+  "description": "后端请求结构；投影给模型时必须移除 sourceRef。批准、用途、revision 和账号映射由后端权威校验。",
+  "type": "object",
+  "required": ["sourceType", "sourceRef", "authorLabel", "materialLabel", "narrativeAttribution", "text"],
+  "additionalProperties": false,
+  "properties": {
+    "sourceType": {"type": "string", "enum": ["STORY", "WISH", "CAPTION"]},
+    "sourceRef": {"type": "string", "minLength": 1},
+    "authorLabel": {"type": "string", "minLength": 1, "maxLength": 100},
+    "materialLabel": {"type": "string", "minLength": 1, "maxLength": 100},
+    "narrativeAttribution": {
+      "type": "object",
+      "required": ["experienceSubject", "basis"],
+      "additionalProperties": false,
+      "properties": {
+        "experienceSubject": {"type": "string", "enum": ["AUTHOR", "RECIPIENT", "THIRD_PARTY", "UNKNOWN"]},
+        "basis": {"type": "string", "enum": ["FIRSTHAND", "REPORTED", "OPINION_OR_WISH", "UNKNOWN"]},
+        "speakerLabel": {"type": "string", "minLength": 1, "maxLength": 100},
+        "experiencerLabel": {"type": "string", "minLength": 1, "maxLength": 100}
+      }
+    },
+    "text": {"type": "string", "minLength": 1, "maxLength": 10000}
+  }
+}

@@ -5,7 +5,8 @@
 | 分支 | 项目范围 | 主要入口 | 状态说明 |
 |---|---|---|---|
 | `main` | 拾光自动分类基础入口 | 根目录 README | 仓库基础分支 |
-| `codex/sgx-algorithm-candidate-2026-10-15` | 自动分类候选交付 | 分支根 README、`FULLSTACK_INTEGRATION_GUIDE.md` | internal release candidate，按分支内 README 与证据判断 |
+| `codex/classification-t1-handoff` | 自动分类与归纳专项交付 | 分支根 README、`FULLSTACK_INTEGRATION_GUIDE.md` | 本地历史专项分支；是否已同步到当前远端，以远端分支列表为准 |
+| `codex/sgx-algorithm-candidate-2026-10-15` | 自动分类 + 访谈 + Memory 综合候选 | 分支根 README；访谈/Memory 见 `algorithm-handoff/README.md` | candidate/pre-human，不能视为生产验收完成 |
 | `codex/interview-memory-fullstack-handoff-2026-10-14` | 访谈与 Memory 全栈交接 | `docs/handoffs/2026-10-14-algorithm-fullstack-handoff-v0.1/README.md` | 独立交接分支，与荣休礼业务分离 |
 | `codex/rongxiu-algorithm-handoff-v1.2.3` | 荣休礼 1～9 平台无关算法规格与全栈交接 | [`product-handoffs/rongxiu-algorithm-fullstack-handoff-v1.2.3/README.md`](product-handoffs/rongxiu-algorithm-fullstack-handoff-v1.2.3/README.md) | 本分支；Dify 仅为可选调试工具 |
 
@@ -16,6 +17,6 @@
 交接时直接使用仓库目录：
 
 - 可阅读目录：[`product-handoffs/rongxiu-algorithm-fullstack-handoff-v1.2.3/`](product-handoffs/rongxiu-algorithm-fullstack-handoff-v1.2.3/)
-- 本版不生成或提交 ZIP；Gitee 分支中的目录内容就是交付物。
+- 本版不生成或提交 ZIP；GitHub 分支中的目录内容就是交付物。
 
 生产接入仍需全栈在目标环境完成 Provider、权限、候选确认／撤销、revision/hash、删除与离线撤回验收。包内的 `AI-D04` 标记项不能仅凭文档视为已实现。
