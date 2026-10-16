@@ -1,7 +1,7 @@
 # 同一 IP 的会话与轮次成本统计
 
-日期：2026-10-14  
-口径版本：`algorithm-cost-ledger-v0.1`  
+日期：2026-10-14
+口径版本：`algorithm-cost-ledger-v0.1`
 状态：已接入代码，未新增真实模型调用
 
 ## 结论
@@ -56,8 +56,8 @@
 
 | 内容 | 路径 |
 |---|---|
-| 成本账本实现 | [`src/lib/algorithm-service/cost-ledger.ts`](../../src/lib/algorithm-service/cost-ledger.ts) |
-| 只读成本接口 | [`src/app/api/algorithm/v0.1/costs/route.ts`](../../src/app/api/algorithm/v0.1/costs/route.ts) |
+| 成本账本实现 | [`src/lib/algorithm-service/cost-ledger.ts`](../../../../algorithm-handoff/sgx-source/src/lib/algorithm-service/cost-ledger.ts) |
+| 只读成本接口 | [`src/app/api/algorithm/v0.1/costs/route.ts`](../../../../algorithm-handoff/sgx-source/src/app/api/algorithm/v0.1/costs/route.ts) |
 | 本地账本文件 | `harness/live-baseline/v0.1/.local-runs/http-current/cost-ledger.jsonl` |
 | 工作台 | `/algorithm-lab` → “成本统计” |
 | 反馈包字段 | `costTable`，并保留 `budgetSnapshot` |
@@ -70,3 +70,19 @@
 - `node --experimental-strip-types --test harness/live-baseline/v0.1/cost-ledger.test.mts`：2/2 通过。
 - 已验证同一 IP 的两个会话、三个轮次会正确聚合；账本重启后可恢复；明文 IP 不会写入账本。
 - 没有新增真实模型调用，没有新增费用。
+
+## 2026-10-15 当前覆盖
+
+上面的表格保留为成本接入时的历史快照，不覆盖后续工作台体验。当前候选账本以服务 `/health` 和 `budget.json` 为准：
+
+| 项目 | 当前值 |
+|---|---:|
+| 程序硬上限 | 400 元 |
+| 累计预留 | 295.76 元 |
+| 剩余预算 | 104.24 元 |
+| 账单状态 | `PENDING` |
+| 当前候选 build | `pre-human-2026-10-15-candidate-v23` |
+| 当前进程网络调用 | 0（重启后计数清零） |
+| 正式 `CanonicalMemory` 写入 | 0 |
+
+负责人通过 v21～v22 工作台体验产生的调用已经计入累计预留；由于旧进程的部分调用没有完整的 IP/会话/轮次归属，不能伪造拆分到某个 IP。后续每一条新账目仍按脱敏 IP、会话和轮次记录，达到 400 元硬上限前不再自动扩大批次。

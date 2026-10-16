@@ -2,20 +2,23 @@
   "schemaVersion": "sgx-algorithm-fullstack-handoff-manifest-v0.2",
   "packageVersion": "2026-10-15-algorithm-fullstack-handoff-v0.2",
   "status": "candidate/pre-human",
-  "generatedAt": "2026-10-15",
+  "generatedAt": "2026-10-16",
   "sourceRepository": "SGX",
-  "currentBuildId": "pre-human-2026-10-15-candidate-v23",
+  "currentBuildId": "pre-human-2026-10-15-candidate-v23-gitee.1",
   "serviceVersion": "g5-real-internal-v0.18",
   "interviewPolicyVersion": "interview-policy-v0.3.4",
   "contractVersion": "algorithm-http-v0.1",
   "budget": {
     "programHardCapCny": 400,
     "batchCapCny": 364.48,
-    "reservedCny": 260.24,
+    "reservedCny": 299.72,
     "priorExposureCny": 35.52,
-    "cumulativeReservedCny": 295.76,
-    "remainingProgramCny": 104.24,
-    "billingState": "PENDING"
+    "cumulativeReservedCny": 335.24,
+    "remainingProgramCny": 64.76,
+    "billingState": "PENDING",
+    "snapshotDate": "2026-10-15",
+    "actualCostCny": null,
+    "migrationPaidCalls": 0
   },
   "includedDocs": [
     "README.md",
@@ -31,17 +34,37 @@
     "docs/ip-session-round-cost-table.md",
     "docs/public-access-and-persistence-plan.md",
     "docs/interview-theme-outline-v0.1.md",
-    "docs/source-manifest.json"
+    "docs/source-manifest.json",
+    "docs/reviews/2026-10-15-control-memory-targeted-revalidation.md",
+    "docs/reviews/2026-10-16-distribution-validation.md",
+    "docs/execution-log-2026-10-16.md"
   ],
   "validation": {
-    "build": "npm run build: pass",
-    "typecheck": "npx tsc --noEmit --incremental false: pass",
-    "diffCheck": "git diff --check: pass",
-    "focusedOffline": "62/62 composition + offline interview acceptance + G5 orchestrator tests pass",
-    "voiceSmoke": "160/160 local realtime voice contract checks pass",
-    "voiceExperienceOverlay": "assistant name 小叙; browser ASR 1.8s default and 2.6s incomplete-speech cap; auto-send/review toggle",
-    "targetedRealRevalidation": "5/5 pause/switch/continue turns pass on pre-human-2026-10-14-pause-switch-v20",
-    "semanticShadow": "historical paid 24-turn main chain; repaired outputs 24/24 offline normalization only",
+    "distribution": {
+      "date": "2026-10-16",
+      "focusedOffline": "74/74 passed",
+      "typecheck": "passed",
+      "build": "exit 0",
+      "vadAssets": "4 resources prepared from installed dependencies",
+      "healthVersion": "built handler invocation: HTTP 200, LOCAL_FAKE, networkCalls 0; not network E2E",
+      "dependencyInstall": "existing SGX node_modules reused; independent npm ci not run",
+      "paidCalls": 0
+    },
+    "historical": {
+      "focusedOffline": "62/62 prior composition/interview/orchestrator checks",
+      "voiceSmoke": "160/160 local contract checks; not human microphone/playback acceptance",
+      "pauseSwitchReal": "v20 5/5 focused cases",
+      "completeReal": "12 scenarios, 13 case rows executed; COMPLETE_REVIEW_PENDING, negative outputs retained",
+      "targetedRealRevalidation": "v23 6/6 completed, TTS 6/6; TARGETED_CHECKS_PASS_REVIEW_PENDING",
+      "semanticShadow": "historical paid 24-turn run; repaired outputs 24/24 offline normalization only"
+    },
+    "notVerified": [
+      "human microphone ASR",
+      "physical playback interruption",
+      "owner listening and story/profile quality",
+      "durable CanonicalMemory and product auth",
+      "Gitee remote merge/push"
+    ],
     "canonicalMemory": "canonicalWriteCapability=false; canonicalWriteCount=0; durable adapter pending"
   },
   "exclusions": [
@@ -53,5 +76,15 @@
     "production CanonicalMemory data"
   ],
   "nextGate": "fullstack internal staging integration, then owner human listening and story/profile review",
-  "releaseRule": "Do not label as production until durable CanonicalMemory, auth, deployment, rollback and owner feedback gates pass."
+  "releaseRule": "Do not label as production until durable CanonicalMemory, auth, deployment, rollback and owner feedback gates pass.",
+  "latestEvidence": {
+    "report": "docs/reviews/2026-10-15-control-memory-targeted-revalidation.md",
+    "runSummary": "harness/live-baseline/v0.1/.local-runs/owner-control-memory-2026-10-15T11-42-58.814Z-5ee064c2/summary.json",
+    "scope": "fixed fictional cases; real Doubao text model and modular TTS; no human voice",
+    "runSummaryIncluded": false,
+    "runSummaryNote": "Local evidence reference only; raw run directory is intentionally excluded."
+  },
+  "delivery": "direct_repository_update_existing_branch_merge_no_zip",
+  "targetRepository": "gitee:aicreate369/shiguang-auto-classification",
+  "historicalRealEvidenceBuildId": "pre-human-2026-10-15-candidate-v23"
 }

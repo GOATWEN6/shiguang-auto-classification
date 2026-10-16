@@ -5,9 +5,14 @@
   "interviewPolicyVersion": "interview-policy-v0.3.4",
   "algorithmContractVersion": "algorithm-http-v0.1",
   "sourceRoot": "algorithm-handoff/sgx-source",
-  "fileCount": 90,
-  "totalBytes": 1145446,
+  "fileCount": 117,
+  "totalBytes": 1421036,
   "included": [
+    ".env.example",
+    ".gitignore",
+    "README.md",
+    "harness/handoff/runtime-manifest.json",
+    "harness/handoff/smoke-fixtures.json",
     "harness/live-baseline/v0.1/G1_REPORT.md",
     "harness/live-baseline/v0.1/G2_REPORT.md",
     "harness/live-baseline/v0.1/G3_REPORT.md",
@@ -15,10 +20,16 @@
     "harness/live-baseline/v0.1/G5_DESIGN_GATE.md",
     "harness/live-baseline/v0.1/G5_SOURCE_GATE.md",
     "harness/live-baseline/v0.1/README.md",
+    "harness/live-baseline/v0.1/algorithm-composition.test.mts",
+    "harness/live-baseline/v0.1/g2-real-provider-regressions.test.mts",
+    "harness/live-baseline/v0.1/g4-derived-artifact-runtime.test.mts",
     "harness/live-baseline/v0.1/manifest.json",
+    "next-env.d.ts",
     "next.config.js",
     "package-lock.json",
     "package.json",
+    "postcss.config.js",
+    "scripts/prepare-vad-assets.mjs",
     "scripts/public-test-gateway.mjs",
     "src/app/algorithm-lab/page.module.css",
     "src/app/algorithm-lab/page.tsx",
@@ -35,6 +46,16 @@
     "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/view/route.ts",
     "src/app/api/algorithm/v0.1/sessions/route.ts",
     "src/app/api/algorithm/v0.1/version/route.ts",
+    "src/app/globals.css",
+    "src/app/layout.tsx",
+    "src/lib/algorithm-runtime/cancellation-cleanup.ts",
+    "src/lib/algorithm-runtime/cancellation-registry.ts",
+    "src/lib/algorithm-runtime/contracts.ts",
+    "src/lib/algorithm-runtime/data-lifecycle.ts",
+    "src/lib/algorithm-runtime/governance-repository.ts",
+    "src/lib/algorithm-runtime/index.ts",
+    "src/lib/algorithm-runtime/lease-tree.ts",
+    "src/lib/algorithm-runtime/model-call-ledger.ts",
     "src/lib/algorithm-service/browser-audio.ts",
     "src/lib/algorithm-service/composition.ts",
     "src/lib/algorithm-service/content-retention.ts",
@@ -48,6 +69,7 @@
     "src/lib/algorithm-service/semantic-turn-shadow.ts",
     "src/lib/algorithm-service/streaming-asr.ts",
     "src/lib/algorithm-service/streaming-tts.ts",
+    "src/lib/asr-input-normalizer/index.ts",
     "src/lib/asr-runtime/audio-chunk-validator.ts",
     "src/lib/asr-runtime/contracts.ts",
     "src/lib/asr-runtime/doubao-protocol.ts",
@@ -77,6 +99,9 @@
     "src/lib/memory-runtime/reference-store.ts",
     "src/lib/memory-runtime/retrieval-gate.ts",
     "src/lib/memory-runtime/retrieval-levels.ts",
+    "src/lib/model-runtime/contracts.ts",
+    "src/lib/model-runtime/index.ts",
+    "src/lib/model-runtime/runtime.ts",
     "src/lib/response-runtime/contracts.ts",
     "src/lib/response-runtime/index.ts",
     "src/lib/response-runtime/runtime.ts",
@@ -97,460 +122,129 @@
     "src/lib/voice/tts/doubao-provider.ts",
     "src/lib/voice/tts/index.ts",
     "src/lib/voice/tts/minimax-provider.ts",
-    "src/lib/voice/tts/types.ts"
+    "src/lib/voice/tts/types.ts",
+    "tailwind.config.js",
+    "tsconfig.json"
   ],
-  "sha256": [
-    {
-      "path": "harness/live-baseline/v0.1/G1_REPORT.md",
-      "sha256": "a515044495cb65a3dbfbbaefe1c330c823e1b93a4b39104fe37dc951e4501b0c",
-      "bytes": 4917
-    },
-    {
-      "path": "harness/live-baseline/v0.1/G2_REPORT.md",
-      "sha256": "24c0ff36be7477c32006c5c75f06cd5d28fa192cc580e1e90523c380fe060ade",
-      "bytes": 7271
-    },
-    {
-      "path": "harness/live-baseline/v0.1/G3_REPORT.md",
-      "sha256": "0f7f7208b43da10c00d7f85aa780ba034f2ad047f33cd26f57eb7ac77a54f378",
-      "bytes": 10378
-    },
-    {
-      "path": "harness/live-baseline/v0.1/G4_REPORT.md",
-      "sha256": "c59b3515637795d0b5b4b3d8f183ce367c7d3ed8a14f499a60a628a7da76818c",
-      "bytes": 12493
-    },
-    {
-      "path": "harness/live-baseline/v0.1/G5_DESIGN_GATE.md",
-      "sha256": "c8d9d19d522b0315485f6d440740637b4f7d1dc6f7838ab96c7339dc098bb365",
-      "bytes": 17876
-    },
-    {
-      "path": "harness/live-baseline/v0.1/G5_SOURCE_GATE.md",
-      "sha256": "be96b2280c806fb4cb229f14789b351a70ad74fd19df41b2de3ea3011628a75b",
-      "bytes": 16181
-    },
-    {
-      "path": "harness/live-baseline/v0.1/README.md",
-      "sha256": "7e138ebff29c0322bdb3e8fed856c1e82ead46b049ba46614fb717948d64253a",
-      "bytes": 1229
-    },
-    {
-      "path": "harness/live-baseline/v0.1/manifest.json",
-      "sha256": "3e23e2e148082a318a44da725045346914dac2113a67f02c1b4a2d3fad9fb18d",
-      "bytes": 5128
-    },
-    {
-      "path": "next.config.js",
-      "sha256": "3b1aeaba91e186ab54e682045546dae92d7def1e130ac9c28331ae07d9583160",
-      "bytes": 508
-    },
-    {
-      "path": "package-lock.json",
-      "sha256": "afe9bf79102711e9dd08168a039268d6df1810bce581075677a947e6a3309a25",
-      "bytes": 236614
-    },
-    {
-      "path": "package.json",
-      "sha256": "5885878b7695404fadd29c301a731ebaaf8730a5139f0f5972c8e2698303761f",
-      "bytes": 3526
-    },
-    {
-      "path": "scripts/public-test-gateway.mjs",
-      "sha256": "c1634f5ed7fc9cc196b03a065fca8cefa7ded4a62a35d5430fcb16fc38eb0ab4",
-      "bytes": 3297
-    },
-    {
-      "path": "src/app/algorithm-lab/page.module.css",
-      "sha256": "7157ea9a2d76660694c15328874b946ffcf4d2295f8afbf654db84c54f1c9c43",
-      "bytes": 9457
-    },
-    {
-      "path": "src/app/algorithm-lab/page.tsx",
-      "sha256": "29268195b05bc9219ceda93f05c07bcf91e99e29694fc1b30ee48016ce1f3d8d",
-      "bytes": 53524
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/_shared/http-error-boundary.ts",
-      "sha256": "b8b33d5028446c78d608020a7c74443ace6f2f3581f5211ed562d52fd8345fbe",
-      "bytes": 827
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/_shared/runtime.ts",
-      "sha256": "fc570735ae56f5dee086569b7a8f6d1f305afce03344f1feaefdfc85161e5558",
-      "bytes": 18824
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/costs/route.ts",
-      "sha256": "dbc60ae590c623d2c4b6e19000200a5600e48a43847788240c52bf3cc37c59bb",
-      "bytes": 637
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/health/route.ts",
-      "sha256": "07e51c4f153290600ead48f51a67748ce3d105ae009cb81fa12d010b1c499e7c",
-      "bytes": 918
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/asr/[asrStreamId]/route.ts",
-      "sha256": "fa051cbea3f7babe01f610a0b1ba67c6c46a350d62cb00e79d37ece735210ef4",
-      "bytes": 2425
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/asr/route.ts",
-      "sha256": "aa13efb85491fdaf48a24e673371e5fa0a7a6ddbdbdf21cd0d67854119cc8772",
-      "bytes": 3631
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/end/route.ts",
-      "sha256": "946a2e395974b5c5f083423755da0c49440c63006dcef361d860cd897be53ada",
-      "bytes": 907
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/interrupts/route.ts",
-      "sha256": "780caf294b0104f2861d97aada2df62594113c426fe9bb47530bef7daa0c2935",
-      "bytes": 1500
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/stream/route.ts",
-      "sha256": "50dd9734cc4fcfe5b31b83b31cf710b8d6e4cbe3c4dec198703a64281872d9c0",
-      "bytes": 10157
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/turns/route.ts",
-      "sha256": "5c8f3b9bfbd4fd2a36c88c5ea96f2af213ec584a2018dd2adbcd8a74188683bf",
-      "bytes": 911
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/view/route.ts",
-      "sha256": "1727239dd41ea6bfaf096c58a8c0bd8317480bee623538d21cbc97299fdf47d1",
-      "bytes": 1019
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/sessions/route.ts",
-      "sha256": "832d8234933435c4af1ccdfa5154b22af490526b9a4a9495c0720930454c8a2b",
-      "bytes": 1613
-    },
-    {
-      "path": "src/app/api/algorithm/v0.1/version/route.ts",
-      "sha256": "2111dcfad7abecd883f5f90edaa325774cb8e8879a18939c32e2d9261f18a0dd",
-      "bytes": 439
-    },
-    {
-      "path": "src/lib/algorithm-service/browser-audio.ts",
-      "sha256": "9c8ca4eedd8db97e19ce487f913cde284b9e2dfab7cae05776bac31787b7883d",
-      "bytes": 2222
-    },
-    {
-      "path": "src/lib/algorithm-service/composition.ts",
-      "sha256": "576c00e00c45111f881130ee824c6eb1661a47f12a18a4ab4e9179c404c91007",
-      "bytes": 58135
-    },
-    {
-      "path": "src/lib/algorithm-service/content-retention.ts",
-      "sha256": "c3ea1e37981351cb6131261e8d9c05f63f130bc7344c83c628b57b6628ae07d0",
-      "bytes": 6662
-    },
-    {
-      "path": "src/lib/algorithm-service/cost-ledger.ts",
-      "sha256": "61deea6498041e4c94751a1c4b82d8522387513b004f1fc77dac8cf2a1845e3a",
-      "bytes": 9500
-    },
-    {
-      "path": "src/lib/algorithm-service/diagnostic-retention.ts",
-      "sha256": "207c40bf08fefba2375d763b12fed68f4d6b419dadb9aa87e209c69c506421ca",
-      "bytes": 12308
-    },
-    {
-      "path": "src/lib/algorithm-service/index.ts",
-      "sha256": "0c888954dd56ad9f0aeab3daab6e3439f38a79768e21453da177539cc2c92f99",
-      "bytes": 1164
-    },
-    {
-      "path": "src/lib/algorithm-service/internal-test-budget.ts",
-      "sha256": "a5b798900423980c20128ee20ba8512b5d2ca4b925e1542ff2b0306b67d18e8e",
-      "bytes": 4111
-    },
-    {
-      "path": "src/lib/algorithm-service/live-provider.ts",
-      "sha256": "6c617954322ed39b74b166c41849cc79fae60cefd4931d129335217866fa2688",
-      "bytes": 13095
-    },
-    {
-      "path": "src/lib/algorithm-service/retention-diagnostics.ts",
-      "sha256": "ffa00897c169b0b272c0a022c9c389772552f2ca0d25ce47ab9b3c4c3fef2dc4",
-      "bytes": 4125
-    },
-    {
-      "path": "src/lib/algorithm-service/semantic-turn-proposal.ts",
-      "sha256": "19531fa47dcc531201dcc536e7ba991630beb04718807a87475f55c702bf9102",
-      "bytes": 9666
-    },
-    {
-      "path": "src/lib/algorithm-service/semantic-turn-shadow.ts",
-      "sha256": "5bc4c02e8b2f7c3fd7652be2f6a7a1bd9f28e70ced4bfb01caf5c5aeb3b96e47",
-      "bytes": 29517
-    },
-    {
-      "path": "src/lib/algorithm-service/streaming-asr.ts",
-      "sha256": "dc3890886f306cd32515a2165a5a109f28b8f0166b980a5043e0f6f9b54aab34",
-      "bytes": 9409
-    },
-    {
-      "path": "src/lib/algorithm-service/streaming-tts.ts",
-      "sha256": "d96901a1d184471e396e06281be39d00646322ffe9a13a511910cac6555f3a0e",
-      "bytes": 12111
-    },
-    {
-      "path": "src/lib/asr-runtime/audio-chunk-validator.ts",
-      "sha256": "80f61ce4484ce319ef9c80176c143fcbeca70ab1da4b860242182bd45a94153e",
-      "bytes": 2253
-    },
-    {
-      "path": "src/lib/asr-runtime/contracts.ts",
-      "sha256": "09b8a7995215f4fad96102339d4d9a5dc87f37ecff8e505f833546a5b1e0fc3b",
-      "bytes": 5487
-    },
-    {
-      "path": "src/lib/asr-runtime/doubao-protocol.ts",
-      "sha256": "c9cc7f1e53925602a0993239e2260db49623df1e3955cbdab630e0b2ab0c8950",
-      "bytes": 9773
-    },
-    {
-      "path": "src/lib/asr-runtime/doubao-streaming-adapter.ts",
-      "sha256": "c38494209f869a085286d7c85869637711962710a538f5d573cf83ee70b3736e",
-      "bytes": 11732
-    },
-    {
-      "path": "src/lib/asr-runtime/doubao-websocket-transport.ts",
-      "sha256": "9e4ffa28d40e8bcefec8f192655c05d1605fe74cb056703e965b65fd42f0453a",
-      "bytes": 25086
-    },
-    {
-      "path": "src/lib/asr-runtime/index.ts",
-      "sha256": "fdf573beba1720e7e28696eca765a5a6e17ef4b97f4a81b9b8d1c8139e35ecf2",
-      "bytes": 247
-    },
-    {
-      "path": "src/lib/asr-runtime/stream-reducer.ts",
-      "sha256": "0b9a043784f74a495e9228a90ca5f6be7335aa7b63a07cfcde395909fd87cf1a",
-      "bytes": 17476
-    },
-    {
-      "path": "src/lib/derived-artifact-runtime/contracts.ts",
-      "sha256": "d33c6ae45b1fae6794a510e8167d3dc48b9125d56b375995be9fe5255cc05c1e",
-      "bytes": 5297
-    },
-    {
-      "path": "src/lib/derived-artifact-runtime/index.ts",
-      "sha256": "889750666bb6e758f5cc20349b68e6837aaafe7b2e5224935479346887f9815d",
-      "bytes": 1108
-    },
-    {
-      "path": "src/lib/derived-artifact-runtime/narrative.ts",
-      "sha256": "4ec179a539e46ff2595e6eb5c1d6f981784faa20d1c81fa45d2984717016ee7d",
-      "bytes": 8743
-    },
-    {
-      "path": "src/lib/derived-artifact-runtime/runtime.ts",
-      "sha256": "172c22d1c7e4b7dc8041d1a652835646b9f805aba3ba4e19d2ab9d5e8005d018",
-      "bytes": 26632
-    },
-    {
-      "path": "src/lib/interview-policy/completion-evaluator.ts",
-      "sha256": "388faa3f15a2d32d33045077058c31306bd8df9eebc51249d4b6194bab18a05c",
-      "bytes": 4928
-    },
-    {
-      "path": "src/lib/interview-policy/continuation-v03.ts",
-      "sha256": "879c0c7bba55bf34e5f4838e8c309921ef20b38e5011eadad7ebf17c3afafa18",
-      "bytes": 5069
-    },
-    {
-      "path": "src/lib/interview-policy/contracts.ts",
-      "sha256": "4ef3b4fac9a71d1767cc90b794682f7b8ccdd0d1c64aa67d86e526372dfcffba",
-      "bytes": 22690
-    },
-    {
-      "path": "src/lib/interview-policy/direction-plan.ts",
-      "sha256": "b488088567d95dbed56fb6e5dc8e25ba2c9d979cbe0e5fdf5c6984edc0fe49b5",
-      "bytes": 25661
-    },
-    {
-      "path": "src/lib/interview-policy/index.ts",
-      "sha256": "e19101f1644e8652e431681f78fd8c08de19ac4a7efe7ef37b77031f532f4de4",
-      "bytes": 2219
-    },
-    {
-      "path": "src/lib/interview-policy/internal.ts",
-      "sha256": "af1011a7c068bc5b0ab3ee9011cc0aa001624ed93858b1463d72e85bd635fde2",
-      "bytes": 421
-    },
-    {
-      "path": "src/lib/interview-policy/reducer.ts",
-      "sha256": "6deda3cdbed43bc048a90a93babf6308a87f2e7acc0ce354892c87751ea747fa",
-      "bytes": 44130
-    },
-    {
-      "path": "src/lib/interview-policy/topic-ledger-evaluator.ts",
-      "sha256": "bc34a48a4c405f9dba871aaea4f537babdcfeba60bd3d2525a5b04607edb47f7",
-      "bytes": 8031
-    },
-    {
-      "path": "src/lib/interview-policy/voice-delivery-contract.ts",
-      "sha256": "ed44a9bd1aa6bda467260d8b4b031c4998df6ee53eeee8fa6b80a8baa655ca5d",
-      "bytes": 2427
-    },
-    {
-      "path": "src/lib/memory-runtime/autosave-whitelist.ts",
-      "sha256": "bead7800a408d2f15e7a96f9eb2fdf80c7fb878d3095641f4af4a27227458e95",
-      "bytes": 5719
-    },
-    {
-      "path": "src/lib/memory-runtime/canonical-repository.ts",
-      "sha256": "1284ab942d4462db91b57efad7831fedcb28ea3dfdf31093f08dbc2c4dee8810",
-      "bytes": 3248
-    },
-    {
-      "path": "src/lib/memory-runtime/contracts.ts",
-      "sha256": "cf787bc401e61b9e58716be4aac9e396a362e4a1ac558b024e4acbeb1610286e",
-      "bytes": 10214
-    },
-    {
-      "path": "src/lib/memory-runtime/hybrid-extractor.ts",
-      "sha256": "ccb767f89f96c6183f44fcf20a9ca3b9d4fb1e920943b924471bb0c208459056",
-      "bytes": 33240
-    },
-    {
-      "path": "src/lib/memory-runtime/index.ts",
-      "sha256": "9d0eadc0bad678bb2e439e570a96fe7fd827f0db83126f0e1fb210e5f77b705b",
-      "bytes": 951
-    },
-    {
-      "path": "src/lib/memory-runtime/policy.ts",
-      "sha256": "f75ccaebd3606a459fc9cd536b4d2e8321bf1b3c44c6ecc02f9c5f45d1b7bab2",
-      "bytes": 15347
-    },
-    {
-      "path": "src/lib/memory-runtime/reference-store.ts",
-      "sha256": "f4f75948c132b07a29d7ea696b48d5ba8d9a0e46b95dc993abff7484043a3174",
-      "bytes": 24543
-    },
-    {
-      "path": "src/lib/memory-runtime/retrieval-gate.ts",
-      "sha256": "4e52eed5d16688ff19626bf8b71a65f1022bdf35b347a5aa4146bf89d378f024",
-      "bytes": 1078
-    },
-    {
-      "path": "src/lib/memory-runtime/retrieval-levels.ts",
-      "sha256": "453f2a7f0ed9152468018920beda9db1cea7d8b27a1fb1b14588f49eb72c9c2e",
-      "bytes": 5365
-    },
-    {
-      "path": "src/lib/response-runtime/contracts.ts",
-      "sha256": "917987eb6afc18a70a71da677e13a07b5ad9c70cf5ba4b17eec7a09e1ffdf44b",
-      "bytes": 5625
-    },
-    {
-      "path": "src/lib/response-runtime/index.ts",
-      "sha256": "6d02e21f6f965f7709001cc27d1c555f1b4f387526ca026bd037409e7119c54f",
-      "bytes": 878
-    },
-    {
-      "path": "src/lib/response-runtime/runtime.ts",
-      "sha256": "21118bfb3c457ad01c4125a3d310a612691201ca3bbb39041184ec148fdcb43d",
-      "bytes": 17229
-    },
-    {
-      "path": "src/lib/response-runtime/spoken-text.ts",
-      "sha256": "1ac1227c6ecd52920f9bedda0e03e2ce682a5f8f5e32b7f07ef2ad79e443ba0c",
-      "bytes": 7240
-    },
-    {
-      "path": "src/lib/response-runtime/validators.ts",
-      "sha256": "7d76c05c66d00d37747a78be4c8090f94474d827794e56e09485af7223aed053",
-      "bytes": 10410
-    },
-    {
-      "path": "src/lib/turn-orchestrator/async-jobs.ts",
-      "sha256": "f50612c3944dd2c82ddd5b5bb4fd3a8358524a48cf9fd7da35f4e7433a18fe2c",
-      "bytes": 18765
-    },
-    {
-      "path": "src/lib/turn-orchestrator/contracts.ts",
-      "sha256": "a408dff36fad8274d872910f151a6742583aa614a2276eb3d867ebe72a69ace9",
-      "bytes": 10618
-    },
-    {
-      "path": "src/lib/turn-orchestrator/evidence-store.ts",
-      "sha256": "d194d834dfe2a5012afad30fcd24fe1de554972fc70bba1092b55d0c481df920",
-      "bytes": 18584
-    },
-    {
-      "path": "src/lib/turn-orchestrator/g4-adapter.ts",
-      "sha256": "8969d8334e271ddd78b5f1ccd2dcb495bd54ee90e19d7a74f22b3b7b1fa897c9",
-      "bytes": 5335
-    },
-    {
-      "path": "src/lib/turn-orchestrator/http-service.ts",
-      "sha256": "927d137fb6b0fbe7cc8ffd778dd4eda56a1538a862f34de3ec2ff3cd08d72bdd",
-      "bytes": 15837
-    },
-    {
-      "path": "src/lib/turn-orchestrator/index.ts",
-      "sha256": "1d89fb85dc32b0ed1c50c8e616c1d05b454be4ee77b03e9a4cb026458819ba78",
-      "bytes": 316
-    },
-    {
-      "path": "src/lib/turn-orchestrator/orchestrator.ts",
-      "sha256": "5e412fa32f82ec759be12e1d6f3825775450d89522fbf0054c89e07470d4f177",
-      "bytes": 38190
-    },
-    {
-      "path": "src/lib/turn-orchestrator/resolvers.ts",
-      "sha256": "ec804ad38c761f40ffee2964fb4d71bf67f126be4101741913fe7f37f8896b4d",
-      "bytes": 8646
-    },
-    {
-      "path": "src/lib/turn-orchestrator/retention-governance.ts",
-      "sha256": "15a86961d7eeb17452182a4a0fb2a6dbd3d22ee23b1870c5516cefe7acd034ec",
-      "bytes": 2510
-    },
-    {
-      "path": "src/lib/turn-orchestrator/session-store.ts",
-      "sha256": "c05d2c0a5cf1542e06c3b8972414b5e4a893c7845542db6813b200109585e92d",
-      "bytes": 28134
-    },
-    {
-      "path": "src/lib/voice/realtime/header-websocket.ts",
-      "sha256": "b946580767217df8883c657f97423a5ff39d3aa8ad93bf02f6cce61aef6517ee",
-      "bytes": 8578
-    },
-    {
-      "path": "src/lib/voice/tts/config.ts",
-      "sha256": "0d7e8a07bf9da97f110606dd88d68abe43e873df007c6b429f46fdd8f35d2c61",
-      "bytes": 7261
-    },
-    {
-      "path": "src/lib/voice/tts/doubao-provider.ts",
-      "sha256": "af5b2f363a2276db0169fdb72419c6cf334ee5254e9072de0a893cec417c47c6",
-      "bytes": 5990
-    },
-    {
-      "path": "src/lib/voice/tts/index.ts",
-      "sha256": "7a4eb12ef4f0489be6763f68f0259780b61e1d82d04b09d17d06db733cc6064b",
-      "bytes": 1238
-    },
-    {
-      "path": "src/lib/voice/tts/minimax-provider.ts",
-      "sha256": "7fb101cc67d8dda172449d0c13341d7f17b7458b236beb2434e35e9b28f9ecd1",
-      "bytes": 6047
-    },
-    {
-      "path": "src/lib/voice/tts/types.ts",
-      "sha256": "d7e21a4ac3ed346e332ef2721b1b136ddbf2bc434851987820180e38ae4ff8fb",
-      "bytes": 668
-    }
-  ],
+  "sha256": {
+    ".env.example": "49e820eb118909d78be78391a29ed399fe7f287ea3a34f04d2bc4c890253a3f5",
+    ".gitignore": "3efd5aff7aa77a17a513d8ac5ddf3cedf263419b778e4bfc4664a3073fdb5dbc",
+    "README.md": "7135caa424a383b0e0096aa5a4586fe3b65ec37ece848e3c04ff2a0bdfe4ee91",
+    "harness/handoff/runtime-manifest.json": "9aba5984327d4194dc357b54d9959b14907598066571250e89712e0da48c1878",
+    "harness/handoff/smoke-fixtures.json": "94ab237eb2f108b4db0d765abac9aad784ca25eef1d22cf788b3d92df766d09d",
+    "harness/live-baseline/v0.1/G1_REPORT.md": "a515044495cb65a3dbfbbaefe1c330c823e1b93a4b39104fe37dc951e4501b0c",
+    "harness/live-baseline/v0.1/G2_REPORT.md": "24c0ff36be7477c32006c5c75f06cd5d28fa192cc580e1e90523c380fe060ade",
+    "harness/live-baseline/v0.1/G3_REPORT.md": "0f7f7208b43da10c00d7f85aa780ba034f2ad047f33cd26f57eb7ac77a54f378",
+    "harness/live-baseline/v0.1/G4_REPORT.md": "c59b3515637795d0b5b4b3d8f183ce367c7d3ed8a14f499a60a628a7da76818c",
+    "harness/live-baseline/v0.1/G5_DESIGN_GATE.md": "c8d9d19d522b0315485f6d440740637b4f7d1dc6f7838ab96c7339dc098bb365",
+    "harness/live-baseline/v0.1/G5_SOURCE_GATE.md": "be96b2280c806fb4cb229f14789b351a70ad74fd19df41b2de3ea3011628a75b",
+    "harness/live-baseline/v0.1/README.md": "7e138ebff29c0322bdb3e8fed856c1e82ead46b049ba46614fb717948d64253a",
+    "harness/live-baseline/v0.1/algorithm-composition.test.mts": "a1906e08e6b7c57fe85bbb332e094678ade54e6513485df69bbed770668031fe",
+    "harness/live-baseline/v0.1/g2-real-provider-regressions.test.mts": "57f748de24e2f4fa84623481e66c1bc2abca753880df9ccaa3e9cb3b013b6608",
+    "harness/live-baseline/v0.1/g4-derived-artifact-runtime.test.mts": "fcf64ec3ac4bd1d01ad905d1fb6afa8edd1d3efa81ffc3f4556ce47507025b1c",
+    "harness/live-baseline/v0.1/manifest.json": "3e23e2e148082a318a44da725045346914dac2113a67f02c1b4a2d3fad9fb18d",
+    "next-env.d.ts": "9269d492817e359123ac64c8205e5d05dab63d71a3a7a229e68b5d9a0e8150bf",
+    "next.config.js": "222315ebd6989735c3ce0792c9a7b6436dd601576cf724d6c32162aa4e82adff",
+    "package-lock.json": "afe9bf79102711e9dd08168a039268d6df1810bce581075677a947e6a3309a25",
+    "package.json": "1681491b072b048b6cd7278ed29b49a3816366a25f0bed02dd3a87fcc5008d18",
+    "postcss.config.js": "251ecddd4672c9cf467547e3dc535de00ad2129df26e7e7ae728fa4e5ac45fc5",
+    "scripts/prepare-vad-assets.mjs": "c297bdab3c8319dddab9bc4c29f718c51a51ed7f181fa6b3619cde3111ca9c96",
+    "scripts/public-test-gateway.mjs": "c1634f5ed7fc9cc196b03a065fca8cefa7ded4a62a35d5430fcb16fc38eb0ab4",
+    "src/app/algorithm-lab/page.module.css": "7157ea9a2d76660694c15328874b946ffcf4d2295f8afbf654db84c54f1c9c43",
+    "src/app/algorithm-lab/page.tsx": "29268195b05bc9219ceda93f05c07bcf91e99e29694fc1b30ee48016ce1f3d8d",
+    "src/app/api/algorithm/v0.1/_shared/http-error-boundary.ts": "b8b33d5028446c78d608020a7c74443ace6f2f3581f5211ed562d52fd8345fbe",
+    "src/app/api/algorithm/v0.1/_shared/runtime.ts": "7a2e94fdf3f3419b321afe61f4618f8f77c2a383c9c5608f6ca5a07e4d866b5e",
+    "src/app/api/algorithm/v0.1/costs/route.ts": "dbc60ae590c623d2c4b6e19000200a5600e48a43847788240c52bf3cc37c59bb",
+    "src/app/api/algorithm/v0.1/health/route.ts": "07e51c4f153290600ead48f51a67748ce3d105ae009cb81fa12d010b1c499e7c",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/asr/[asrStreamId]/route.ts": "fa051cbea3f7babe01f610a0b1ba67c6c46a350d62cb00e79d37ece735210ef4",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/asr/route.ts": "aa13efb85491fdaf48a24e673371e5fa0a7a6ddbdbdf21cd0d67854119cc8772",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/end/route.ts": "946a2e395974b5c5f083423755da0c49440c63006dcef361d860cd897be53ada",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/interrupts/route.ts": "780caf294b0104f2861d97aada2df62594113c426fe9bb47530bef7daa0c2935",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/stream/route.ts": "50dd9734cc4fcfe5b31b83b31cf710b8d6e4cbe3c4dec198703a64281872d9c0",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/turns/route.ts": "5c8f3b9bfbd4fd2a36c88c5ea96f2af213ec584a2018dd2adbcd8a74188683bf",
+    "src/app/api/algorithm/v0.1/sessions/[opaqueSessionHandle]/view/route.ts": "1727239dd41ea6bfaf096c58a8c0bd8317480bee623538d21cbc97299fdf47d1",
+    "src/app/api/algorithm/v0.1/sessions/route.ts": "832d8234933435c4af1ccdfa5154b22af490526b9a4a9495c0720930454c8a2b",
+    "src/app/api/algorithm/v0.1/version/route.ts": "2111dcfad7abecd883f5f90edaa325774cb8e8879a18939c32e2d9261f18a0dd",
+    "src/app/globals.css": "4652765e6de5866d41d2c67f712766d0877d5183aad891d11020f36de40dbdae",
+    "src/app/layout.tsx": "aa45ec61195f67786d53c06d8b48d43ba93c243766857284772dcd5198ae1589",
+    "src/lib/algorithm-runtime/cancellation-cleanup.ts": "2f571f8ea4dd4e65fab4065d46c12088dcb2865c7bb5f4c60f51d34ada532cb8",
+    "src/lib/algorithm-runtime/cancellation-registry.ts": "783bde64256c45ddda73bbae500e95d5135df8b6adfa748187c39fb187016bcb",
+    "src/lib/algorithm-runtime/contracts.ts": "9ce6c3844b4123cf578a5f9a18eb6a3adb8833f292e70802fbaae59953d2efdd",
+    "src/lib/algorithm-runtime/data-lifecycle.ts": "e8f4ffd7a46408d19a81406e77451567c50916e8d680b805ab69412a33c2425e",
+    "src/lib/algorithm-runtime/governance-repository.ts": "1042a108f3a5c9eb23eb5404646d101a5eb21a10600625a11856ef0370007f66",
+    "src/lib/algorithm-runtime/index.ts": "753484e2be4e5df5d326e5e259c919400c2bc36d2ca7a83e66d594bebbe66175",
+    "src/lib/algorithm-runtime/lease-tree.ts": "88044b33da411af7fe18d6702fd8a19bf979d9beb08a62043f26259b777af0fb",
+    "src/lib/algorithm-runtime/model-call-ledger.ts": "ef81089f19e8630a41cf6c6e181d54f791c1eb309e94a09091677508494b09fb",
+    "src/lib/algorithm-service/browser-audio.ts": "9c8ca4eedd8db97e19ce487f913cde284b9e2dfab7cae05776bac31787b7883d",
+    "src/lib/algorithm-service/composition.ts": "74f555f670a2e769ca51dad9c906b583bfb577f137c86c15e438f2c1e1eaba27",
+    "src/lib/algorithm-service/content-retention.ts": "c3ea1e37981351cb6131261e8d9c05f63f130bc7344c83c628b57b6628ae07d0",
+    "src/lib/algorithm-service/cost-ledger.ts": "61deea6498041e4c94751a1c4b82d8522387513b004f1fc77dac8cf2a1845e3a",
+    "src/lib/algorithm-service/diagnostic-retention.ts": "207c40bf08fefba2375d763b12fed68f4d6b419dadb9aa87e209c69c506421ca",
+    "src/lib/algorithm-service/index.ts": "0c888954dd56ad9f0aeab3daab6e3439f38a79768e21453da177539cc2c92f99",
+    "src/lib/algorithm-service/internal-test-budget.ts": "a5b798900423980c20128ee20ba8512b5d2ca4b925e1542ff2b0306b67d18e8e",
+    "src/lib/algorithm-service/live-provider.ts": "6c617954322ed39b74b166c41849cc79fae60cefd4931d129335217866fa2688",
+    "src/lib/algorithm-service/retention-diagnostics.ts": "ffa00897c169b0b272c0a022c9c389772552f2ca0d25ce47ab9b3c4c3fef2dc4",
+    "src/lib/algorithm-service/semantic-turn-proposal.ts": "19531fa47dcc531201dcc536e7ba991630beb04718807a87475f55c702bf9102",
+    "src/lib/algorithm-service/semantic-turn-shadow.ts": "5bc4c02e8b2f7c3fd7652be2f6a7a1bd9f28e70ced4bfb01caf5c5aeb3b96e47",
+    "src/lib/algorithm-service/streaming-asr.ts": "dc3890886f306cd32515a2165a5a109f28b8f0166b980a5043e0f6f9b54aab34",
+    "src/lib/algorithm-service/streaming-tts.ts": "d96901a1d184471e396e06281be39d00646322ffe9a13a511910cac6555f3a0e",
+    "src/lib/asr-input-normalizer/index.ts": "f1f0706d534977e9a24d1a557bebdd1cb3f52ee89eb152af94d7431b1412da75",
+    "src/lib/asr-runtime/audio-chunk-validator.ts": "80f61ce4484ce319ef9c80176c143fcbeca70ab1da4b860242182bd45a94153e",
+    "src/lib/asr-runtime/contracts.ts": "09b8a7995215f4fad96102339d4d9a5dc87f37ecff8e505f833546a5b1e0fc3b",
+    "src/lib/asr-runtime/doubao-protocol.ts": "c9cc7f1e53925602a0993239e2260db49623df1e3955cbdab630e0b2ab0c8950",
+    "src/lib/asr-runtime/doubao-streaming-adapter.ts": "c38494209f869a085286d7c85869637711962710a538f5d573cf83ee70b3736e",
+    "src/lib/asr-runtime/doubao-websocket-transport.ts": "9e4ffa28d40e8bcefec8f192655c05d1605fe74cb056703e965b65fd42f0453a",
+    "src/lib/asr-runtime/index.ts": "fdf573beba1720e7e28696eca765a5a6e17ef4b97f4a81b9b8d1c8139e35ecf2",
+    "src/lib/asr-runtime/stream-reducer.ts": "0b9a043784f74a495e9228a90ca5f6be7335aa7b63a07cfcde395909fd87cf1a",
+    "src/lib/derived-artifact-runtime/contracts.ts": "d33c6ae45b1fae6794a510e8167d3dc48b9125d56b375995be9fe5255cc05c1e",
+    "src/lib/derived-artifact-runtime/index.ts": "889750666bb6e758f5cc20349b68e6837aaafe7b2e5224935479346887f9815d",
+    "src/lib/derived-artifact-runtime/narrative.ts": "4ec179a539e46ff2595e6eb5c1d6f981784faa20d1c81fa45d2984717016ee7d",
+    "src/lib/derived-artifact-runtime/runtime.ts": "656d31e53b0a52dee4ba2ca8b65157bce38814b982510d01df20515593f29072",
+    "src/lib/interview-policy/completion-evaluator.ts": "388faa3f15a2d32d33045077058c31306bd8df9eebc51249d4b6194bab18a05c",
+    "src/lib/interview-policy/continuation-v03.ts": "879c0c7bba55bf34e5f4838e8c309921ef20b38e5011eadad7ebf17c3afafa18",
+    "src/lib/interview-policy/contracts.ts": "4ef3b4fac9a71d1767cc90b794682f7b8ccdd0d1c64aa67d86e526372dfcffba",
+    "src/lib/interview-policy/direction-plan.ts": "b488088567d95dbed56fb6e5dc8e25ba2c9d979cbe0e5fdf5c6984edc0fe49b5",
+    "src/lib/interview-policy/index.ts": "e19101f1644e8652e431681f78fd8c08de19ac4a7efe7ef37b77031f532f4de4",
+    "src/lib/interview-policy/internal.ts": "af1011a7c068bc5b0ab3ee9011cc0aa001624ed93858b1463d72e85bd635fde2",
+    "src/lib/interview-policy/reducer.ts": "6deda3cdbed43bc048a90a93babf6308a87f2e7acc0ce354892c87751ea747fa",
+    "src/lib/interview-policy/topic-ledger-evaluator.ts": "bc34a48a4c405f9dba871aaea4f537babdcfeba60bd3d2525a5b04607edb47f7",
+    "src/lib/interview-policy/voice-delivery-contract.ts": "ed44a9bd1aa6bda467260d8b4b031c4998df6ee53eeee8fa6b80a8baa655ca5d",
+    "src/lib/memory-runtime/autosave-whitelist.ts": "bead7800a408d2f15e7a96f9eb2fdf80c7fb878d3095641f4af4a27227458e95",
+    "src/lib/memory-runtime/canonical-repository.ts": "1284ab942d4462db91b57efad7831fedcb28ea3dfdf31093f08dbc2c4dee8810",
+    "src/lib/memory-runtime/contracts.ts": "cf787bc401e61b9e58716be4aac9e396a362e4a1ac558b024e4acbeb1610286e",
+    "src/lib/memory-runtime/hybrid-extractor.ts": "a94a51b0928f70659910496c4a623f615c90ce22a91e101f0dea8d8a7d23e8bd",
+    "src/lib/memory-runtime/index.ts": "9d0eadc0bad678bb2e439e570a96fe7fd827f0db83126f0e1fb210e5f77b705b",
+    "src/lib/memory-runtime/policy.ts": "f75ccaebd3606a459fc9cd536b4d2e8321bf1b3c44c6ecc02f9c5f45d1b7bab2",
+    "src/lib/memory-runtime/reference-store.ts": "f4f75948c132b07a29d7ea696b48d5ba8d9a0e46b95dc993abff7484043a3174",
+    "src/lib/memory-runtime/retrieval-gate.ts": "4e52eed5d16688ff19626bf8b71a65f1022bdf35b347a5aa4146bf89d378f024",
+    "src/lib/memory-runtime/retrieval-levels.ts": "453f2a7f0ed9152468018920beda9db1cea7d8b27a1fb1b14588f49eb72c9c2e",
+    "src/lib/model-runtime/contracts.ts": "e7b891230f3181b39962631e0321b0d25c5608827243a62ad8b94394cfc6849b",
+    "src/lib/model-runtime/index.ts": "bf3b58ecb5d9126704f7b08645a8905a1d806eee81fd2691a90f7934f8770494",
+    "src/lib/model-runtime/runtime.ts": "e442a0fe38ff102a0ec77675dbc4ee6996a4f6d4935224e3b4ab769d6cf9e5d2",
+    "src/lib/response-runtime/contracts.ts": "917987eb6afc18a70a71da677e13a07b5ad9c70cf5ba4b17eec7a09e1ffdf44b",
+    "src/lib/response-runtime/index.ts": "6d02e21f6f965f7709001cc27d1c555f1b4f387526ca026bd037409e7119c54f",
+    "src/lib/response-runtime/runtime.ts": "21118bfb3c457ad01c4125a3d310a612691201ca3bbb39041184ec148fdcb43d",
+    "src/lib/response-runtime/spoken-text.ts": "1ac1227c6ecd52920f9bedda0e03e2ce682a5f8f5e32b7f07ef2ad79e443ba0c",
+    "src/lib/response-runtime/validators.ts": "7d76c05c66d00d37747a78be4c8090f94474d827794e56e09485af7223aed053",
+    "src/lib/turn-orchestrator/async-jobs.ts": "f50612c3944dd2c82ddd5b5bb4fd3a8358524a48cf9fd7da35f4e7433a18fe2c",
+    "src/lib/turn-orchestrator/contracts.ts": "a408dff36fad8274d872910f151a6742583aa614a2276eb3d867ebe72a69ace9",
+    "src/lib/turn-orchestrator/evidence-store.ts": "d194d834dfe2a5012afad30fcd24fe1de554972fc70bba1092b55d0c481df920",
+    "src/lib/turn-orchestrator/g4-adapter.ts": "8969d8334e271ddd78b5f1ccd2dcb495bd54ee90e19d7a74f22b3b7b1fa897c9",
+    "src/lib/turn-orchestrator/http-service.ts": "927d137fb6b0fbe7cc8ffd778dd4eda56a1538a862f34de3ec2ff3cd08d72bdd",
+    "src/lib/turn-orchestrator/index.ts": "1d89fb85dc32b0ed1c50c8e616c1d05b454be4ee77b03e9a4cb026458819ba78",
+    "src/lib/turn-orchestrator/orchestrator.ts": "5e412fa32f82ec759be12e1d6f3825775450d89522fbf0054c89e07470d4f177",
+    "src/lib/turn-orchestrator/resolvers.ts": "ec804ad38c761f40ffee2964fb4d71bf67f126be4101741913fe7f37f8896b4d",
+    "src/lib/turn-orchestrator/retention-governance.ts": "15a86961d7eeb17452182a4a0fb2a6dbd3d22ee23b1870c5516cefe7acd034ec",
+    "src/lib/turn-orchestrator/session-store.ts": "c05d2c0a5cf1542e06c3b8972414b5e4a893c7845542db6813b200109585e92d",
+    "src/lib/voice/realtime/header-websocket.ts": "b946580767217df8883c657f97423a5ff39d3aa8ad93bf02f6cce61aef6517ee",
+    "src/lib/voice/tts/config.ts": "0d7e8a07bf9da97f110606dd88d68abe43e873df007c6b429f46fdd8f35d2c61",
+    "src/lib/voice/tts/doubao-provider.ts": "af5b2f363a2276db0169fdb72419c6cf334ee5254e9072de0a893cec417c47c6",
+    "src/lib/voice/tts/index.ts": "7a4eb12ef4f0489be6763f68f0259780b61e1d82d04b09d17d06db733cc6064b",
+    "src/lib/voice/tts/minimax-provider.ts": "7fb101cc67d8dda172449d0c13341d7f17b7458b236beb2434e35e9b28f9ecd1",
+    "src/lib/voice/tts/types.ts": "d7e21a4ac3ed346e332ef2721b1b136ddbf2bc434851987820180e38ae4ff8fb",
+    "tailwind.config.js": "5872bfc1ee497ebd5c57f4795e202ee69ba2fc341cd5692d4a163520e684e7b8",
+    "tsconfig.json": "7cfc56862ac65fcce94427e794504deb6ad524aafcdf0b6a46ecc921dbae5101"
+  },
   "excluded": [
     ".env.local and all provider credentials",
     "harness/live-baseline/v0.1/.local-runs",
@@ -558,7 +252,9 @@
     "harness/live-baseline/v0.1/pre-human-v0.1 (raw/provider audio and paid runners)",
     "raw audio files",
     "production CanonicalMemory data",
-    "src/lib/voice/realtime except the optional header websocket transport needed by the legacy MiniMax TTS adapter"
+    "src/lib/voice/realtime except the optional header websocket transport needed by the legacy MiniMax TTS adapter",
+    "node_modules and .next build output",
+    "public/vad generated third-party resources"
   ],
   "documentation": [
     "algorithm-handoff/README.md",
@@ -567,6 +263,11 @@
     "algorithm-handoff/docs/architecture/2026-10-14-interview-baseline-1.0-delta-and-integration-plan.md",
     "algorithm-handoff/docs/architecture/2026-10-13-interview-memory-operational-spec.md",
     "algorithm-handoff/docs/architecture/2026-10-13-sgx-algorithm-system-overview.md",
-    "algorithm-handoff/docs/execution/2026-10-15-execution-log.md"
-  ]
+    "algorithm-handoff/docs/execution/2026-10-15-execution-log.md",
+    "algorithm-handoff/docs/reviews/2026-10-15-control-memory-targeted-revalidation.md",
+    "algorithm-handoff/docs/execution/2026-10-16-execution-log.md",
+    "algorithm-handoff/docs/reviews/2026-10-16-distribution-validation.md"
+  ],
+  "generatedAt": "2026-10-16",
+  "distributionBuildId": "pre-human-2026-10-15-candidate-v23-gitee.1"
 }

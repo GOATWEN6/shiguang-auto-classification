@@ -1,4 +1,14 @@
-# SGX 自动分类与归纳：全栈交付包 README
+# SGX 算法仓库：自动分类、访谈与 Memory
+
+当前更新目标为 Gitee 的 `aicreate369/shiguang-auto-classification`，沿用已有候选分支并通过正常合并集成；不再为每次更新创建新分支或生成 ZIP。
+
+- **访谈、Memory、独立 ASR/TTS**：从 [算法入口](algorithm-handoff/README.md) 阅读，按 [源码启动说明](algorithm-handoff/sgx-source/README.md) 运行。
+- **当前验证与限制**：见 [2026-10-16 交付验证记录](algorithm-handoff/docs/reviews/2026-10-16-distribution-validation.md)。当前为 `candidate/pre-human`，未完成真人设备和生产验收。
+- **自动分类**：原有代码、接口和说明继续保留，以下是其原交付说明。
+
+---
+
+# SGX 自动分类与归纳：全栈交付说明
 
 > 包类型：`internal_release_candidate`
 > 交付版本：`v0.2.1-20261003`
@@ -28,7 +38,7 @@
 - 不能把内部候选 artifact 或合成冒烟结果解释为真实用户准确率、可靠身份或正式生产发布。
 - 不能让浏览器直接调用 VirtAI、OCR、embedding 或模型供应商。
 - 不能把 AI 候选直接写入长期 Memory。
-- 不能仅凭这个 ZIP 上生产；产品数据库、对象存储、鉴权、OpenAPI、队列/lease 和监控由产品后端实现。
+- 不能仅凭仓库候选代码上生产；产品数据库、对象存储、鉴权、OpenAPI、队列/lease 和监控由产品后端实现。
 
 ## 4. 目录说明
 

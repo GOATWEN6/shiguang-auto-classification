@@ -167,8 +167,8 @@ npm run start -- -H 127.0.0.1 -p 3100
 
 ## 7. 本轮新增交付物
 
-- 候选交接包目录：[2026-10-15-algorithm-fullstack-handoff-v0.2](../../deliverables/2026-10-15-algorithm-fullstack-handoff-v0.2/)
-- 候选交接 ZIP：[2026-10-15-algorithm-fullstack-handoff-v0.2.zip](../../deliverables/2026-10-15-algorithm-fullstack-handoff-v0.2.zip)
+- 候选交接文档目录：[2026-10-15-algorithm-fullstack-handoff-v0.2](../2026-10-15-algorithm-fullstack-handoff-v0.2/)
+- 历史交接 ZIP：[2026-10-15-algorithm-fullstack-handoff-v0.2.zip](../../../docs/handoffs/2026-10-15-algorithm-fullstack-handoff-v0.2.zip)。该文件仅保留历史，10 月 16 日起直接更新仓库源码和文档。
 - ZIP SHA-256：`060d1387e218b44fec093c20ddfc320f10f5bb5ed80b70dd704e2581056c4dc4`
 - JSON 解析、ZIP 完整性和脱敏扫描均通过。
 
@@ -181,7 +181,7 @@ npm run start -- -H 127.0.0.1 -p 3100
 3. **语音发送一致性**：工作台新增“语音发原音频 / 语音转文字”输入链路切换，以及“语音自动发文字 / 语音先看文字”确认方式切换。默认自动发送转写文字，不再把已发送文本残留在输入框；选择先看文字时，转写只进入输入框，用户检查后手动发送。实时 PCM 模式继续发送原始音频到服务端；浏览器兼容模式会明确显示只能转写文字，不把原始音频发送能力假装成已实现。
    文字输入框支持桌面和手机键盘的回车发送；按 Shift+Enter 才保留换行。
 4. **助手名称**：当前活动代码中的助手名称统一为“小叙”；历史测试报告中的旧名称不改写。
-5. **人生主题**：新增[拾光长河访谈主题优化大纲 v0.1](../algorithms/2026-10-15-interview-theme-outline-v0.1.md)。图片可核验的 7 个主题全部保留，并提出第 8 个候选“人生转折与告别”，标记为 `PROPOSED`，在负责人确认前不作为强制主题接线。
+5. **人生主题**：新增[拾光长河访谈主题优化大纲 v0.1](../2026-10-15-algorithm-fullstack-handoff-v0.2/docs/interview-theme-outline-v0.1.md)。图片可核验的 7 个主题全部保留，并提出第 8 个候选“人生转折与告别”，标记为 `PROPOSED`，在负责人确认前不作为强制主题接线。
 
 ## 9. 本轮验证
 
@@ -274,3 +274,84 @@ npm run start -- -H 127.0.0.1 -p 3100
 - 目标分支 `codex/sgx-algorithm-candidate-2026-10-15` 已连续提交 `cfcb851`、`8972d0d`、`7b0993c`、`ccd2f7a`、`5707958`，并已通过 SSH 推送到远端。当前只缺 Pull Request 页面创建；分支本身已完成上传。
 
 这次交付仍是 `candidate/pre-human`。算法侧的 `CanonicalMemoryRepository` 只是后端接入契约，服务运行时仍为 `canonicalWriteCapability=false`、`canonicalWriteCount=0`；数据库事务、家庭/社区权限、持久化、撤回删除、部署和真人体验门禁由全栈与负责人后续完成。
+
+
+## 15. 算法侧 C1～C12 当前候选复验准备（2026-10-15）
+
+本轮只推进算法侧，不承担前端、数据库、公网和生产运维工作。目标是用当前候选版本重新执行一次固定的 C1～C12 真实模型案例，记录 ASR、智能打断、追问、Memory、故事草稿和基础画像结果，随后根据质量反馈修复并冻结候选版本。
+
+- 运行器：`harness/live-baseline/v0.1/live-canary/run-owner-c1-c12.mjs`
+- 运行器版本门禁已更新为：`g5-real-internal-v0.18`、`algorithm-http-v0.1`、`interview-policy-v0.3.4`、`pre-human-2026-10-15-candidate-v23`
+- 固定案例：C1～C12，共 13 个子行；仍使用虚构身份和固定输入，不写入正式 `CanonicalMemory`
+- 当前预算账本：程序硬上限 400 元；当前批次上限 364.48 元；已预留 260.24 元；账单仍为 `PENDING`
+- `node --check harness/live-baseline/v0.1/live-canary/run-owner-c1-c12.mjs`：通过
+
+本机 3100 服务需要提权监听。当前沙箱自动审批连续因模型容量不足未执行启动命令，因此本轮尚未发起新的真实模型调用，也没有把历史 v19 结果冒充为 v23 结果。服务恢复后，按以下顺序执行：只读 `/health`、`/version` → 运行 C1～C12 → 保存每轮原话、回复、等待、Memory、故事/画像、打断和费用记录 → 质量评审 → 定向修复 → 冻结版本。
+
+## 16. Gitee 交付目标确认
+
+负责人确认 Gitee 沿用 `aicreate369/shiguang-auto-classification`。本地全栈交接 checkout 已添加 `gitee` 远端，但本轮尚未推送中间版本；推送将放在当前候选完成 C1～C12、修复、复验并冻结后一次性执行。Gitee 与 GitHub 账号名称相同不等于本机已具备 Gitee 推送凭据，推送前仍需验证远端登录状态。
+
+## 17. 控制轮与故事/画像定向复验（2026-10-15）
+
+### 17.1 本轮目的
+
+上一轮真实模型定向复验已经证明故事和画像可以生成，但暴露了两个需要收口的问题：
+
+1. 进入访谈、换题、暂停后继续等控制语句仍会无必要地触发 Memory 模型；即使后置治理会把候选变成会话级，也会增加成本和失败噪声。
+2. 测试记录器用“最后一条 Memory 诊断”填写没有 Memory 任务的轮次，导致把上一轮来源误挂到换题/继续轮，产生来源纯度误报。
+
+本轮只修复这两个边界，不改变已确认的 InterviewPolicy 行为，不把模型输出写入正式 `CanonicalMemory`。
+
+### 17.2 实现与离线验证
+
+- `src/lib/derived-artifact-runtime/runtime.ts`：将 `life_event_detail` 纳入故事普通来源资格。模型把具体访谈细节标成此类型时，可以进入故事草稿；它仍不会因此自动进入基础画像。
+- `src/lib/algorithm-service/composition.ts`：增加纯控制语句识别。纯进入访谈、换题、继续语句直接跳过 Memory 调用；混合了真实事实或明确故事/画像请求的输入仍按原链路处理。
+- `src/app/api/algorithm/v0.1/_shared/runtime.ts`：运行时缓存版本从 V24 升到 V25，保证 Next 开发服务热加载后使用新组合实例。
+- `harness/live-baseline/v0.1/live-canary/run-owner-control-memory-revalidation.mjs`：Memory 诊断按当前 `evidenceId` 关联，避免复用上一轮结果。
+- 新增 `ST01B-LIFE-EVENT-DETAIL` 派生来源回归测试，并补充控制轮不产生异步 Memory 任务的断言。
+
+验证命令及结果：
+
+```text
+node --experimental-strip-types --test \
+  harness/live-baseline/v0.1/algorithm-composition.test.mts \
+  harness/live-baseline/v0.1/g2-real-provider-regressions.test.mts \
+  harness/live-baseline/v0.1/g4-derived-artifact-runtime.test.mts
+74/74 passed
+npx tsc --noEmit --incremental false                 passed
+git diff --check                                      passed
+```
+
+### 17.3 最新真实模型证据
+
+运行目录：
+
+`harness/live-baseline/v0.1/.local-runs/owner-control-memory-2026-10-15T11-42-58.814Z-5ee064c2`
+
+这是负责人定向复验，不是独立质量评估；使用固定虚构身份和固定文本，不包含真人麦克风输入。
+
+| 轮次 | 结果 | 关键证据 |
+|---|---|---|
+| T1 进入访谈 | 完成，TTS 成功 | 无 Memory 任务、无持久候选 |
+| T2 人生事实 | 完成，TTS 成功 | 1 条事实候选提交并激活，来源为本轮原话 |
+| T3 换题 | 完成，Policy 直接回复 | 无 Memory 任务、无控制内容沉淀 |
+| T4 暂停后继续 | 完成，TTS 成功 | 无 Memory 任务、无控制内容沉淀 |
+| T5 稳定偏好 | 完成，TTS 成功 | 2 条偏好候选提交并激活 |
+| T6 故事+画像请求 | 完成，TTS 成功 | STORY 与 PROFILE 均成功；故事只引用工作事实，画像只引用两个明确偏好 |
+
+自动检查为 `TARGETED_CHECKS_PASS_REVIEW_PENDING`，其中 `storyAndProfileProduced=true`、`derivedSourcesExcludeControls=true`、`canonicalWriteCount=0`。T6 的可见回复仍是达到追问深度后的自然停顿确认；故事和画像在工作台异步结果中分别展示，不能把这轮理解为真人体验结论。
+
+### 17.4 费用与当前边界
+
+本轮后健康账本显示：程序硬上限 400 元，累计预留 335.24 元，剩余 64.76 元，`actualCostCny=null`、账单仍为 `PENDING`。预留额是内部止损上限，不是供应商已结算金额；正式 `CanonicalMemory` 仍未写入。
+
+此前完整 C1～C12 真实模型基线为 12 场景、13 子项执行，不等于 13 次模型成功；本轮变更只影响 Memory 计划与派生来源资格，因此采用影响范围定向复验，没有重复整批调用。ASR 合成输入、TTS、生成前取消、幂等和结束会话沿用完整基线证据；最新 C10 首字/首音均为空，不能证明播放中物理打断。真人设备验收仍未完成。
+
+## 18. 当前冻结前清单
+
+算法候选的实现和固定虚构案例验证已达到可交接状态，但仍有三项不能省略：
+
+1. 负责人对最新访谈追问、等待、Memory、故事和画像做人工质量评审；当前报告仍是 `REVIEW_PENDING`。
+2. 需要完成真实成年人设备体验，重点是麦克风 ASR、说话较慢时的智能打断、首音等待、播放中取消和听感；这不是本轮 HTTP 固定文本复验覆盖的内容。
+3. 按负责人后续要求，将本轮源码、测试、脱敏记录和交接说明直接更新到 Gitee；沿用现有分支并正常合并，不再生成 ZIP。核对文件清单和远端提交后才能称为交付完成。正式 `CanonicalMemory`、产品鉴权和持久化仍属于全栈接入边界。

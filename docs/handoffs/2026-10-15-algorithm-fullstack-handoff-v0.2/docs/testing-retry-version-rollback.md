@@ -51,4 +51,3 @@ curl -sS http://127.0.0.1:3100/api/algorithm/v0.1/version
 6. 将回滚原因和影响写入执行日志。
 
 本候选包不允许通过回滚绕过权限、来源、敏感性或撤回检查。`CanonicalMemory` 正式持久化仍由后端权限与持久化门禁控制，当前候选运行的 `canonicalWriteCapability=false`。
-

@@ -1,6 +1,8 @@
 # SGX 访谈与 Memory 算法交接快照
 
-本目录是给全栈工程师的**脱敏源码和接口文档快照**，对应 `pre-human-2026-10-15-candidate-v23`、`interview-policy-v0.3.4`。它被放在分类仓库的独立目录中，不覆盖分类仓库原有代码。
+本目录是给全栈工程师的**脱敏源码和接口文档**。算法真实调用证据对应 `pre-human-2026-10-15-candidate-v23`、`interview-policy-v0.3.4`；仓库启动适配版本为 `pre-human-2026-10-15-candidate-v23-gitee.1`。最新定向真实复验为 6/6 主流程完成，质量仍处于 `REVIEW_PENDING`。目录与原分类代码分开维护。
+
+更新直接通过 Git 提交和合并完成，不再生成 ZIP。首先阅读 [源码启动说明](sgx-source/README.md) 和 [本次验证记录](docs/reviews/2026-10-16-distribution-validation.md)；本地准备完成不等于远端已推送，实际同步状态见 [当日执行记录](docs/execution/2026-10-16-execution-log.md)。
 
 ## 可以接入的内容
 
@@ -24,7 +26,7 @@
 ## 使用方式
 
 1. 先读 `docs/2026-10-15-algorithm-fullstack-handoff-v0.2/README.md` 和 `http-contract-v0.2.md`；
-2. 用 `examples/` 里的请求接 Fake，再接内部 `REAL_INTERNAL`；
+2. 按源码启动说明用 Fake 接通文字和状态；真实 ASR、TTS 及流式音频在配置后接内部 `REAL_INTERNAL`；
 3. 先做 `/health`、`/version`、幂等、错误恢复和 `view` 展示；
 4. 不把 `candidate/pre-human` 标记为生产版本，生产前仍需完成真人反馈、持久化 `CanonicalMemory`、认证、部署、回滚和安全评审。
 
