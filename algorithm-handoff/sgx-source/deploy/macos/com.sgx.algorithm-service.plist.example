@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.sgx.algorithm-service</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/Users/&lt;LOCAL_ACCOUNT&gt;/Library/Application Support/SGX/current/bin/run-algorithm-service.sh</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>SGX_RUNTIME_DIR</key><string>/Users/&lt;LOCAL_ACCOUNT&gt;/Library/Application Support/SGX/current</string>
+    <key>SGX_RUNTIME_ENV_FILE</key><string>/Users/&lt;LOCAL_ACCOUNT&gt;/.config/sgx/algorithm-runtime.env</string>
+  </dict>
+  <key>WorkingDirectory</key><string>/Users/&lt;LOCAL_ACCOUNT&gt;/Library/Application Support/SGX/current</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>ThrottleInterval</key><integer>10</integer>
+  <key>StandardOutPath</key><string>/Users/&lt;LOCAL_ACCOUNT&gt;/Library/Logs/SGX/algorithm-service.log</string>
+  <key>StandardErrorPath</key><string>/Users/&lt;LOCAL_ACCOUNT&gt;/Library/Logs/SGX/algorithm-service.error.log</string>
+</dict>
+</plist>

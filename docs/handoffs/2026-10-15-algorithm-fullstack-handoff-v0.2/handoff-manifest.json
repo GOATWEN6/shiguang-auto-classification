@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "sgx-algorithm-fullstack-handoff-manifest-v0.2",
+  "packageVersion": "2026-10-15-algorithm-fullstack-handoff-v0.2",
+  "status": "candidate/pre-human",
+  "generatedAt": "2026-10-19",
+  "sourceRepository": "SGX",
+  "currentBuildId": "pre-human-2026-10-19-candidate-v24.5-device-persistence",
+  "serviceVersion": "g5-real-internal-v0.18",
+  "interviewPolicyVersion": "interview-policy-v0.3.5",
+  "contractVersion": "algorithm-http-v0.1",
+  "budget": {
+    "programHardCapCny": 800,
+    "batchCapCny": 764.48,
+    "reservedCny": 393.92,
+    "priorExposureCny": 35.52,
+    "cumulativeReservedCny": 429.44,
+    "remainingProgramCny": 370.56,
+    "ownerReportExposureCny": 120,
+    "billingState": "PENDING",
+    "snapshotDate": "2026-10-19",
+    "actualCostCny": null,
+    "migrationPaidCalls": 0
+  },
+  "includedDocs": [
+    "README.md",
+    "http-contract-v0.2.md",
+    "docs/current-candidate-overlay.md",
+    "docs/fullstack-candidate-handoff-note.md",
+    "docs/result-and-state-guide.md",
+    "docs/owner-real-model-smoke-cases.md",
+    "docs/owner-feedback-form.md",
+    "docs/testing-retry-version-rollback.md",
+    "docs/ownership-and-review.md",
+    "docs/owner-c1-c12-real-smoke-report.md",
+    "docs/ip-session-round-cost-table.md",
+    "docs/public-access-and-persistence-plan.md",
+    "docs/interview-theme-outline-v0.1.md",
+    "docs/source-manifest.json",
+    "docs/reviews/2026-10-15-control-memory-targeted-revalidation.md",
+    "docs/reviews/2026-10-16-distribution-validation.md",
+    "docs/execution-log-2026-10-16.md",
+    "docs/reviews/2026-10-19-device-workspace-persistence-validation.md",
+    "docs/execution/2026-10-19-stable-public-and-device-workspace-plan.md",
+    "docs/execution/2026-10-19-execution-log.md"
+  ],
+  "validation": {
+    "distribution": {
+      "date": "2026-10-19",
+      "focusedOffline": "workspace 10/10; evidence 5/5; composition persistence 3/3; UI 4/4; cost 3/3; Cloudflare 3/3; macOS 2/2; composition 37/37",
+      "typecheck": "passed",
+      "build": "Next standalone exit 0",
+      "healthVersion": "HTTP 200 REAL_INTERNAL; networkCalls 0; canonicalWriteCapability false",
+      "dependencyInstall": "existing SGX dependencies reused; no production dependency added",
+      "paidCalls": 0,
+      "handoffSuite": "113/113 passed"
+    },
+    "historical": {
+      "focusedOffline": "62/62 prior composition/interview/orchestrator checks",
+      "voiceSmoke": "160/160 local contract checks; not human microphone/playback acceptance",
+      "pauseSwitchReal": "v20 5/5 focused cases",
+      "completeReal": "12 scenarios, 13 case rows executed; COMPLETE_REVIEW_PENDING, negative outputs retained",
+      "targetedRealRevalidation": "v23 6/6 completed, TTS 6/6; TARGETED_CHECKS_PASS_REVIEW_PENDING",
+      "semanticShadow": "historical paid 24-turn run; repaired outputs 24/24 offline normalization only",
+      "devicePersistenceReal": "fixed fictional case; real Doubao memory formed, service restarted, new session retrieved prior memory"
+    },
+    "notVerified": [
+      "human microphone and mobile-device acceptance",
+      "physical playback interruption",
+      "production authentication and family permissions",
+      "formal durable CanonicalMemory adapter",
+      "fixed Cloudflare Named Tunnel domain",
+      "fullstack product integration"
+    ],
+    "canonicalMemory": "deviceWorkspaceDurable=true; governedMemoryDurable=true; canonicalWriteCapability=false; formal product adapter pending"
+  },
+  "exclusions": [
+    ".env.local",
+    "API keys and tokens",
+    "provider credentials",
+    "harness/live-baseline/v0.1/.local-runs",
+    "raw audio",
+    "production CanonicalMemory data"
+  ],
+  "nextGate": "fullstack integration of candidate HTTP contract, then owner human-device acceptance and formal CanonicalMemory adapter",
+  "releaseRule": "Do not label as production until durable CanonicalMemory, auth, deployment, rollback and owner feedback gates pass.",
+  "latestEvidence": {
+    "report": "docs/reviews/2026-10-19-device-workspace-persistence-validation.md",
+    "scope": "device TestWorkspace persistence and one fixed-fiction real Doubao cross-restart retrieval",
+    "runSummaryIncluded": false,
+    "runSummaryNote": "Raw local runs, audio and device database are intentionally excluded."
+  },
+  "delivery": "direct_repository_update_existing_branch_merge_no_zip",
+  "targetRepository": [
+    "github:GOATWEN6/shiguang-auto-classification",
+    "gitee:aicreate369/sgx"
+  ],
+  "historicalRealEvidenceBuildId": "pre-human-2026-10-15-candidate-v23"
+}

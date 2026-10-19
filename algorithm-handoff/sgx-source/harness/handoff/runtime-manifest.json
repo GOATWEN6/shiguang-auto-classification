@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "sgx-handoff-runtime-manifest-v0.1",
+  "status": "candidate/pre-human",
+  "sourceBuildId": "pre-human-2026-10-19-candidate-v24.5-device-persistence",
+  "distributionBuildId": "pre-human-2026-10-19-candidate-v24.5-device-persistence",
+  "serviceVersion": "g5-real-internal-v0.18",
+  "contractVersion": "algorithm-http-v0.1",
+  "interviewPolicyVersion": "interview-policy-v0.3.5",
+  "architecture": "independent_streaming_asr_text_llm_modular_tts",
+  "fingerprintScope": "repository_startup_manifest_and_fictional_smoke_fixtures",
+  "sourceDifference": "Current v24.5 algorithm implementation with repository-safe fingerprint files; local paid runs, audio, device databases and credentials are excluded.",
+  "defaultExecutionMode": "LOCAL_FAKE",
+  "defaultPaidBudgetCny": 0,
+  "canonicalWriteCapability": false,
+  "storage": "sqlite_test_workspace_noncanonical",
+  "productionAuthenticationImplemented": false,
+  "evidenceBoundary": "Device persistence and fixed-fiction real-provider retrieval were verified; this does not establish human experience, production authentication or formal CanonicalMemory readiness.",
+  "deviceWorkspaceDurable": true,
+  "governedMemoryDurable": true
+}

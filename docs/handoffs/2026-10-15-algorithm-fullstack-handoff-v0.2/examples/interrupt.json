@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "algorithm-interrupt-v0.1",
+  "idempotencyKey": "demo-interrupt-001",
+  "interruptTargetHandle": "target_<opaque>",
+  "reason": "user_speech"
+}

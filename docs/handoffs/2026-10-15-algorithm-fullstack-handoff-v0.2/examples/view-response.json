@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "algorithm-session-view-v0.1",
+  "mode": "FORMAL_INTERVIEW",
+  "status": "ACTIVE",
+  "memoryExtractions": [],
+  "memory": [],
+  "artifacts": [],
+  "semanticTurnShadow": [],
+  "storage": {
+    "durable": false,
+    "canonicalWriteCapability": false
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "schemaVersion": "algorithm-stream-turn-v0.2",
+  "idempotencyKey": "demo-audio-001",
+  "source": "PCM16",
+  "base64Audio": "<base64-pcm16-mono-16khz>"
+}

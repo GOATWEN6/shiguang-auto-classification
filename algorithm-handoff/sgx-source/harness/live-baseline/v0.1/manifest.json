@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "sgx-live-model-baseline-v0.1",
+  "status": "phase_0_in_progress_paid_calls_disabled",
+  "createdAt": "2026-10-02",
+  "architecture": "modular_asr_policy_llm_memory_tts",
+  "paidExecutionEnabled": false,
+  "claimBoundary": "Fixed fictional engineering baseline and internal-adult roleplay only; no real-elder, production, clinical, psychological, cognitive, or scientific-effect claim.",
+  "providers": {
+    "asr": { "provider": "doubao", "resourceId": "VERIFY_IN_PREFLIGHT", "mode": "independent_streaming_asr" },
+    "tts": { "provider": "doubao", "resourceId": "seed-tts-2.0", "voiceId": "VERIFY_IN_PREFLIGHT" },
+    "text": { "provider": "volcengine_ark", "model": "doubao-seed-2-0-lite-260428", "apiStyle": "openai_compatible" }
+  },
+  "authorization": {
+    "dataScope": ["frozen_fictional_cases", "internal_adult_fictional_roleplay_after_provider_terms_gate"],
+    "forbiddenData": ["real_elder_data", "real_family_data", "credentials", "production_database"],
+    "canonicalWriteCapability": false,
+    "ownerControlledAccess": true
+  },
+  "budget": {
+    "currency": "CNY",
+    "hardCap": 60,
+    "pauseBeforeExposureReaches": 45,
+    "pricingMustBeRecheckedBeforeRun": true,
+    "billingUncertaintyBufferRatio": 0.2,
+    "exposureIncludes": ["settled", "completed_unbilled_estimate", "in_flight_reservation", "approved_next_batch_reservation"],
+    "ownerReviewGate": {
+      "triggers": ["exposure_reaches_or_exceeds_45", "remaining_budget_cannot_cover_next_stage"],
+      "requiredReportFields": ["used_and_reserved_cost", "failed_attempts", "failure_reasons", "remaining_work", "additional_budget_reason"],
+      "authorizationMustBind": ["approver", "review_report_hash", "manifest_hash", "approved_through_cny"]
+    },
+    "phases": [
+      { "id": "P0", "cap": 0, "purpose": "offline_code_fake_cases_truth_logging_preflight" },
+      { "id": "P1", "cap": 4, "purpose": "seven_module_live_smoke" },
+      { "id": "P2", "cap": 16, "purpose": "isolated_module_baseline" },
+      { "id": "P3", "cap": 20, "purpose": "fixed_scenario_end_to_end" },
+      { "id": "P4", "cap": 12, "purpose": "internal_human_evaluation" },
+      { "id": "P5", "cap": 8, "purpose": "versioned_fix_retest_reserve" }
+    ]
+  },
+  "attemptPolicy": {
+    "initialAttemptsPerCase": 1,
+    "maxRetriesAfterInitial": 3,
+    "maxAttemptsPerCase": 4,
+    "allAttemptsRemainInLedger": true,
+    "fixedInputAndConfigForRetry": true,
+    "noBestOfSelection": true,
+    "frontendFastRetryMaximum": 1,
+    "retryable": ["network_transient", "provider_429", "provider_5xx", "incomplete_stream", "retryable_timeout"],
+    "notRetryableWithoutNewVersion": ["auth_401_403", "quota_402", "invalid_config", "invalid_schema", "quality_only", "safety_refusal", "authorization_withdrawn", "hard_invariant_failure"]
+  },
+  "moduleBaselines": [
+    { "module": "asr", "fixedCases": 8, "minimumSuccessfulCalls": 5 },
+    { "module": "tts", "fixedCases": 8, "minimumSuccessfulCalls": 5 },
+    { "module": "daily_chat", "fixedCases": 8, "minimumSuccessfulCalls": 5 },
+    { "module": "formal_interview", "fixedCases": 8, "minimumSuccessfulCalls": 5 },
+    { "module": "memory", "fixedCases": 8, "minimumSuccessfulCalls": 5 },
+    { "module": "story_draft", "fixedCases": 8, "minimumSuccessfulCalls": 5 },
+    { "module": "profile_draft", "fixedCases": 8, "minimumSuccessfulCalls": 5 }
+  ],
+  "endToEnd": {
+    "sessions": [
+      { "id": "E2E-01", "turns": 10, "purpose": "daily_chat_to_interview_memory_story_profile" },
+      { "id": "E2E-02", "turns": 8, "purpose": "uncertainty_conflict_correction_revoke_delete" },
+      { "id": "E2E-03", "turns": 6, "purpose": "fatigue_safety_no_save_provider_failure_recovery" }
+    ],
+    "interruptions": 10
+  },
+  "dataLifecycle": {
+    "retentionDaysFromSourceCapture": 40,
+    "withdrawalImmediateInvalidation": true,
+    "deletionSlaHours": 24,
+    "derivedArtifactsInheritEarliestSourceExpiry": true,
+    "regenerationCannotExtendExpiry": true,
+    "retainedAuditContainsContent": false,
+    "states": ["ACTIVE", "INVALIDATED", "DELETION_PENDING", "DELETED"]
+  },
+  "evaluationOrder": ["algorithm_owner", "product_team", "eldercare_experts"],
+  "runtimeGovernance": {
+    "durableRepositoryRequiredForPaidExecution": true,
+    "atomicSnapshotRequired": true,
+    "frozenCostCatalogRequired": true,
+    "requiredDeletionSurfaceReceipts": true
+  },
+  "scenarioManifest": "scenarios.json",
+  "hardStops": [
+    "budget_exposure_would_reach_or_exceed_45_without_owner_review",
+    "budget_exposure_would_exceed_60",
+    "usage_or_cost_unaccountable",
+    "provider_model_sku_or_price_unfrozen",
+    "durable_governance_repository_unavailable",
+    "frozen_cost_catalog_incomplete_or_stale",
+    "required_deletion_receipts_incomplete",
+    "secret_or_private_content_in_git_or_ordinary_logs",
+    "cross_subject_or_cross_family_memory",
+    "no_save_withdrawal_or_delete_ignored",
+    "model_can_write_canonical_memory",
+    "cancelled_or_deleted_late_result_accepted",
+    "story_or_profile_presents_unsupported_inference_as_fact",
+    "provider_data_terms_fail_confirmed_retention_boundary"
+  ]
+}

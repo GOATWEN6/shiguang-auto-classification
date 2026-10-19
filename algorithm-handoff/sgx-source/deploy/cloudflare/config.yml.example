@@ -1,0 +1,12 @@
+# 仅供复制到本机 ~/.cloudflared/config.yml 后填写。
+# 不要在仓库文件中填写真实 UUID、账号、域名或凭据路径。
+tunnel: <TUNNEL_UUID>
+credentials-file: /Users/<LOCAL_ACCOUNT>/.cloudflared/<TUNNEL_UUID>.json
+
+ingress:
+  - hostname: <PUBLIC_TEST_HOSTNAME>
+    service: http://127.0.0.1:3200
+    originRequest:
+      connectTimeout: 10s
+      noTLSVerify: false
+  - service: http_status:404

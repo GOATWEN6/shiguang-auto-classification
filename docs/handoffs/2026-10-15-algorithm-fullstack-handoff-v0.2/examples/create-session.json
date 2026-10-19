@@ -1,0 +1,5 @@
+{
+  "schemaVersion": "algorithm-session-create-v0.1",
+  "idempotencyKey": "demo-session-001",
+  "requestedMode": "FORMAL_INTERVIEW"
+}
