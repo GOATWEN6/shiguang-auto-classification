@@ -7,7 +7,7 @@ import {
 import { decideInterviewNextAction } from './reducer.ts';
 
 /** Algorithm v0.3; the public action wire contract remains schema 0.2. */
-export const INTERVIEW_CONTINUATION_POLICY_VERSION = 'interview-policy-v0.3.4' as const;
+export const INTERVIEW_CONTINUATION_POLICY_VERSION = 'interview-policy-v0.3.5' as const;
 
 /**
  * Keep every v0.2 control decision. Only its ordinary default acknowledgement
@@ -51,13 +51,42 @@ export function decideInterviewNextActionWithContinuation(
       { id: 'INTERVIEW_MOVE', plane: 'INTERVIEW', operation: 'SWITCH_TOPIC', sourceRefs: refs });
     return assertInterviewNextAction(next);
   }
+  const contentBearingMove = original.reasonCodes.every(code => [
+    'DEFAULT_ACKNOWLEDGE',
+    'ORDINARY_NARRATIVE_CONTINUATION',
+    'FOLLOW_UP_LIMIT_REACHED',
+    'LONG_ENGAGED_RESPONSE',
+    'CLEAR_SHORT_ANSWER',
+    // A memory gap alone is still content-bearing. After the previous turn
+    // already asked a question, acknowledge the uncertainty instead of
+    // immediately asking another one. An explicit cue request adds
+    // REQUESTED_CUES and therefore still keeps the governed OFFER_TOPIC path.
+    'MEMORY_GAP',
+  ].includes(code));
+  if (ordinaryActive && contentBearingMove && (valid.input.followUpDepth ?? 0) >= 1
+    && !/(?:谢谢|多谢|不用问|不要问)|(?:写|生成|整理).*(?:故事|画像|回忆)/u.test(text)) {
+    const next = structuredClone(original);
+    next.decisionId = `v0.2:${createHash('sha256')
+      .update(`${INTERVIEW_CONTINUATION_POLICY_VERSION}:listen:${original.decisionId}`).digest('hex').slice(0, 24)}`;
+    next.interviewAction = 'ACKNOWLEDGE';
+    next.reasonCodes = ['REFLECTIVE_LISTENING_TURN'];
+    next.utterancePlan = {
+      intent: '先具体承接本人刚补充的内容，让老人把话讲完；本轮不追加问题',
+      suggestedText: '我听着呢，您把这段慢慢说完。',
+      questionCount: 0,
+      mustAvoid: [...next.utterancePlan.mustAvoid, '把新内容忽略为轮次上限', '追加问题', '擅自收束或询问是否结束'],
+    };
+    next.obligations = next.obligations.map(item => item.id === 'INTERVIEW_MOVE'
+      ? { ...item, operation: 'ACKNOWLEDGE' } : item);
+    return assertInterviewNextAction(next);
+  }
   if (original.mode !== 'FORMAL_INTERVIEW' || valid.input.sessionStatus !== 'ACTIVE'
     || original.interactionAction !== 'NONE' || original.interviewAction !== 'ACKNOWLEDGE'
     || original.reasonCodes.length !== 1 || original.reasonCodes[0] !== 'DEFAULT_ACKNOWLEDGE'
     || original.retentionControl.intent !== 'DEFAULT'
     || original.runtimeControl.delivery.mode !== 'EMIT'
     || valid.input.asr.status !== 'FINAL' || !text
-    || (valid.input.followUpDepth ?? 0) >= 2
+    || (valid.input.followUpDepth ?? 0) >= 1
     || /(?:谢谢|多谢|不用问|不要问)|(?:写|生成|整理).*(?:故事|画像|回忆)/u.test(text)) {
     return original;
   }

@@ -775,7 +775,12 @@ export class TurnOrchestrator {
         return this.interruptedResult(opaqueSessionHandle, active, committed.evidence.evidenceId, response);
       }
       this.onResponse?.(response, { opaqueSessionHandle, targetHandle, identity });
-      if (response.text.length > 0 && response.sessionControl === 'CONTINUE') {
+      // A short governed acknowledgement for PAUSE/END is part of the voice
+      // experience. Only a combined NO_SAVE + END keeps the previous privacy
+      // behavior of suppressing audio entirely.
+      const shouldSpeakResponse = response.text.length > 0
+        && !(response.sessionControl === 'END' && response.retentionIntent === 'NO_SAVE');
+      if (shouldSpeakResponse) {
         const ttsLease = tree.spawnChild(root, {
           taskId: `tts:${identity.turnId}`,
           taskKind: 'TTS', channel: 'tts', identity,

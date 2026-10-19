@@ -2,7 +2,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
 import {
-  internalAlgorithmRuntime as runtime, internalRequestError, internalServerError, jsonBody, requestId, retainTurnResult,
+  internalAlgorithmRuntime as runtime, sessionRequestError, internalServerError, jsonBody, requestId, retainTurnResult,
   withAlgorithmCostContext,
 } from '../../../_shared/runtime.ts';
 import type { AlgorithmOutputEvent } from '../../../../../../../lib/algorithm-service/index.ts';
@@ -166,7 +166,7 @@ export async function POST(request: Request, context: { params: { opaqueSessionH
     // Keep request-shape/host validation inside the same boundary as stream
     // construction. A malformed or partially mocked Request must not escape
     // to Next.js's generic HTML 500 page either.
-    const blocked = internalRequestError(request);
+    const blocked = sessionRequestError(request, context.params.opaqueSessionHandle);
     if (blocked) return blocked;
     return await withAlgorithmCostContext(request, context.params.opaqueSessionHandle,
       () => postStream(request, context));

@@ -12,7 +12,9 @@ import {
 } from '../../../../../lib/turn-orchestrator/index.ts';
 import {
   createAlgorithmComposition, createLiveProvider, readLiveProviderConfig,
-  type AlgorithmOutputEvent, type ProviderAttemptAudit,
+  TestWorkspaceStore,
+  type AlgorithmCompositionPersistentState,
+  type AlgorithmOutputEvent, type ProviderAttemptAudit, type TestWorkspaceView,
 } from '../../../../../lib/algorithm-service/index.ts';
 import { INTERVIEW_CONTINUATION_POLICY_VERSION } from '../../../../../lib/interview-policy/index.ts';
 import type { AlgorithmRuntimeFingerprint } from '../../../../../lib/turn-orchestrator/http-service.ts';
@@ -25,6 +27,13 @@ import {
   createAlgorithmCostLedger, fingerprintClientIp,
   type AlgorithmCostContext, type AlgorithmCostTable,
 } from '../../../../../lib/algorithm-service/cost-ledger.ts';
+import {
+  isPublicGatewayRequest,
+  publicWorkspaceBoundaryError,
+  sessionWorkspaceError,
+  workspaceErrorResponse,
+  workspaceForRequest,
+} from './workspace.ts';
 
 const fakeAuthority: TrustedSessionAuthority = {
   schemaVersion: 'trusted-session-authority-v0.1', actorId: 'actor-internal-fiction-001',
@@ -54,11 +63,21 @@ function makeRuntime() {
   const listeners = new Map<string, Set<(event: AlgorithmOutputEvent) => void>>();
   const attempts: ProviderAttemptAudit[] = [];
   const runDir = join(process.cwd(), 'harness/live-baseline/v0.1/.local-runs/http-current');
+  const workspaceStore = new TestWorkspaceStore({ databasePath: join(runDir, 'test-workspaces.sqlite') });
+  let persistentState: AlgorithmCompositionPersistentState | undefined;
+  let persistentStateReady = true;
+  try {
+    const loaded = workspaceStore.loadAlgorithmState();
+    if (loaded && loaded.schemaVersion !== 'algorithm-composition-persistent-state-v0.1') {
+      throw new Error('unsupported_algorithm_persistent_state');
+    }
+    persistentState = loaded as unknown as AlgorithmCompositionPersistentState | null ?? undefined;
+  } catch { persistentStateReady = false; }
   const content = createInternalContentRetention(join(runDir, 'content'));
   const costLedger = createAlgorithmCostLedger({ directory: runDir });
   const costContext = new AsyncLocalStorage<AlgorithmCostContext>();
   const streamOperations = new Map<string, { fingerprint: string; result: Promise<unknown>; completedResult?: unknown }>();
-  let configurationReady = true;
+  let configurationReady = persistentStateReady;
   const batchCap = Number(process.env.SGX_INTERNAL_BATCH_CAP_CNY ?? 0);
   const priorExposure = Number(process.env.SGX_INTERNAL_PRIOR_EXPOSURE_CNY ?? INTERNAL_TEST_BUDGET_POLICY.programHardCapCny);
   const budgetLedger = createInternalTestBudget({ directory: runDir,
@@ -99,34 +118,45 @@ function makeRuntime() {
   const retentionDiagnostics = createRetentionSweepDiagnostics(runDir);
   const safeSweep = (operation: 'content_sweep' | 'diagnostic_sweep', sweep: () => unknown) =>
     runRetentionSweepSafely(operation, sweep, diagnostic => { retentionDiagnostics.record(diagnostic); });
-  composition = provider ? createAlgorithmComposition({ provider,
-    derivedPurposes: ['story_draft', 'profile_draft'], conversationPurposes: ['daily_chat', 'formal_interview'],
-    semanticTurnShadow: { enabled: process.env.SGX_SEMANTIC_TURN_SHADOW === '1' },
-    onEvent: publish,
-    onModelOutput(item) {
-      const deadlines = item.evidenceRefs.map(ref => [ref, composition?.sourceExpiresAt(ref)] as const);
-      if (deadlines.some(([, expiry]) => !expiry)) return;
-      content.retain({ sessionEpoch: item.identity.sessionEpoch,
-        evidenceRefs: item.evidenceRefs, kind: `model:${item.module}`, value: item.output,
-        sourceExpiresAt: Object.fromEntries(deadlines) as Record<string, string> });
-    },
-    onWithdraw(refs) {
-      content.withdraw(refs);
-      diagnosticContent.withdraw(refs);
-      // Physically replace completed HTTP cache values when their source is revoked.
-      for (const operation of streamOperations.values()) {
-        const result = operation.completedResult;
-        if (result && typeof result === 'object' && 'evidenceId' in result) {
-          const sanitized = composition!.orchestrator.sanitizeReplayResult(result as TurnRunResult);
-          operation.completedResult = sanitized;
-          operation.result = Promise.resolve(sanitized);
-        }
-      }
-    },
-  }) : null;
+  if (provider && persistentStateReady) {
+    try {
+      composition = createAlgorithmComposition({ provider,
+        ...(persistentState ? { persistentState } : {}),
+        onPersistentStateChange: state => { workspaceStore.saveAlgorithmState({ ...state }); },
+        derivedPurposes: ['story_draft', 'profile_draft'], conversationPurposes: ['daily_chat', 'formal_interview'],
+        semanticTurnShadow: { enabled: process.env.SGX_SEMANTIC_TURN_SHADOW === '1' },
+        onEvent: publish,
+        onModelOutput(item) {
+          const deadlines = item.evidenceRefs.map(ref => [ref, composition?.sourceExpiresAt(ref)] as const);
+          if (deadlines.some(([, expiry]) => !expiry)) return;
+          content.retain({ sessionEpoch: item.identity.sessionEpoch,
+            evidenceRefs: item.evidenceRefs, kind: `model:${item.module}`, value: item.output,
+            sourceExpiresAt: Object.fromEntries(deadlines) as Record<string, string> });
+        },
+        onWithdraw(refs) {
+          content.withdraw(refs);
+          diagnosticContent.withdraw(refs);
+          // Physically replace completed HTTP cache values when their source is revoked.
+          for (const operation of streamOperations.values()) {
+            const result = operation.completedResult;
+            if (result && typeof result === 'object' && 'evidenceId' in result) {
+              const sanitized = composition!.orchestrator.sanitizeReplayResult(result as TurnRunResult);
+              operation.completedResult = sanitized;
+              operation.result = Promise.resolve(sanitized);
+            }
+          }
+        },
+      });
+    } catch {
+      configurationReady = false;
+      composition = null;
+    }
+  }
   const orchestrator = composition?.orchestrator ?? new TurnOrchestrator({ processing,
     asyncAdapters: { MEMORY: unusedAsyncAdapter(), STORY: unusedAsyncAdapter(), PROFILE: unusedAsyncAdapter() } });
-  // 仓库交付使用随源码提供的启动清单，不依赖开发机的付费 runner 或私有运行目录。
+  // Repository delivery excludes paid-run directories and raw run evidence.
+  // Stable, fictional fingerprint files keep health/version reproducible in
+  // both Fake and REAL_INTERNAL without shipping a paid execution runner.
   const currentManifest = join(process.cwd(), 'harness/handoff/runtime-manifest.json');
   const currentFixture = join(process.cwd(), 'harness/handoff/smoke-fixtures.json');
   const fileHash = (file: string) => createHash('sha256').update(readFileSync(file)).digest('hex');
@@ -169,7 +199,7 @@ function makeRuntime() {
     },
     executionMode: real ? 'REAL_INTERNAL' : 'LOCAL_FAKE',
     providerStatus: () => ({ networkCalls: attempts.length, costCny: real ? null : 0 }),
-    metadata: { buildId: process.env.SGX_ALGORITHM_BUILD_ID?.trim() || 'pre-human-2026-10-15-candidate-v23-gitee.1',
+    metadata: { buildId: process.env.SGX_ALGORITHM_BUILD_ID?.trim() || 'local-uncommitted',
       manifestSha256: fileHash(currentManifest),
       fixtureSha256: fileHash(currentFixture),
       serviceVersion: real ? 'g5-real-internal-v0.18' : 'g5-local-fake-v0.1',
@@ -186,6 +216,7 @@ function makeRuntime() {
   }, 60_000);
   retentionTimer.unref();
   return { real, provider, composition, orchestrator, service, attempts, listeners, publish,
+    runDir, workspaceStore,
     costLedger,
     withCostContext<T>(context: AlgorithmCostContext, operation: () => T): T {
       return costContext.run(context, operation);
@@ -222,8 +253,8 @@ type Runtime = ReturnType<typeof makeRuntime>;
 // reloads modules without restarting the Node process; retaining the previous
 // global instance would otherwise keep the old provider/prompt functions alive
 // and make the public workbench test a different algorithm than the source.
-const globalRuntime = globalThis as typeof globalThis & { sgxAlgorithmRuntimeV25?: Runtime };
-const runtime = globalRuntime.sgxAlgorithmRuntimeV25 ??= makeRuntime();
+const globalRuntime = globalThis as typeof globalThis & { sgxAlgorithmRuntimeV26?: Runtime };
+const runtime = globalRuntime.sgxAlgorithmRuntimeV26 ??= makeRuntime();
 export const algorithmOrchestrator = runtime.orchestrator;
 export const algorithmHttpService = runtime.service;
 export const internalAlgorithmRuntime = runtime;
@@ -258,8 +289,22 @@ export function withAlgorithmCostContext<T>(
   }, operation);
 }
 
-export function algorithmCostTable(): AlgorithmCostTable {
-  return runtime.costLedger.table();
+export function algorithmCostTable(sessionHandles?: readonly string[]): AlgorithmCostTable {
+  return sessionHandles ? runtime.costLedger.tableForSessions(sessionHandles) : runtime.costLedger.table();
+}
+
+export function requestWorkspace(request: Request): TestWorkspaceView | null {
+  return workspaceForRequest(request, runtime.workspaceStore);
+}
+
+export function workspaceRequestError(error: unknown): NextResponse {
+  return workspaceErrorResponse(error);
+}
+
+export function sessionRequestError(request: Request, opaqueSessionHandle: string): NextResponse | null {
+  const blocked = internalRequestError(request);
+  if (blocked) return blocked;
+  return sessionWorkspaceError(request, runtime.workspaceStore, opaqueSessionHandle);
 }
 
 export function trustedFakeAuthority(idempotencyKey?: string, subjectBinding?: string): TrustedSessionAuthority {
@@ -331,8 +376,16 @@ export function assertInternalRequest(request: Request): void {
   if (request.headers.get('sec-fetch-site') === 'cross-site') throw new Error('same_origin_required');
 }
 
-export function internalRequestError(request: Request): NextResponse | null {
+export function internalRequestError(
+  request: Request,
+  options: { allowWorkspaceBootstrap?: boolean } = {},
+): NextResponse | null {
+  if (isPublicGatewayRequest(request)) {
+    return publicWorkspaceBoundaryError(request, runtime.workspaceStore,
+      { allowBootstrap: options.allowWorkspaceBootstrap === true });
+  }
   try { assertInternalRequest(request); return null; }
   catch { return NextResponse.json({ code: 'internal_test_only',
-    message: '当前接口仅供本机或 SSH 隧道内测。', retryable: false }, { status: 403 }); }
+    message: '当前接口仅供本机或受保护的测试入口。', retryable: false },
+  { status: 403, headers: { 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } }); }
 }

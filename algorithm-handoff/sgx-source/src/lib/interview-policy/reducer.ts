@@ -148,7 +148,7 @@ function isFinancialRisk(message: string): boolean {
 }
 
 function isExplicitEnd(message: string): boolean {
-  return /(今天就到这(?:儿|里)(?:吧)?|今天就收住|不要再开新话题)/u.test(message) ||
+  return /(今天就(?:聊)?到这(?:儿|里)(?:吧)?|今天就收住|不要再开新话题)/u.test(message) ||
     /(结束吧|停止吧|不聊了|就这样吧)[。！!]?$/u.test(message);
 }
 

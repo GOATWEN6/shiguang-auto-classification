@@ -3,8 +3,8 @@ import { closeSync, existsSync, mkdirSync, openSync, readFileSync, renameSync, u
 import { join } from 'node:path';
 
 export const INTERNAL_TEST_BUDGET_POLICY = {
-  version: 'owner-budget-2026-10-14-v0.3',
-  programHardCapCny: 400,
+  version: 'owner-budget-2026-10-18-v0.4',
+  programHardCapCny: 800,
   ownerReportExposureCny: 120,
 } as const;
 

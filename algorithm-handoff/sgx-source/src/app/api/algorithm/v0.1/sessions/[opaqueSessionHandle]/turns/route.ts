@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-import { algorithmHttpService, internalRequestError, internalServerError, jsonBody, requestId,
+import { algorithmHttpService, sessionRequestError, internalServerError, jsonBody, requestId,
   withAlgorithmCostContext } from '../../../_shared/runtime.ts';
 
 export const dynamic = 'force-dynamic';
@@ -10,7 +10,7 @@ export async function POST(
   context: { params: { opaqueSessionHandle: string } },
 ): Promise<NextResponse> {
   try {
-    const blocked = internalRequestError(request);
+    const blocked = sessionRequestError(request, context.params.opaqueSessionHandle);
     if (blocked) return blocked;
     const body = await jsonBody(request);
     const result = await withAlgorithmCostContext(request, context.params.opaqueSessionHandle, () =>

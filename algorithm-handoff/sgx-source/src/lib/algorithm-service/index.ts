@@ -39,3 +39,4 @@ export type {
   SemanticTurnShadowNormalizationContext,
   SemanticTurnShadowNormalizationResult,
 } from './semantic-turn-shadow.ts';
+export * from './test-workspace-store.ts';

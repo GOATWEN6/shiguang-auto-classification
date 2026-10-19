@@ -690,6 +690,29 @@ test('PF02-EVENT-NOT-TRAIT: a single life event is not eligible as a profile sou
   assert.equal(providerCalls, 0);
 });
 
+test('a directly sourced social relationship is eligible for the relationship section of a profile', async () => {
+  const store = new InMemoryReferenceStore();
+  const record = activateCandidate(store, candidate('profile-direct-relation', '常与老同学保持联系', 'profile_draft', {
+    contentType: 'relationship',
+  }));
+  const registry = new GenerationCancellationRegistry();
+  const identity = active(registry, 'profile_draft', 21);
+  const runtime = createProfileDraftRuntime({
+    cancellationRegistry: registry,
+    sourceStore: store,
+    generate: () => profileOutput(
+      record.recordId,
+      record.candidate.evidenceRefs,
+      'relationships.socialRole',
+      '与老同学保持联系',
+    ),
+  });
+  const result = await runtime.run({ identity, sourceRequest: sourceRequest('profile_draft'), noSave: false });
+  assert.equal(result.status, 'success');
+  assert.equal(result.artifact.fields[0].path, 'relationships.socialRole');
+  assert.equal(result.artifact.fields[0].value, '与老同学保持联系');
+});
+
 test('PF03-RELATION: a private relationship field preserves source visibility and attribution', async () => {
   mark('PF03-RELATION');
   const store = new InMemoryReferenceStore();

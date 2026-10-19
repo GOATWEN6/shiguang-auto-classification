@@ -11,13 +11,15 @@ import { readFileSync } from 'node:fs';
 const upstream = new URL(process.env.SGX_PUBLIC_UPSTREAM ?? 'http://127.0.0.1:3100');
 const port = Number(process.env.SGX_PUBLIC_GATEWAY_PORT ?? 3200);
 const username = process.env.SGX_PUBLIC_GATEWAY_USER ?? 'sgx-team';
+const allowShortPassword = process.env.SGX_PUBLIC_GATEWAY_ALLOW_SHORT_PASSWORD === 'true';
+const minimumPasswordLength = allowShortPassword ? 6 : 12;
 const password = process.env.SGX_PUBLIC_GATEWAY_PASSWORD
   ?? (process.env.SGX_PUBLIC_GATEWAY_PASSWORD_FILE
     ? readFileSync(process.env.SGX_PUBLIC_GATEWAY_PASSWORD_FILE, 'utf8').trim()
     : undefined);
 
-if (!password || password.length < 12) {
-  console.error('SGX_PUBLIC_GATEWAY_PASSWORD must be set and contain at least 12 characters.');
+if (!password || password.length < minimumPasswordLength) {
+  console.error(`SGX_PUBLIC_GATEWAY_PASSWORD must be set and contain at least ${minimumPasswordLength} characters.`);
   process.exit(2);
 }
 
@@ -52,6 +54,10 @@ const server = http.createServer((request, response) => {
   delete headers['sec-fetch-site'];
   delete headers['sec-fetch-mode'];
   delete headers['sec-fetch-dest'];
+  // Clients cannot self-assert this boundary. Only the authenticated gateway
+  // adds the marker after Basic Auth and the path allowlist have passed.
+  delete headers['x-sgx-public-gateway'];
+  headers['x-sgx-public-gateway'] = '1';
   if (headers.origin) headers.origin = upstream.origin;
   const proxyRequest = http.request({ hostname: upstream.hostname, port: upstream.port,
     method: request.method, path: `${requestUrl.pathname}${requestUrl.search}`, headers }, proxyResponse => {

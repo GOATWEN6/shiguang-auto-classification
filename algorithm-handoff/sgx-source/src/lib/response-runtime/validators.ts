@@ -233,13 +233,16 @@ export function validateInterviewOutput(
       || value.topicId !== plan.topicId
     ) return null;
     assertNonEmptyString(value.text, 'interviewOutput.text');
-    if (plan.questionCount === 0 && value.text !== plan.frozenPolicyText) return null;
+    if (plan.questionCount === 0 && plan.promptId !== 'interview-realizer-v0.4'
+      && value.text !== plan.frozenPolicyText) return null;
     assertStringArray(value.evidenceRefs, 'interviewOutput.evidenceRefs');
     assertNoDuplicates(value.evidenceRefs, 'interviewOutput.evidenceRefs');
     if (!sameStrings(value.evidenceRefs, plan.evidenceRefs)) return null;
     assertStringArray(value.questions, 'interviewOutput.questions');
     if (value.questions.length !== plan.questionCount
       || questionMarkCount(value.text as string) !== plan.questionCount) return null;
+    if (plan.questionCount === 0 && plan.promptId === 'interview-realizer-v0.4'
+      && value.text.length > 220) return null;
     if (plan.questionCount === 1 && (
       !String(value.text).endsWith(value.questions[0])
       || questionMarkCount(value.questions[0]) !== 1

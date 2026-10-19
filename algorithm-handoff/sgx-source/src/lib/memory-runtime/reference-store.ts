@@ -25,6 +25,11 @@ export const referenceStoreMetadata = {
 
 type OperationResult = { fingerprint: string; recordId: string };
 
+export interface InMemoryReferenceStoreOptions {
+  /** Synchronous durable-backing hook; receives a defensive snapshot. */
+  onMutation?: (snapshot: ReferenceStoreSnapshot) => void;
+}
+
 function clone<T>(value: T): T {
   return structuredClone(value);
 }
@@ -223,8 +228,16 @@ export class InMemoryReferenceStore {
   private readonly records = new Map<string, StoredReference>();
   private readonly withdrawnEvidenceRefs = new Set<string>();
   private readonly operationResults = new Map<string, OperationResult>();
+  private readonly onMutation?: (snapshot: ReferenceStoreSnapshot) => void;
 
-  constructor(snapshot?: ReferenceStoreSnapshot) {
+  constructor(
+    snapshot?: ReferenceStoreSnapshot,
+    options: InMemoryReferenceStoreOptions = {},
+  ) {
+    if (options.onMutation !== undefined && typeof options.onMutation !== 'function') {
+      throw new TypeError('onMutation must be a function');
+    }
+    this.onMutation = options.onMutation;
     if (snapshot) this.restoreSnapshot(snapshot);
   }
 
@@ -463,8 +476,10 @@ export class InMemoryReferenceStore {
 
   withdrawEvidence(evidenceRef: string, audit: InvalidationAudit): string[] {
     assertNonEmpty(evidenceRef, 'evidenceRef');
+    const alreadyWithdrawn = this.withdrawnEvidenceRefs.has(evidenceRef);
     this.withdrawnEvidenceRefs.add(evidenceRef);
     const affected: string[] = [];
+    let changed = !alreadyWithdrawn;
     for (const record of this.records.values()) {
       if (!isReferenceRecord(record) || !record.candidate.evidenceRefs.includes(evidenceRef)) continue;
       affected.push(record.recordId);
@@ -473,8 +488,10 @@ export class InMemoryReferenceStore {
         record.invalidatedAt = audit.occurredAt;
         record.invalidationReason = `EVIDENCE_WITHDRAWN:${audit.reasonCode}`;
         this.records.set(record.recordId, record);
+        changed = true;
       }
     }
+    if (changed) this.emitMutation();
     return affected.sort();
   }
 
@@ -509,8 +526,11 @@ export class InMemoryReferenceStore {
     });
   }
 
-  static restore(snapshot: ReferenceStoreSnapshot): InMemoryReferenceStore {
-    return new InMemoryReferenceStore(snapshot);
+  static restore(
+    snapshot: ReferenceStoreSnapshot,
+    options: InMemoryReferenceStoreOptions = {},
+  ): InMemoryReferenceStore {
+    return new InMemoryReferenceStore(snapshot, options);
   }
 
   private activate(
@@ -561,6 +581,11 @@ export class InMemoryReferenceStore {
     recordId: string,
   ): void {
     this.operationResults.set(operationId, { fingerprint: operationFingerprint, recordId });
+    this.emitMutation();
+  }
+
+  private emitMutation(): void {
+    if (this.onMutation) this.onMutation(this.exportSnapshot());
   }
 
   private requireReferenceRecord(recordId: string): ReferenceRecord {

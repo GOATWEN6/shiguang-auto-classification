@@ -97,6 +97,11 @@ function label(value: string | undefined, fallback: string): string {
   return createHash('sha256').update(`sgx-cost-ledger-label-v0.1:${value}`).digest('hex').slice(0, 12);
 }
 
+/** Public only for server-side workspace filtering; it never exposes the raw handle. */
+export function algorithmCostSessionLabel(sessionHandle: string): string {
+  return label(sessionHandle, 'unattributed');
+}
+
 function isEntry(value: unknown): value is AlgorithmCostEntry {
   if (!value || typeof value !== 'object') return false;
   const item = value as Partial<AlgorithmCostEntry>;
@@ -154,10 +159,10 @@ export function createAlgorithmCostLedger(options: { directory: string }) {
     return structuredClone(entry);
   }
 
-  function table(): AlgorithmCostTable {
+  function buildTable(sourceEntries: readonly AlgorithmCostEntry[], includeLegacy: boolean): AlgorithmCostTable {
     const rows = new Map<string, AlgorithmCostTableRow>();
     const totals = new Map<string, AlgorithmCostIpTotal>();
-    for (const entry of entries) {
+    for (const entry of sourceEntries) {
       const rowKey = `${entry.ipFingerprint}:${entry.sessionLabel}:${entry.round}`;
       const row = rows.get(rowKey) ?? {
         ipFingerprint: entry.ipFingerprint, sessionLabel: entry.sessionLabel, round: entry.round,
@@ -189,7 +194,7 @@ export function createAlgorithmCostLedger(options: { directory: string }) {
     const knownRequestIds = new Set(entries.map(entry => entry.requestId));
     const legacy = { reservationCount: 0, reservedCny: 0, moduleTotals: {} as Record<string, number>, moduleCounts: {} as Record<string, number> };
     const reservationsFile = join(options.directory, 'reservations.jsonl');
-    if (existsSync(reservationsFile)) {
+    if (includeLegacy && existsSync(reservationsFile)) {
       try {
         for (const line of readFileSync(reservationsFile, 'utf8').split('\n')) {
           if (!line.trim()) continue;
@@ -209,13 +214,24 @@ export function createAlgorithmCostLedger(options: { directory: string }) {
     return {
       schemaVersion: 'algorithm-cost-table-v0.1', generatedAt: new Date().toISOString(),
       basis: 'provider_reservation_upper_bound', actualCostAvailable: false,
-      entries: entries.map(entry => structuredClone(entry)),
+      entries: sourceEntries.map(entry => structuredClone(entry)),
       rows: tableRows, ipTotals: [...totals.values()].sort((a, b) => a.ipFingerprint.localeCompare(b.ipFingerprint)),
-      unattributedEntryCount: entries.filter(entry => entry.ipFingerprint === 'unattributed-internal').length,
+      unattributedEntryCount: sourceEntries.filter(entry => entry.ipFingerprint === 'unattributed-internal').length,
       legacyAggregate: { ...legacy, ipBinding: 'not_recorded', sessionBinding: 'not_recorded', roundBinding: 'not_recorded' },
-      note: '同一 IP 使用脱敏指纹聚合；reservedCny 是调用前预留上限。豆包账单为 PENDING 时 actualCostCny 保持 null。历史 aggregate 预算未绑定 IP/会话，只在 health 的累计预算中保留。',
+      note: includeLegacy
+        ? '同一 IP 使用脱敏指纹聚合；reservedCny 是调用前预留上限。豆包账单为 PENDING 时 actualCostCny 保持 null。历史 aggregate 预算未绑定 IP/会话，只在 health 的累计预算中保留。'
+        : '只显示当前设备工作区绑定会话的预留记录；不包含其他设备或无法归属的历史 aggregate。',
     };
   }
 
-  return { record, table, size: () => entries.length };
+  function table(): AlgorithmCostTable {
+    return buildTable(entries, true);
+  }
+
+  function tableForSessions(sessionHandles: readonly string[]): AlgorithmCostTable {
+    const allowed = new Set(sessionHandles.map(algorithmCostSessionLabel));
+    return buildTable(entries.filter(entry => allowed.has(entry.sessionLabel)), false);
+  }
+
+  return { record, table, tableForSessions, size: () => entries.length };
 }

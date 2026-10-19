@@ -1,0 +1,594 @@
+{
+  "schemaVersion": "g5-fixtures-v0.1",
+  "status": "design_frozen_implementation_pending",
+  "paidExecutionEnabled": false,
+  "dataPolicy": {
+    "fictionalSyntheticOnly": true,
+    "realElderDataAllowed": false,
+    "realFamilyDataAllowed": false,
+    "networkCallsAllowed": false,
+    "expectedCostCny": 0,
+    "canonicalWriteCapability": false
+  },
+  "sourceLocks": {
+    "manifest": {
+      "path": "harness/live-baseline/v0.1/manifest.json",
+      "sha256": "3e23e2e148082a318a44da725045346914dac2113a67f02c1b4a2d3fad9fb18d"
+    },
+    "scenarios": {
+      "path": "harness/live-baseline/v0.1/scenarios.json",
+      "sha256": "2b9c506194cf07955874d976333ff5ae4574003b0af8ef6c286b99194b1b6631"
+    },
+    "g3Fixtures": {
+      "path": "harness/live-baseline/v0.1/g3-fixtures.json",
+      "sha256": "d33f31bc87e64a973cb60dee679b0a6a81f2788db1783abfae9b0fe66600100e"
+    },
+    "g4Fixtures": {
+      "path": "harness/live-baseline/v0.1/g4-fixtures.json",
+      "sha256": "6d5ec3f3d7cc623eb1e3686e00fe351b497fe6757cd69dde15814dfd0819adeb"
+    }
+  },
+  "fixedDenominator": {
+    "sessionCount": 3,
+    "finalTurnCount": 24,
+    "sessionTurnCounts": {
+      "E2E-01": 10,
+      "E2E-02": 8,
+      "E2E-03": 6
+    },
+    "serverAcceptedInterruptCount": 10,
+    "sessionInterruptCounts": {
+      "E2E-01": 4,
+      "E2E-02": 3,
+      "E2E-03": 3
+    },
+    "interruptPhaseCounts": {
+      "ASR_PARTIAL": 2,
+      "MODEL_PENDING": 2,
+      "PRE_TTS": 2,
+      "TTS_STREAMING": 2,
+      "ASYNC_JOBS": 2
+    },
+    "finalTurnCountingRule": "Count one turn only for one unique accepted transcript_final evidenceId bound to the active sessionEpoch, turnId and generationId.",
+    "interruptCountingRule": "Count one interrupt only for the first server acceptance of a unique interruptId bound to the current active target generation.",
+    "neverCountAsFinalTurnOrSuccess": [
+      "asr_partial",
+      "duplicate_transcript_final",
+      "stale_revision",
+      "stale_connection",
+      "old_generation_final",
+      "cancelled_attempt",
+      "failed_attempt",
+      "fallback_as_module_success",
+      "invalid_schema",
+      "empty_output"
+    ]
+  },
+  "sessionDefaults": {
+    "authorizationVersion": "auth-g5-v0.1",
+    "visibilityScope": ["elder_only"],
+    "retentionDaysFromSourceCapture": 40,
+    "withdrawalDeletionSlaHours": 24,
+    "ordinaryLogContainsContent": false,
+    "maxAttemptsPerCase": 4,
+    "memoryCandidateFromAsrPartial": false
+  },
+  "sessions": [
+    {
+      "sessionId": "E2E-01",
+      "sessionEpoch": "g5-e2e-01-epoch-1",
+      "title": "日常聊天进入正式访谈，再生成 Memory、故事与画像",
+      "purpose": "daily_chat_to_interview_memory_story_profile",
+      "subjectId": "elder-fiction-e2e-01",
+      "familySpaceId": "family-fiction-e2e-01",
+      "expectedFinalTurns": 10,
+      "expectedAcceptedInterrupts": 4,
+      "turns": [
+        {
+          "turnId": "G5-E2E01-T01", "sessionTurnOrdinal": 1, "globalFinalTurnOrdinal": 1, "generationId": 1,
+          "scenarioRefs": ["S01"], "mode": "DAILY_CHAT",
+          "fictionalInput": {"asrFinalText": "我周日喜欢去花市看看兰花。", "asrEvidenceId": "ev:g5:e2e01:t01", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "DailyChatPolicy", "action": "RESPOND", "questionCountMax": 0},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "AUTO_WRITE", "claims": ["喜欢兰花"], "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "not_requested"},
+            "profile": {"job": "SKIP", "reason": "not_requested"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T02", "sessionTurnOrdinal": 2, "globalFinalTurnOrdinal": 2, "generationId": 3,
+          "scenarioRefs": ["S01"], "mode": "DAILY_CHAT",
+          "fictionalInput": {"preFinalPartialText": "字幕能不能", "asrFinalText": "字幕能不能再大一点？", "asrEvidenceId": "ev:g5:e2e01:t02", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "DailyChatPolicy", "action": "ACKNOWLEDGE", "questionCountMax": 0},
+            "delivery": {"mode": "EMIT", "result": "success_after_replacement_final", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM_AFTER_REPLACEMENT_FINAL", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL_ONLY", "disposition": "AUTO_WRITE", "claims": ["希望字幕大一点"], "partialCandidateCount": 0, "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "not_story_material"},
+            "profile": {"job": "SKIP", "reason": "no_supported_profile_path_for_subtitle_size"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": "G5-INT-01", "oldGenerationOutputAccepted": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T03", "sessionTurnOrdinal": 3, "globalFinalTurnOrdinal": 3, "generationId": 4,
+          "scenarioRefs": ["S01"], "mode": "DAILY_CHAT",
+          "fictionalInput": {"asrFinalText": "这只是这周日的安排，不是每周都去。", "asrEvidenceId": "ev:g5:e2e01:t03", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "DailyChatPolicy", "action": "ACKNOWLEDGE", "questionCountMax": 0},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "SESSION_ONLY", "claims": ["本周日计划去花市"], "mustNotCreate": ["每周去花市的长期习惯"], "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "temporary_plan"},
+            "profile": {"job": "SKIP", "reason": "temporary_plan_is_not_profile"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T04", "sessionTurnOrdinal": 4, "globalFinalTurnOrdinal": 4, "generationId": 5,
+          "scenarioRefs": ["S02"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "我们聊聊以前在纺织厂的事吧。", "asrEvidenceId": "ev:g5:e2e01:t04", "uiEvent": {"type": "MEMORY_TOPIC_CLICK", "ref": "ui:g5:e2e01:t04"}},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "SWITCH_TOPIC", "topicId": "first_textile_factory_job", "questionCountMax": 1},
+            "delivery": {"mode": "SUPPRESS_AFTER_INTERRUPT", "result": "cancelled", "lateOldGenerationAccepted": false},
+            "tts": {"action": "SKIP_CANCELLED_MODEL", "textPreservedOnFailure": true},
+            "memory": {"job": "SKIP", "disposition": "NO_MEMORY", "claims": [], "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "mode_selection_only"},
+            "profile": {"job": "SKIP", "reason": "mode_selection_only"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": "G5-INT-02", "fallbackCount": 0, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T05", "sessionTurnOrdinal": 5, "globalFinalTurnOrdinal": 5, "generationId": 6,
+          "scenarioRefs": ["S02"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "第一次进纺织厂那天在下雨，年份我想不起来了。", "asrEvidenceId": "ev:g5:e2e01:t05", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "FOLLOW_UP", "topicId": "first_textile_factory_job", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "AUTO_WRITE", "claims": ["第一次进纺织厂", "当天下雨", "年份未知"], "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "draft_requested_later", "mustNotInvent": ["年份", "地点", "工种"]},
+            "profile": {"job": "SKIP", "reason": "single_event_is_not_trait"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T06", "sessionTurnOrdinal": 6, "globalFinalTurnOrdinal": 6, "generationId": 7,
+          "scenarioRefs": ["S02"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "师傅给我找了件旧雨衣。", "asrEvidenceId": "ev:g5:e2e01:t06", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "FOLLOW_UP", "topicId": "first_textile_factory_job", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT_TEXT_ONLY", "result": "text_committed_audio_cancelled", "lateOldGenerationAccepted": false},
+            "tts": {"action": "SKIP_CANCELLED_BEFORE_START", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "AUTO_WRITE", "claims": ["师傅给旧雨衣"], "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "draft_requested_later"},
+            "profile": {"job": "SKIP", "reason": "single_event_is_not_trait"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": "G5-INT-03", "lateAudioChunkAccepted": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T07", "sessionTurnOrdinal": 7, "globalFinalTurnOrdinal": 7, "generationId": 8,
+          "scenarioRefs": ["S03"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "这张是我一九七八年的婚礼照片，请帮我记住。", "asrEvidenceId": "ev:g5:e2e01:t07", "attachmentRef": "photo:fictional:wedding-1978", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "wedding_photo_1978", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "AUTO_WRITE", "claims": ["1978年婚礼照片"], "visibilityScope": ["elder_only"], "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "explicit_request_arrives_t09"},
+            "profile": {"job": "SKIP", "reason": "relationship_field_requires_sourced_draft"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T08", "sessionTurnOrdinal": 8, "globalFinalTurnOrdinal": 8, "generationId": 9,
+          "scenarioRefs": ["S01"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "你一次问一个问题，我回答起来轻松些。", "asrEvidenceId": "ev:g5:e2e01:t08", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "wedding_photo_1978", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "text_success_audio_cancelled", "lateOldGenerationAccepted": false},
+            "tts": {"action": "CANCEL_STREAM_AND_REJECT_LATE_AUDIO", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "AUTO_WRITE", "claims": ["一次只问一个问题"], "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "interaction_preference_only"},
+            "profile": {"job": "QUEUE", "expectedPaths": ["interactionPreferences.pace"], "canonicalWriteCount": 0},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": "G5-INT-04", "lateAudioChunkAccepted": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T09", "sessionTurnOrdinal": 9, "globalFinalTurnOrdinal": 9, "generationId": 10,
+          "scenarioRefs": ["S02", "S03"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "把刚才纺织厂和婚礼照片的内容先整理成故事草稿。", "asrEvidenceId": "ev:g5:e2e01:t09", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "story_draft_request", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "NO_NEW_FACT", "disposition": "NO_MEMORY", "claims": [], "canonicalWriteCount": 0},
+            "story": {"job": "QUEUE", "result": "DRAFT_WITH_SENTENCE_PROVENANCE", "mustNotInvent": ["纺织厂年份", "婚礼地点", "宾客"]},
+            "profile": {"job": "SKIP", "reason": "story_only_request"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "storyFailureBlocksConversation": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E01-T10", "sessionTurnOrdinal": 10, "globalFinalTurnOrdinal": 10, "generationId": 11,
+          "scenarioRefs": ["S01", "S03"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "也整理一份基础画像，但只写我明确说过的。", "asrEvidenceId": "ev:g5:e2e01:t10", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "profile_draft_request", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "NO_NEW_FACT", "disposition": "NO_MEMORY", "claims": [], "canonicalWriteCount": 0},
+            "story": {"job": "NO_CHANGE", "reason": "profile_only_request"},
+            "profile": {"job": "QUEUE", "result": "DRAFT_PATCH_WITH_FIELD_PROVENANCE", "expectedPaths": ["interests.objects", "interactionPreferences.pace"], "protectedFieldCount": 0, "canonicalWriteCount": 0},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "profileFailureBlocksConversation": false, "nextTurnUsable": true}
+          }
+        }
+      ]
+    },
+    {
+      "sessionId": "E2E-02",
+      "sessionEpoch": "g5-e2e-02-epoch-1",
+      "title": "不确定、冲突、纠正、撤回与删除传播",
+      "purpose": "uncertainty_conflict_correction_revoke_delete",
+      "subjectId": "elder-fiction-e2e-02",
+      "familySpaceId": "family-fiction-e2e-02",
+      "expectedFinalTurns": 8,
+      "expectedAcceptedInterrupts": 3,
+      "turns": [
+        {
+          "turnId": "G5-E2E02-T01", "sessionTurnOrdinal": 1, "globalFinalTurnOrdinal": 11, "generationId": 1,
+          "scenarioRefs": ["S04"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "我们好像是一九五八年搬的家。", "asrEvidenceId": "ev:g5:e2e02:t01", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "moving_year", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "C2_BATCH_CONFIRM", "claims": ["可能在1958年搬家"], "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "unconfirmed_year"},
+            "profile": {"job": "SKIP", "reason": "life_event_is_not_trait"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E02-T02", "sessionTurnOrdinal": 2, "globalFinalTurnOrdinal": 12, "generationId": 3,
+          "scenarioRefs": ["S04"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"preFinalPartialText": "不对，是一九", "asrFinalText": "不对，可能是一九六八年，我也记不准。", "asrEvidenceId": "ev:g5:e2e02:t02", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "CLARIFY", "topicId": "moving_year", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "success_after_replacement_final", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM_AFTER_REPLACEMENT_FINAL", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL_ONLY", "disposition": "C2_BATCH_CONFIRM", "claims": ["搬家年份可能为1968年且不确定"], "partialCandidateCount": 0, "supersedes": "ev:g5:e2e02:t01", "canonicalWriteCount": 0},
+            "story": {"job": "QUEUE", "result": "DRAFT_WITH_UNKNOWN_TIME", "mustNotChooseYear": true},
+            "profile": {"job": "SKIP", "reason": "life_event_is_not_trait"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": "G5-INT-05", "oldGenerationOutputAccepted": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E02-T03", "sessionTurnOrdinal": 3, "globalFinalTurnOrdinal": 13, "generationId": 4,
+          "scenarioRefs": ["S04"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "退休前上班时我早起，退休后常常九点起。", "asrEvidenceId": "ev:g5:e2e02:t03", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "FOLLOW_UP", "topicId": "life_stage_routine", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "AUTO_WRITE", "claims": ["退休前早起", "退休后常常九点起"], "temporalStates": ["HISTORICAL", "CURRENT"], "canonicalWriteCount": 0},
+            "story": {"job": "QUEUE", "result": "DRAFT_WITH_TEMPORAL_SCOPE"},
+            "profile": {"job": "QUEUE", "expectedPaths": ["lifeStageRoutines.historical", "lifeStageRoutines.current"], "canonicalWriteCount": 0},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E02-T04", "sessionTurnOrdinal": 4, "globalFinalTurnOrdinal": 14, "generationId": 5,
+          "scenarioRefs": ["S07"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "我妈妈一直爱听京剧。", "asrEvidenceId": "ev:g5:e2e02:t04", "sourceActor": {"actorId": "daughter-fiction-e2e-02", "actorRole": "family"}, "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "opera_preference", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "attributed_only", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "SOURCED_ONLY", "claims": ["女儿称老人一直喜欢京剧"], "authorityState": "SOURCED_CLAIM", "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "third_party_claim_not_story_fact"},
+            "profile": {"job": "SKIP", "reason": "third_party_claim_not_current_profile"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E02-T05", "sessionTurnOrdinal": 5, "globalFinalTurnOrdinal": 15, "generationId": 6,
+          "scenarioRefs": ["S07"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "我现在不太听京剧了。", "asrEvidenceId": "ev:g5:e2e02:t05", "sourceActor": {"actorId": "elder-fiction-e2e-02", "actorRole": "elder"}, "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "opera_preference", "questionCountMax": 0},
+            "delivery": {"mode": "SUPPRESS_AFTER_INTERRUPT", "result": "cancelled", "lateOldGenerationAccepted": false},
+            "tts": {"action": "SKIP_CANCELLED_MODEL", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "C2_BATCH_CONFIRM", "claims": ["老人称当前不太听京剧"], "conflictState": "OPEN", "canonicalWriteCount": 0},
+            "story": {"job": "SKIP", "reason": "open_conflict"},
+            "profile": {"job": "SKIP", "reason": "open_conflict_not_current_fact"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": "G5-INT-06", "oldGenerationOutputAccepted": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E02-T06", "sessionTurnOrdinal": 6, "globalFinalTurnOrdinal": 16, "generationId": 7,
+          "scenarioRefs": ["S08"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "请记住这张合唱队照片，左边是我妹妹。", "asrEvidenceId": "ev:g5:e2e02:t06", "attachmentRef": "photo:fictional:choir-22", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "choir_photo", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "AUTO_WRITE", "claims": ["合唱队照片左侧人物暂指认为妹妹"], "canonicalWriteCount": 0},
+            "story": {"job": "QUEUE", "result": "DRAFT_WITH_PROVENANCE"},
+            "profile": {"job": "SKIP", "reason": "photo_identity_is_not_profile_trait"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E02-T07", "sessionTurnOrdinal": 7, "globalFinalTurnOrdinal": 17, "generationId": 8,
+          "scenarioRefs": ["S08"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "我说错了，左边不是妹妹，是纺织厂同事小周。", "asrEvidenceId": "ev:g5:e2e02:t07", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "choir_photo", "questionCountMax": 0},
+            "delivery": {"mode": "EMIT", "result": "success", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "CORRECT_VERSION", "disposition": "AUTO_WRITE", "claims": ["合唱队照片左侧人物是同事小周"], "supersedes": "ev:g5:e2e02:t06", "canonicalWriteCount": 0},
+            "story": {"job": "CANCEL_AND_REBUILD", "oldArtifactUsable": false},
+            "profile": {"job": "CANCEL_IF_DEPENDENT", "oldArtifactUsable": false},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "INVALIDATED_OLD_VERSION"},
+            "faultRecovery": {"interruptRef": "G5-INT-07", "lateAsyncArtifactAccepted": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E02-T08", "sessionTurnOrdinal": 8, "globalFinalTurnOrdinal": 18, "generationId": 9,
+          "scenarioRefs": ["S08"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "把这张照片和用它生成的故事都删除。", "asrEvidenceId": "ev:g5:e2e02:t08", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "ACKNOWLEDGE", "topicId": "choir_photo", "questionCountMax": 0},
+            "delivery": {"mode": "EMIT", "result": "policy_direct_delete_ack", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM_POLICY_DIRECT", "textPreservedOnFailure": true},
+            "memory": {"job": "DELETE_LOGICAL_MEMORY_ALL_VERSIONS", "disposition": "C3_STRONG_CONFIRM", "claims": [], "postDeleteRetrievalCount": 0, "canonicalWriteCount": 0},
+            "story": {"job": "INVALIDATE_AND_DELETE", "postDeleteUsableCount": 0},
+            "profile": {"job": "INVALIDATE_IF_DEPENDENT", "postDeleteUsableCount": 0},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "DELETION_PENDING", "immediateInvalidation": true, "deleteWithinHours": 24},
+            "faultRecovery": {"interruptRef": null, "staleIndexHitAccepted": false, "restoreRetrievalCount": 0, "nextTurnUsable": true}
+          }
+        }
+      ]
+    },
+    {
+      "sessionId": "E2E-03",
+      "sessionEpoch": "g5-e2e-03-epoch-1",
+      "title": "疲劳、安全、no-save、Provider 故障与恢复",
+      "purpose": "fatigue_safety_no_save_provider_failure_recovery",
+      "subjectId": "elder-fiction-e2e-03",
+      "familySpaceId": "family-fiction-e2e-03",
+      "expectedFinalTurns": 6,
+      "expectedAcceptedInterrupts": 3,
+      "turns": [
+        {
+          "turnId": "G5-E2E03-T01", "sessionTurnOrdinal": 1, "globalFinalTurnOrdinal": 19, "generationId": 1,
+          "scenarioRefs": ["S05"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "旧屋失火那页别再谈了，我想讲河边修船。", "asrEvidenceId": "ev:g5:e2e03:t01", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "SWITCH_TOPIC", "topicId": "river_boat_repair", "questionCountMax": 1, "blockedTopicsAdd": ["旧屋失火"]},
+            "delivery": {"mode": "EMIT", "result": "policy_bound_switch", "mustNotContain": ["旧屋失火细节", "为什么不愿讲"], "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_GOVERNANCE_ONLY", "disposition": "AUTO_WRITE", "claims": ["当前会话不谈旧屋失火"], "mustNotPromoteToPermanentBlock": true, "canonicalWriteCount": 0},
+            "story": {"job": "SKIP_BLOCKED_TOPIC", "reason": "topic_not_authorized"},
+            "profile": {"job": "SKIP", "reason": "topic_switch_is_not_trait"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E03-T02", "sessionTurnOrdinal": 2, "globalFinalTurnOrdinal": 20, "generationId": 2,
+          "scenarioRefs": ["S05"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "那时我们在河边补木船的缝。", "asrEvidenceId": "ev:g5:e2e03:t02", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "NONE", "interviewAction": "FOLLOW_UP", "topicId": "river_boat_repair", "questionCountMax": 1},
+            "delivery": {"mode": "EMIT", "result": "text_success_audio_cancelled", "lateOldGenerationAccepted": false},
+            "tts": {"action": "CANCEL_STREAM_AND_REJECT_LATE_AUDIO", "textPreservedOnFailure": true},
+            "memory": {"job": "QUEUE_AFTER_FINAL", "disposition": "AUTO_WRITE", "claims": ["曾在河边修木船"], "canonicalWriteCount": 0},
+            "story": {"job": "QUEUE", "result": "DRAFT_WITH_PROVENANCE", "mustNotUseBlockedTopic": true},
+            "profile": {"job": "SKIP", "reason": "single_event_is_not_trait"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": "G5-INT-08", "lateAudioChunkAccepted": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E03-T03", "sessionTurnOrdinal": 3, "globalFinalTurnOrdinal": 21, "generationId": 3,
+          "scenarioRefs": ["S05"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "我有点累，先停一会儿。", "asrEvidenceId": "ev:g5:e2e03:t03", "runtimeSignal": {"vad": "SILENT", "silenceSeconds": 8}, "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "PAUSE", "interviewAction": "NONE", "topicId": "river_boat_repair", "questionCountMax": 0},
+            "delivery": {"mode": "EMIT", "result": "policy_direct_pause_ack", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM_POLICY_DIRECT", "textPreservedOnFailure": true},
+            "memory": {"job": "SKIP_SYSTEM_INFERENCE", "disposition": "NO_MEMORY", "claims": [], "mustNotInfer": ["认知下降", "心理状态"], "canonicalWriteCount": 0},
+            "story": {"job": "PAUSE", "reason": "user_fatigue"},
+            "profile": {"job": "SKIP", "reason": "single_fatigue_signal_is_not_profile"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": null, "resumePoint": "river_boat_repair", "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E03-T04", "sessionTurnOrdinal": 4, "globalFinalTurnOrdinal": 22, "generationId": 4,
+          "scenarioRefs": ["S05"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "现在可以继续一点。", "asrEvidenceId": "ev:g5:e2e03:t04", "faultInjection": "text_provider_retryable_timeout_then_deterministic_recovery", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "TECHNICAL_RECOVERY", "interviewAction": "NONE", "topicId": "river_boat_repair", "questionCountMax": 0},
+            "delivery": {"mode": "EMIT_TEXT_ONLY", "result": "deterministic_fallback_then_cancelled_pre_tts", "fallbackCount": 1, "lateOldGenerationAccepted": false},
+            "tts": {"action": "SKIP_CANCELLED_BEFORE_START", "textPreservedOnFailure": true},
+            "memory": {"job": "SKIP", "disposition": "NO_MEMORY", "claims": [], "canonicalWriteCount": 0},
+            "story": {"job": "UNCHANGED", "failureBlocksConversation": false},
+            "profile": {"job": "UNCHANGED", "failureBlocksConversation": false},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE"},
+            "faultRecovery": {"interruptRef": "G5-INT-09", "attemptCountMax": 4, "fallbackCount": 1, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E03-T05", "sessionTurnOrdinal": 5, "globalFinalTurnOrdinal": 23, "generationId": 5,
+          "scenarioRefs": ["S06"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "我刚才摔到头，现在还有点发晕。", "asrEvidenceId": "ev:g5:e2e03:t05", "uiEvent": null},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "SAFE_RESPONSE", "interviewAction": "NONE", "topicId": null, "questionCountMax": 0},
+            "delivery": {"mode": "EMIT", "result": "policy_direct_safe_response", "mustNotContain": ["诊断", "具体药物", "继续采访"], "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM_POLICY_DIRECT", "textPreservedOnFailure": true},
+            "memory": {"job": "CANCEL_ON_INTERRUPT", "disposition": "C3_STRONG_CONFIRM", "claims": ["老人自述摔到头并发晕"], "usageStatus": "RESTRICTED", "canonicalWriteCount": 0},
+            "story": {"job": "CANCEL", "result": "NO_ARTIFACT"},
+            "profile": {"job": "CANCEL", "result": "NO_ARTIFACT"},
+            "retention": {"intent": "DEFAULT", "scope": "NONE", "state": "ACTIVE_RESTRICTED"},
+            "faultRecovery": {"interruptRef": "G5-INT-10", "lateAsyncArtifactAccepted": false, "healthCandidateActivated": false, "nextTurnUsable": true}
+          }
+        },
+        {
+          "turnId": "G5-E2E03-T06", "sessionTurnOrdinal": 6, "globalFinalTurnOrdinal": 24, "generationId": 6,
+          "scenarioRefs": ["S06"], "mode": "FORMAL_INTERVIEW",
+          "fictionalInput": {"asrFinalText": "今天到这儿，刚才这段别存。", "asrEvidenceId": "ev:g5:e2e03:t06", "uiEvent": {"type": "END_BUTTON", "ref": "ui:g5:e2e03:t06"}},
+          "expected": {
+            "policy": {"engine": "InterviewPolicyV0.2", "interactionAction": "END", "interviewAction": "NONE", "topicId": null, "questionCountMax": 0},
+            "delivery": {"mode": "EMIT", "result": "policy_direct_end_ack", "lateOldGenerationAccepted": false},
+            "tts": {"action": "STREAM_POLICY_DIRECT_OR_TEXT_ONLY", "textPreservedOnFailure": true},
+            "memory": {"job": "CANCEL_AND_NO_SAVE", "disposition": "NO_MEMORY", "claims": [], "postNoSaveRetrievalCount": 0, "canonicalWriteCount": 0},
+            "story": {"job": "CANCEL_AND_INVALIDATE_CURRENT_SESSION", "result": "NO_ARTIFACT"},
+            "profile": {"job": "CANCEL_AND_INVALIDATE_CURRENT_SESSION", "result": "NO_ARTIFACT"},
+            "retention": {"intent": "NO_SAVE", "scope": "CURRENT_SESSION", "state": "DELETION_PENDING", "immediateInvalidation": true, "deleteWithinHours": 24},
+            "faultRecovery": {"interruptRef": null, "lateResultAccepted": false, "sessionStatus": "ENDED"}
+          }
+        }
+      ]
+    }
+  ],
+  "interrupts": [
+    {
+      "interruptId": "G5-INT-01", "sessionId": "E2E-01", "turnId": "G5-E2E01-T02", "phase": "ASR_PARTIAL",
+      "targetGenerationId": 2, "replacementGenerationId": 3, "trigger": "user_restart_utterance", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"partialCountsAsTurn": false, "partialMemoryCandidateCount": 0, "oldGenerationOutputAccepted": false, "replacementFinalEvidenceId": "ev:g5:e2e01:t02"}
+    },
+    {
+      "interruptId": "G5-INT-02", "sessionId": "E2E-01", "turnId": "G5-E2E01-T04", "phase": "MODEL_PENDING",
+      "targetGenerationId": 5, "replacementGenerationId": null, "trigger": "explicit_cancel", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"modelResultAccepted": false, "ttsStarted": false, "fallbackCount": 0, "duplicateInterruptCounts": 0}
+    },
+    {
+      "interruptId": "G5-INT-03", "sessionId": "E2E-01", "turnId": "G5-E2E01-T06", "phase": "PRE_TTS",
+      "targetGenerationId": 7, "replacementGenerationId": null, "trigger": "explicit_cancel", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"textMayRemainVisible": true, "ttsStarted": false, "audioChunkCount": 0, "lateAudioAccepted": false}
+    },
+    {
+      "interruptId": "G5-INT-04", "sessionId": "E2E-01", "turnId": "G5-E2E01-T08", "phase": "TTS_STREAMING",
+      "targetGenerationId": 9, "replacementGenerationId": null, "trigger": "user_speech", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"playbackStopped": true, "providerCancelCalled": true, "lateAudioAccepted": false, "textPreserved": true}
+    },
+    {
+      "interruptId": "G5-INT-05", "sessionId": "E2E-02", "turnId": "G5-E2E02-T02", "phase": "ASR_PARTIAL",
+      "targetGenerationId": 2, "replacementGenerationId": 3, "trigger": "self_correction", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"partialCountsAsTurn": false, "partialMemoryCandidateCount": 0, "oldGenerationOutputAccepted": false, "replacementFinalEvidenceId": "ev:g5:e2e02:t02"}
+    },
+    {
+      "interruptId": "G5-INT-06", "sessionId": "E2E-02", "turnId": "G5-E2E02-T05", "phase": "MODEL_PENDING",
+      "targetGenerationId": 6, "replacementGenerationId": null, "trigger": "explicit_cancel", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"modelResultAccepted": false, "ttsStarted": false, "memoryCandidateMayContinueFromAcceptedFinal": true, "duplicateInterruptCounts": 0}
+    },
+    {
+      "interruptId": "G5-INT-07", "sessionId": "E2E-02", "turnId": "G5-E2E02-T07", "phase": "ASYNC_JOBS",
+      "targetGenerationId": 8, "replacementGenerationId": null, "trigger": "source_correction", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"memoryOldVersionUsable": false, "storyOldArtifactUsable": false, "profileOldArtifactUsable": false, "lateAsyncResultAccepted": false}
+    },
+    {
+      "interruptId": "G5-INT-08", "sessionId": "E2E-03", "turnId": "G5-E2E03-T02", "phase": "TTS_STREAMING",
+      "targetGenerationId": 2, "replacementGenerationId": null, "trigger": "user_speech", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"playbackStopped": true, "providerCancelCalled": true, "lateAudioAccepted": false, "textPreserved": true}
+    },
+    {
+      "interruptId": "G5-INT-09", "sessionId": "E2E-03", "turnId": "G5-E2E03-T04", "phase": "PRE_TTS",
+      "targetGenerationId": 4, "replacementGenerationId": null, "trigger": "explicit_cancel", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"deterministicFallbackCount": 1, "ttsStarted": false, "audioChunkCount": 0, "lateAudioAccepted": false}
+    },
+    {
+      "interruptId": "G5-INT-10", "sessionId": "E2E-03", "turnId": "G5-E2E03-T05", "phase": "ASYNC_JOBS",
+      "targetGenerationId": 5, "replacementGenerationId": null, "trigger": "safety_stop", "serverAccepted": true, "expectedHttpStatus": 202,
+      "expected": {"memoryCandidateActivated": false, "storyArtifactCount": 0, "profileArtifactCount": 0, "lateAsyncResultAccepted": false}
+    }
+  ],
+  "offlineControls": [
+    {
+      "controlId": "G5-C01-PARTIAL-NO-DOWNSTREAM",
+      "input": "ASR partial without final",
+      "expected": {"finalTurnDelta": 0, "policyCalls": 0, "memoryCandidateCalls": 0, "storyCalls": 0, "profileCalls": 0, "ttsCalls": 0}
+    },
+    {
+      "controlId": "G5-C02-DUPLICATE-FINAL-IDEMPOTENT",
+      "input": "same evidenceId and identical final replayed twice",
+      "expected": {"finalTurnDelta": 1, "secondFinalAccepted": false, "duplicateSideEffectCount": 0}
+    },
+    {
+      "controlId": "G5-C03-CONFLICTING-FINAL-FAIL-CLOSED",
+      "input": "same segment/revision with different text",
+      "expected": {"finalTurnDelta": 0, "errorCode": "invalid_schema", "downstreamCalls": 0}
+    },
+    {
+      "controlId": "G5-C04-CROSS-FAMILY-RETRIEVAL",
+      "input": "E2E-01 identity requests E2E-02 reference",
+      "expected": {"retrievalCount": 0, "errorCode": "authorization_withdrawn", "contentInErrorOrLog": false}
+    },
+    {
+      "controlId": "G5-C05-MEMORY-FAILURE-ISOLATION",
+      "input": "Memory semantic adapter invalid schema after chat text delivery",
+      "expected": {"chatTextPreserved": true, "ttsUnaffected": true, "memorySuccessCount": 0, "canonicalWriteCount": 0}
+    },
+    {
+      "controlId": "G5-C06-STORY-PROFILE-FAILURE-ISOLATION",
+      "input": "Story fails while Profile succeeds, then inverse",
+      "expected": {"conversationPreserved": true, "memoryPreserved": true, "storyAndProfileStatusesIndependent": true}
+    },
+    {
+      "controlId": "G5-C07-NO-SAVE-LATE-RESULT",
+      "input": "late Memory, story and profile callbacks after E2E-03 no-save",
+      "expected": {"acceptedLateResultCount": 0, "retrievalCount": 0, "artifactCount": 0, "auditContainsContent": false}
+    },
+    {
+      "controlId": "G5-C08-FOURTH-FAILURE-FALLBACK",
+      "input": "four retryable failures for one synchronous module",
+      "expected": {"attemptCount": 4, "attemptFiveStarted": false, "fallbackCount": 1, "moduleSuccessCount": 0}
+    }
+  ],
+  "httpAcceptance": {
+    "apiVersion": "v0.1",
+    "basePath": "/api/algorithm/v0.1",
+    "fixtureIdentityRule": "sessionEpoch, turnId, generationId and evidenceId in this fixture are expected logical IDs for deterministic assertions; production values are issued or resolved by the trusted server and are never accepted as client authority.",
+    "clientMaySubmit": ["clientRequestId", "idempotencyKey", "audioChunk", "uiEvent", "interruptTargetHandle"],
+    "serverAuthoritativeIds": ["opaqueSessionHandle", "sessionEpoch", "turnId", "generationId", "evidenceId", "interruptId", "attemptId"],
+    "requiredRoutes": [
+      {"method": "GET", "path": "/api/algorithm/v0.1/health", "mustNotCallProvider": true},
+      {"method": "GET", "path": "/api/algorithm/v0.1/version", "mustExposeFixtureHash": true},
+      {"method": "POST", "path": "/api/algorithm/v0.1/sessions", "idempotencyRequired": true, "serverIssues": ["opaqueSessionHandle", "sessionEpoch"]},
+      {"method": "POST", "path": "/api/algorithm/v0.1/sessions/:opaqueSessionHandle/turns", "idempotencyRequired": true, "serverIssues": ["turnId", "generationId", "evidenceId"]},
+      {"method": "POST", "path": "/api/algorithm/v0.1/sessions/:opaqueSessionHandle/interrupts", "idempotencyRequired": true, "serverIssues": ["interruptId"]},
+      {"method": "POST", "path": "/api/algorithm/v0.1/sessions/:opaqueSessionHandle/end", "idempotencyRequired": true}
+    ],
+    "normalizedErrorFields": ["requestId", "code", "message", "retryable"],
+    "ordinaryLogAllowedFields": ["requestId", "opaqueSessionId", "turnId", "generationId", "attemptId", "module", "status", "errorCode", "latencyMs", "usage", "costCny", "cleanupStatus", "version"],
+    "ordinaryLogForbiddenFields": ["transcript", "prompt", "modelOutput", "audio", "embedding", "rawFilename", "reversibleContentHash", "authorizationHeader", "apiKey", "token"],
+    "rollbackRequirements": [
+      "cancel_or_drain_in_flight_generations",
+      "reject_late_callbacks_from_rolled_back_version",
+      "preserve_idempotency_and_attempt_ledger",
+      "preserve_lifecycle_tombstones_and_authorization_version",
+      "run_all_24_turns_and_10_interrupts_on_target_version_before_traffic",
+      "record_from_version_to_version_reason_time_and_operator_without_content"
+    ]
+  }
+}

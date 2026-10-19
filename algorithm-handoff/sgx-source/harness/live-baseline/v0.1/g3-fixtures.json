@@ -1,0 +1,206 @@
+{
+  "schemaVersion": "g3-fixtures-v0.1",
+  "paidExecutionEnabled": false,
+  "audioFormat": {
+    "codec": "pcm16",
+    "sampleRateHz": 16000,
+    "bitsPerSample": 16,
+    "channels": 1,
+    "bytesPerMillisecond": 32
+  },
+  "fixedCaseCount": 8,
+  "cases": [
+    {
+      "id": "G3-01-HAPPY-BOUNDARIES",
+      "category": "happy_stream",
+      "description": "100/150/200ms PCM chunks, a short explicit EOS tail, partial revisions, one final and usage",
+      "chunks": [
+        { "sequence": 0, "durationMs": 100, "endOfStream": false },
+        { "sequence": 1, "durationMs": 150, "endOfStream": false },
+        { "sequence": 2, "durationMs": 200, "endOfStream": false },
+        { "sequence": 3, "durationMs": 80, "endOfStream": true }
+      ],
+      "asrEvents": [
+        { "kind": "partial", "providerSequence": 1, "segmentIndex": 0, "revision": 1, "text": "我一九" },
+        { "kind": "partial", "providerSequence": 2, "segmentIndex": 0, "revision": 2, "text": "我一九七八年" },
+        { "kind": "segment_final", "providerSequence": 3, "segmentIndex": 0, "revision": 3, "text": "我一九七八年结婚。" },
+        { "kind": "usage", "providerSequence": 4, "usage": { "inputAudioMs": 530 } },
+        { "kind": "stream_final", "providerSequence": 5 }
+      ],
+      "expected": {
+        "partialCount": 2,
+        "evidenceCount": 1,
+        "memoryCandidateCalls": 0,
+        "usageInputAudioMs": 530
+      }
+    },
+    {
+      "id": "G3-02-SEGMENT-REORDER-DEDUP",
+      "category": "segment_ordering",
+      "description": "Out-of-order segment finals, exact duplicates, stale revisions, post-final partials and conflicts",
+      "asrEvents": [
+        { "kind": "segment_final", "providerSequence": 4, "segmentIndex": 1, "revision": 2, "text": "后来我们搬到了苏州。" },
+        { "kind": "partial", "providerSequence": 1, "segmentIndex": 0, "revision": 1, "text": "我先在纺织" },
+        { "kind": "partial", "providerSequence": 2, "segmentIndex": 0, "revision": 2, "text": "我先在纺织厂工作。" },
+        { "kind": "partial", "providerSequence": 1, "segmentIndex": 0, "revision": 1, "text": "我先在纺织" },
+        { "kind": "segment_final", "providerSequence": 3, "segmentIndex": 0, "revision": 3, "text": "我先在纺织厂工作。" },
+        { "kind": "segment_final", "providerSequence": 4, "segmentIndex": 1, "revision": 2, "text": "后来我们搬到了苏州。" },
+        { "kind": "partial", "providerSequence": 5, "segmentIndex": 0, "revision": 4, "text": "不应覆盖 final" },
+        { "kind": "stream_final", "providerSequence": 6 }
+      ],
+      "conflictingEvent": {
+        "kind": "segment_final",
+        "providerSequence": 4,
+        "segmentIndex": 1,
+        "revision": 2,
+        "text": "同一 revision 的冲突文本"
+      },
+      "expected": {
+        "evidenceSegmentOrder": [0, 1],
+        "evidenceCount": 2,
+        "memoryCandidateCalls": 0,
+        "conflictError": "invalid_schema"
+      }
+    },
+    {
+      "id": "G3-03-RECONNECT-LATE-OLD-CONNECTION",
+      "category": "reconnect",
+      "description": "Reconnect replays unacknowledged audio while the old connection produces a late final",
+      "chunks": [
+        { "sequence": 0, "durationMs": 150, "endOfStream": false },
+        { "sequence": 1, "durationMs": 150, "endOfStream": true }
+      ],
+      "attempts": [
+        {
+          "connectionId": "connection-old",
+          "events": [
+            { "kind": "partial", "providerSequence": 1, "segmentIndex": 0, "revision": 1, "text": "旧连接部分" }
+          ],
+          "outcome": { "type": "error", "code": "incomplete_stream" }
+        },
+        {
+          "connectionId": "connection-new",
+          "events": [
+            { "kind": "segment_final", "providerSequence": 2, "segmentIndex": 0, "revision": 2, "text": "新连接的最终转写。" },
+            { "kind": "usage", "providerSequence": 3, "usage": { "inputAudioMs": 300 } },
+            { "kind": "stream_final", "providerSequence": 4 }
+          ],
+          "outcome": { "type": "success", "value": { "text": "新连接的最终转写。" } }
+        }
+      ],
+      "lateOldConnectionEvent": {
+        "kind": "segment_final",
+        "providerSequence": 99,
+        "segmentIndex": 0,
+        "revision": 9,
+        "text": "旧连接迟到结果"
+      },
+      "expected": {
+        "attemptCount": 2,
+        "evidenceCount": 1,
+        "acceptedText": "新连接的最终转写。",
+        "lateAccepted": false,
+        "memoryCandidateCalls": 0
+      }
+    },
+    {
+      "id": "G3-04-TIMEOUT-THEN-SUCCESS",
+      "category": "retry_timeout",
+      "description": "A retryable timeout is followed by a successful second attempt",
+      "attempts": [
+        { "outcome": { "type": "error", "code": "retryable_timeout", "message": "fake timeout" } },
+        {
+          "events": [
+            { "kind": "final", "value": { "text": "第二次成功" } },
+            { "kind": "usage", "usage": { "inputTokens": 12, "outputTokens": 5, "totalTokens": 17 } }
+          ],
+          "outcome": { "type": "success", "value": { "text": "第二次成功" } }
+        }
+      ],
+      "expected": { "attemptCount": 2, "status": "success", "fallbackCount": 0 }
+    },
+    {
+      "id": "G3-05-429-503-THEN-SUCCESS",
+      "category": "retry_http",
+      "description": "429 and 503 are normalized and retried before success",
+      "attempts": [
+        { "outcome": { "type": "http_error", "status": 429, "message": "rate limited" } },
+        { "outcome": { "type": "http_error", "status": 503, "message": "temporarily unavailable" } },
+        {
+          "events": [
+            { "kind": "usage", "usage": { "inputTokens": 8, "outputTokens": 4, "totalTokens": 12 } }
+          ],
+          "outcome": { "type": "success", "value": { "text": "第三次成功" } }
+        }
+      ],
+      "expected": {
+        "attemptCount": 3,
+        "errorCodes": ["provider_429", "provider_503"],
+        "status": "success"
+      }
+    },
+    {
+      "id": "G3-06-FOUR-FAILURES-FALLBACK",
+      "category": "retry_exhaustion",
+      "description": "Four retryable failures produce exactly one fallback and no fifth attempt",
+      "attempts": [
+        { "outcome": { "type": "error", "code": "retryable_timeout" } },
+        { "outcome": { "type": "http_error", "status": 429 } },
+        { "outcome": { "type": "http_error", "status": 500 } },
+        { "outcome": { "type": "error", "code": "incomplete_stream" } }
+      ],
+      "expected": {
+        "attemptCount": 4,
+        "errorCodes": ["retryable_timeout", "provider_429", "provider_5xx", "incomplete_stream"],
+        "status": "fallback",
+        "fallbackCount": 1,
+        "pendingAttemptCount": 0
+      }
+    },
+    {
+      "id": "G3-07-INVALID-SCHEMA-FAIL-FAST",
+      "category": "invalid_schema",
+      "description": "An HTTP-success-shaped response with invalid output and negative usage fails without retry",
+      "attempts": [
+        {
+          "events": [
+            { "kind": "usage", "usage": { "inputTokens": -1, "totalTokens": -1 } }
+          ],
+          "outcome": { "type": "success", "value": { "unexpected": true } }
+        }
+      ],
+      "expected": {
+        "attemptCount": 1,
+        "errorCode": "invalid_schema",
+        "status": "fallback",
+        "fallbackCount": 1,
+        "evidenceCount": 0
+      }
+    },
+    {
+      "id": "G3-08-CANCEL-OLD-GENERATION",
+      "category": "cancel_and_stale",
+      "description": "A partial is followed by cancellation; late final and usage from the old generation are rejected while the next generation remains usable",
+      "attempts": [
+        {
+          "events": [
+            { "kind": "partial", "providerSequence": 1, "segmentIndex": 0, "revision": 1, "text": "取消前 partial" },
+            { "kind": "cancel_point" },
+            { "kind": "segment_final", "providerSequence": 2, "segmentIndex": 0, "revision": 2, "text": "取消后的迟到 final", "ignoreAbort": true },
+            { "kind": "usage", "providerSequence": 3, "usage": { "inputAudioMs": 200 }, "ignoreAbort": true }
+          ],
+          "outcome": { "type": "error", "code": "cancelled" }
+        }
+      ],
+      "expected": {
+        "attemptCount": 1,
+        "errorCode": "cancelled",
+        "status": "cancelled",
+        "partialCount": 1,
+        "lateAccepted": false,
+        "evidenceCount": 0,
+        "memoryCandidateCalls": 0
+      }
+    }
+  ]
+}

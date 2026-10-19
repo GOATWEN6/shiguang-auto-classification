@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { internalAlgorithmRuntime as runtime, internalRequestError, jsonBody,
+import { internalAlgorithmRuntime as runtime, sessionRequestError, jsonBody,
   withAlgorithmCostContext } from '../../../_shared/runtime.ts';
 
 export const dynamic = 'force-dynamic';
@@ -9,14 +9,14 @@ const schema = z.object({ schemaVersion: z.literal('algorithm-asr-open-v0.1'),
   idempotencyKey: z.string().min(1).max(160) }).strict();
 
 export async function POST(request: Request, context: { params: { opaqueSessionHandle: string } }) {
-  const blocked = internalRequestError(request);
+  const handle = context.params.opaqueSessionHandle;
+  const blocked = sessionRequestError(request, handle);
   if (blocked) return blocked;
   if (!runtime.real || runtime.service.health().status !== 200) {
     return NextResponse.json({ code: 'real_asr_not_ready' }, { status: 503 });
   }
   const parsed = schema.safeParse(await jsonBody(request));
   if (!parsed.success) return NextResponse.json({ code: 'invalid_schema' }, { status: 400 });
-  const handle = context.params.opaqueSessionHandle;
   try {
     if (runtime.orchestrator.getSessionSnapshot(handle).status !== 'ACTIVE') {
       return NextResponse.json({ code: 'session_not_active' }, { status: 409 });

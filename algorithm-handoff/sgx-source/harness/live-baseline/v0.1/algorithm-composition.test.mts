@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createAlgorithmComposition, type LiveProvider, type AlgorithmOutputEvent } from '../../../src/lib/algorithm-service/index.ts';
+import { identityQueryTarget } from '../../../src/lib/assistant-identity.ts';
 import type { TrustedSessionAuthority } from '../../../src/lib/turn-orchestrator/index.ts';
 import { findUnsupportedEventPrecondition } from '../../../src/lib/response-runtime/spoken-text.ts';
 
@@ -33,8 +34,13 @@ function provider(overrides: Partial<LiveProvider> = {}): LiveProvider {
           : { schemaVersion: '0.3', sentences: [{ sentenceId: 'sentence-1', text: source.text, ...provenance }] };
       }
       if (options.module === 'formal_interview') {
-        return { text: data.plan.questionCount === 1 ? '您愿意讲讲当时的一件小事吗？' : data.plan.frozenPolicyText,
-          questions: data.plan.questionCount === 1 ? ['您愿意讲讲当时的一件小事吗？'] : [] };
+        const question = /零件/u.test(data.elderInput)
+          ? '您后来是怎么慢慢记住这些名字的？'
+          : '您愿意讲讲当时的一件小事吗？';
+        const listeningText = `您刚才说到“${data.elderInput}”，我先听您把这段慢慢说完。`;
+        return { text: data.plan.questionCount === 1 ? question
+          : data.plan.promptId === 'interview-realizer-v0.4' ? listeningText : data.plan.frozenPolicyText,
+          questions: data.plan.questionCount === 1 ? [question] : [] };
       }
       return { text: '我听到了，我们慢慢聊。', questions: [] };
     },
@@ -68,6 +74,77 @@ test('composition reuses gated Memory and produces authorized derived views with
   assert.equal(c.view(b).artifacts.length, 0);
   const replay = await turn(c, a, '我一直喜欢听越剧，请整理我的爱好画像。', 'a1');
   assert.equal(replay.turnId, result.turnId);
+});
+
+test('assistant defaults to 小叙 and changes only after an explicit session rename', async () => {
+  const base = provider();
+  const seenNames: string[] = [];
+  const c = createAlgorithmComposition({ provider: provider({
+    async json(system, input, options) {
+      if (options.module === 'daily_chat') {
+        const data = input as any;
+        const name = data.assistantDisplayName as string;
+        seenNames.push(name);
+        return { text: data.assistantSelfIntroductionAllowed
+          ? `我是${name}，我在这里陪您聊。`
+          : '好，我们接着聊。', questions: [] };
+      }
+      return base.json(system, input, options);
+    },
+  }) });
+  const handle = start(c);
+  await turn(c, handle, '你是谁', 'assistant-name-default');
+  assert.equal(seenNames.at(-1), '小叙');
+  assert.equal(c.view(handle).assistantDisplayName, '小叙');
+
+  await turn(c, handle, '以后你叫小满吧', 'assistant-name-rename');
+  assert.equal(seenNames.at(-1), '小满');
+  assert.equal(c.view(handle).assistantDisplayName, '小满');
+
+  await turn(c, handle, '你不是小叙吗', 'assistant-name-mention-only');
+  assert.equal(seenNames.at(-1), '小满', 'an ordinary mention must not silently rename the assistant');
+});
+
+test('identity questions distinguish the elder from the assistant and suppress repeated self-introduction', async () => {
+  assert.equal(identityQueryTarget('我是谁？'), 'USER');
+  assert.equal(identityQueryTarget('你知道我是谁吗？'), 'USER');
+  assert.equal(identityQueryTarget('你是谁？'), 'ASSISTANT');
+  assert.equal(identityQueryTarget('我问你我是谁，不是你是谁'), 'USER');
+
+  const base = provider();
+  const seen: any[] = [];
+  const c = createAlgorithmComposition({ provider: provider({
+    async json(system, input, options) {
+      if (options.module === 'daily_chat') {
+        const data = input as any;
+        seen.push(data);
+        return { text: `我是${data.assistantDisplayName}，我来回答。`, questions: [] };
+      }
+      return base.json(system, input, options);
+    },
+  }) });
+  const handle = start(c);
+  const first = await turn(c, handle, '您好', 'identity-first');
+  assert.equal(first.response?.status, 'success');
+  assert.equal(seen.at(-1).assistantSelfIntroductionAllowed, true);
+
+  const ordinary = await turn(c, handle, '今天见到了老同学', 'identity-ordinary');
+  assert.equal(seen.at(-1).identityQueryTarget, 'NONE');
+  assert.equal(seen.at(-1).assistantSelfIntroductionAllowed, false);
+  assert.equal(ordinary.response?.status, 'fallback');
+  assert.equal(ordinary.response?.text.includes('我是小叙'), false);
+
+  const userIdentity = await turn(c, handle, '我是谁？', 'identity-user');
+  assert.equal(seen.at(-1).identityQueryTarget, 'USER');
+  assert.equal(seen.at(-1).assistantSelfIntroductionAllowed, false);
+  assert.equal(userIdentity.response?.status, 'fallback');
+  assert.equal(userIdentity.response?.text.includes('我是小叙'), false);
+
+  const assistantIdentity = await turn(c, handle, '你是谁？', 'identity-assistant');
+  assert.equal(seen.at(-1).identityQueryTarget, 'ASSISTANT');
+  assert.equal(seen.at(-1).assistantSelfIntroductionAllowed, true);
+  assert.equal(assistantIdentity.response?.status, 'success');
+  assert.match(assistantIdentity.response?.text ?? '', /我是小叙/u);
 });
 
 test('explicit story and profile request schedules both independent derived jobs', async () => {
@@ -105,6 +182,7 @@ test('paused interview accepts a governed continuation and keeps unrelated input
   const paused = await turn(c, handle, '我有点累，先停一下。', 'pause-turn');
   assert.equal(paused.status, 'completed');
   assert.equal(paused.response?.action, 'PAUSE');
+  assert.equal(paused.tts.status, 'success');
   assert.equal(c.view(handle).status, 'PAUSED');
 
   const stillPaused = await turn(c, handle, '我想换个轻松话题。', 'paused-unrelated');
@@ -490,7 +568,7 @@ test('cross-turn withdrawal removes Memory and derived view before policy delive
   assert.equal(c.view(handle).artifacts.length, 0);
 });
 
-test('explicit interview transition runs natural realizer while refused topics and follow-up depth persist', async () => {
+test('formal interview alternates one useful question with a question-free listening turn', async () => {
   const c = createAlgorithmComposition({ provider: provider() });
   const handle = start(c);
   const first = await turn(c, handle, '我第一次去厂里上班是1968年，那天有点下雨，周师傅带我去认机器，后来还借给我一件雨衣。', 'a1', true);
@@ -499,35 +577,67 @@ test('explicit interview transition runs natural realizer while refused topics a
   assert.equal(first.response?.questionCount, 1);
   const second = await turn(c, handle, '那天周师傅带我看织布机。', 'a2');
   assert.equal(second.status, 'completed');
-  assert.equal(second.response?.questionCount, 1);
-  assert.equal(c.view(handle).interviewPolicyVersion, 'interview-policy-v0.3.4');
-  assert.equal(c.orchestrator.getSessionSnapshot(handle).interviewState.followUpDepth, 2);
-  const limited = await turn(c, handle, '后来我先记住了几个零件的名字。', 'a2-limit');
-  assert.equal(limited.response?.status, 'policy_direct');
-  assert.equal(limited.response?.policyEngine, 'InterviewPolicyV0.2');
-  assert.equal(limited.response?.action, 'CLARIFY');
-  assert.equal(limited.response?.questionCount, 1);
-  assert.match(limited.response?.text ?? '', /还愿意继续讲|还想接着讲|今天先到这里|今天先休息/u);
-  assert.doesNotMatch(limited.response?.text ?? '', /收住精力|把.*经历收住/u);
+  assert.equal(second.response?.action, 'ACKNOWLEDGE');
+  assert.equal(second.response?.questionCount, 0);
+  assert.match(second.response?.text ?? '', /周师傅带我看织布机/u);
+  assert.equal(c.view(handle).interviewPolicyVersion, 'interview-policy-v0.3.5');
   assert.equal(c.orchestrator.getSessionSnapshot(handle).interviewState.followUpDepth, 0);
+  const limited = await turn(c, handle, '后来我先记住了几个零件的名字。', 'a2-limit');
+  assert.equal(limited.response?.status, 'success');
+  assert.equal(limited.response?.action, 'FOLLOW_UP');
+  assert.equal(limited.response?.questionCount, 1);
+  assert.doesNotMatch(limited.response?.text ?? '', /还愿意继续讲|还想接着讲|今天先到这里|今天先休息/u);
+  assert.equal(c.orchestrator.getSessionSnapshot(handle).interviewState.followUpDepth, 1);
   const stopped = await turn(c, handle, '我有点累，先停一下。', 'a3');
   assert.equal(stopped.response?.sessionControl, 'PAUSE');
   assert.equal(c.view(handle).status, 'PAUSED');
 });
 
-test('explicit continue after a natural pause reopens one low-load follow-up', async () => {
+test('formal interview acknowledges an unprompted memory gap after asking, while an explicit cue request still gets guidance', async () => {
+  const c = createAlgorithmComposition({ provider: provider() });
+  const listeningHandle = start(c, 'memory-gap-listen');
+  const entry = await turn(c, listeningHandle,
+    '我愿意聊聊以前在老家住过的日子。', 'memory-gap-entry', true);
+  assert.equal(entry.response?.questionCount, 1);
+  const uncertainty = await turn(c, listeningHandle,
+    '具体是哪一年我记不清了，大概是九十年代。', 'memory-gap-uncertainty');
+  assert.equal(uncertainty.response?.action, 'ACKNOWLEDGE');
+  assert.equal(uncertainty.response?.questionCount, 0);
+  assert.equal(c.orchestrator.getSessionSnapshot(listeningHandle).interviewState.followUpDepth, 0);
+
+  const cueHandle = start(c, 'memory-gap-cue');
+  await turn(c, cueHandle, '我愿意聊聊以前在老家住过的日子。', 'memory-gap-cue-entry', true);
+  const requestedCue = await turn(c, cueHandle,
+    '我记不清了，给我一个简单的提示。', 'memory-gap-cue-request');
+  assert.equal(requestedCue.response?.action, 'OFFER_TOPIC');
+  assert.equal(requestedCue.response?.questionCount, 1);
+});
+
+test('explicit continue remains available without a synthetic natural-pause checkpoint', async () => {
   const c = createAlgorithmComposition({ provider: provider() });
   const handle = start(c);
   await turn(c, handle, '我第一次在厂里工作，师傅教我认机器。', 'continue-start', true);
   await turn(c, handle, '后来我慢慢记住了几个零件。', 'continue-detail');
   const pause = await turn(c, handle, '那天我还学会了看刻度。', 'continue-pause');
-  assert.equal(pause.response?.action, 'CLARIFY');
-  assert.match(pause.response?.text ?? '', /还愿意继续讲|还想接着讲|今天先到这里|今天先休息/u);
-  assert.doesNotMatch(pause.response?.text ?? '', /收住精力|把.*经历收住/u);
+  assert.equal(pause.response?.action, 'FOLLOW_UP');
+  assert.equal(pause.response?.questionCount, 1);
+  assert.doesNotMatch(pause.response?.text ?? '', /还愿意继续讲|还想接着讲|今天先到这里|今天先休息/u);
   const resumed = await turn(c, handle, '继续吧。', 'continue-resume');
   assert.equal(resumed.response?.action, 'FOLLOW_UP');
   assert.equal(resumed.response?.questionCount, 1);
   assert.match(resumed.response?.text ?? '', /接着聊|还想补充/u);
+});
+
+test('natural spoken end wording ends the interview and speaks one acknowledgement', async () => {
+  const c = createAlgorithmComposition({ provider: provider() });
+  const handle = start(c);
+  await turn(c, handle, '我愿意聊聊以前在纺织厂工作的日子。', 'spoken-end-entry', true);
+  const ended = await turn(c, handle, '今天就聊到这里吧。', 'spoken-end');
+  assert.equal(ended.status, 'completed');
+  assert.equal(ended.response?.action, 'END');
+  assert.equal(ended.response?.questionCount, 0);
+  assert.equal(ended.tts.status, 'success');
+  assert.equal(c.view(handle).status, 'ENDED');
 });
 
 test('a named topic switch is respected after the follow-up limit and is not durable Memory', async () => {
@@ -714,4 +824,16 @@ test('natural draft requests cannot authorize old facts by quoting only the new 
     await turn(c, handle, text, `natural-request-${index}`);
     assert.equal(c.view(handle).memory.filter(record => record.status === 'ACTIVE').length, 0);
   }
+});
+
+test('a pure profile UI request reuses governed Memory without extracting the request as new Memory', async () => {
+  const c = createAlgorithmComposition({ provider: provider(), derivedPurposes: ['profile_draft'] });
+  const handle = start(c);
+  await turn(c, handle, '我平时喜欢听越剧。', 'profile-source');
+  const before = c.view(handle).memory.length;
+  const result = await turn(c, handle,
+    '请根据我已经讲过并获准用于画像的内容生成基础画像草稿。', 'profile-ui-request');
+  assert.deepEqual(result.asyncJobs.map(job => [job.kind, job.status]), [['PROFILE', 'success']]);
+  assert.equal(c.view(handle).memory.length, before);
+  assert.equal(c.view(handle).artifacts.at(-1)?.kind, 'PROFILE');
 });

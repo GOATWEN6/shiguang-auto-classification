@@ -54,6 +54,10 @@ const PROFILE_CONTENT_TYPES = new Set([
   'interaction_preference',
   'photo_person_relation',
   'preference',
+  // Directly sourced family and social roles belong in the relationship
+  // section of a profile. A one-off life event remains ineligible so an event
+  // cannot silently become a stable trait.
+  'relationship',
   'routine',
 ]);
 

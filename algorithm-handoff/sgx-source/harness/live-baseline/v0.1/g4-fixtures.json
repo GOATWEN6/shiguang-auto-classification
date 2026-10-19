@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "g4-fixtures-v0.1",
+  "paidExecutionEnabled": false,
+  "fixedCaseCount": 44,
+  "groups": {
+    "daily_chat": [
+      { "id": "D01-NORMAL-CHAT", "scenarioId": "S01", "assertion": "ordinary_chat_emits_text" },
+      { "id": "D02-MODE-ISOLATION", "scenarioId": "S02", "assertion": "daily_schema_rejects_interview_output" },
+      { "id": "D03-PURPOSE-ISOLATION", "scenarioId": "S03", "assertion": "retrieval_purpose_is_bound" },
+      { "id": "D04-PRE-ABORT", "scenarioId": "S04", "assertion": "pre_aborted_call_makes_zero_requests" },
+      { "id": "D05-INFLIGHT-ABORT", "scenarioId": "S05", "assertion": "late_text_is_rejected" },
+      { "id": "D06-IDENTITY", "scenarioId": "S06", "assertion": "mismatched_identity_is_rejected" },
+      { "id": "D07-USAGE-TIMING", "scenarioId": "S07", "assertion": "usage_and_four_timestamps_are_recorded" },
+      { "id": "D08-HIDDEN-RETRY", "scenarioId": "S08", "assertion": "one_attempt_allows_one_runtime_gate_execution" }
+    ],
+    "formal_interview": [
+      { "id": "I01-ACKNOWLEDGE", "scenarioId": "S01", "assertion": "acknowledge_plan_is_bound" },
+      { "id": "I02-ONE-FOLLOW-UP", "scenarioId": "S02", "assertion": "one_question_is_allowed" },
+      { "id": "I03-MULTI-QUESTION-OVERREACH", "scenarioId": "S02", "assertion": "extra_questions_trigger_fallback" },
+      { "id": "I04-BLOCKED-TOPIC", "scenarioId": "S05", "assertion": "blocked_topic_cannot_return" },
+      { "id": "I05-NO-SAVE", "scenarioId": "S06", "assertion": "save_claim_cannot_override_no_save" },
+      { "id": "I06-TERMINAL-SUPPRESS", "scenarioId": "S06", "assertion": "end_pause_or_suppress_skips_generation" },
+      { "id": "I07-STALE-CANCEL", "scenarioId": "S08", "assertion": "stale_realizer_output_is_rejected" },
+      { "id": "I08-SCHEMA-FAILURE-FALLBACK", "scenarioId": "S04", "assertion": "invalid_output_uses_policy_text_only" }
+    ],
+    "tts": [
+      { "id": "T01-STREAM-SUCCESS", "scenarioId": "S01", "assertion": "audio_chunks_and_timing_are_recorded" },
+      { "id": "T02-TEXT-PRESERVED", "scenarioId": "S02", "assertion": "tts_failure_keeps_text" },
+      { "id": "T03-PRE-ABORT", "scenarioId": "S03", "assertion": "pre_abort_makes_zero_requests" },
+      { "id": "T04-MIDSTREAM-ABORT", "scenarioId": "S04", "assertion": "cancel_stops_delivery" },
+      { "id": "T05-STALE-AUDIO", "scenarioId": "S05", "assertion": "old_generation_audio_is_rejected" },
+      { "id": "T06-FOUR-FAILURES", "scenarioId": "S06", "assertion": "four_failures_end_without_attempt_five" },
+      { "id": "T07-INVALID-AUDIO-USAGE", "scenarioId": "S07", "assertion": "invalid_audio_or_usage_fails_closed" },
+      { "id": "T08-HIDDEN-RETRY", "scenarioId": "S08", "assertion": "transport_retry_is_disabled" }
+    ],
+    "story_draft": [
+      { "id": "ST01-ORDINARY-SOURCES", "scenarioId": "S01", "assertion": "every_sentence_has_live_sources" },
+      { "id": "ST02-UNKNOWN-YEAR", "scenarioId": "S02", "assertion": "unknown_year_is_not_invented" },
+      { "id": "ST03-PRIVATE-PHOTO", "scenarioId": "S03", "assertion": "visibility_scope_is_preserved" },
+      { "id": "ST04-CONFLICT", "scenarioId": "S04", "assertion": "conflicting_year_is_marked_unknown" },
+      { "id": "ST05-BLOCKED-TOPIC", "scenarioId": "S05", "assertion": "forbidden_topic_is_absent" },
+      { "id": "ST06-NO-SAVE", "scenarioId": "S06", "assertion": "no_save_produces_no_story" },
+      { "id": "ST07-SOURCE-CONFLICT", "scenarioId": "S07", "assertion": "ordinary_story_omits_open_conflict" },
+      { "id": "ST08-REVOKE-DELETE", "scenarioId": "S08", "assertion": "revoked_source_blocks_commit" }
+    ],
+    "profile_draft": [
+      { "id": "PF01-PREFERENCE", "scenarioId": "S01", "assertion": "ordinary_preference_has_field_sources" },
+      { "id": "PF02-EVENT-NOT-TRAIT", "scenarioId": "S02", "assertion": "one_event_is_not_a_personality_trait" },
+      { "id": "PF03-RELATION", "scenarioId": "S03", "assertion": "relationship_field_keeps_private_scope" },
+      { "id": "PF04-TEMPORAL", "scenarioId": "S04", "assertion": "life_stage_preference_is_versioned" },
+      { "id": "PF05-BLOCKED-TOPIC", "scenarioId": "S05", "assertion": "blocked_topic_never_enters_provider_input" },
+      { "id": "PF06-PROTECTED-HEALTH", "scenarioId": "S06", "assertion": "health_cognitive_fields_are_removed_before_provider" },
+      { "id": "PF07-CONFLICT", "scenarioId": "S07", "assertion": "open_conflict_is_not_flattened" },
+      { "id": "PF08-DELETE", "scenarioId": "S08", "assertion": "deleted_source_invalidates_patch" }
+    ],
+    "isolation": [
+      { "id": "X01-TEXT-FAILURE", "assertion": "text_failure_does_not_write_memory_or_start_tts" },
+      { "id": "X02-TTS-FAILURE", "assertion": "tts_failure_preserves_text_and_other_modules" },
+      { "id": "X03-STORY-FAILURE", "assertion": "story_failure_does_not_block_chat_interview_or_memory" },
+      { "id": "X04-PROFILE-FAILURE", "assertion": "profile_failure_does_not_block_chat_interview_or_memory" }
+    ]
+  }
+}

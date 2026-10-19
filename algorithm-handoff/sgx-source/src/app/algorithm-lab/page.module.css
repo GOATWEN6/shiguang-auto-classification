@@ -15,6 +15,11 @@
 .toolbar > span { flex: 1; font-size: 14px; color: #456462; font-weight: 650; }
 .interruptStatus { display: flex; align-items: center; gap: 8px; padding: 9px 16px; background: #fff2df; color: #89551f; border-bottom: 1px solid #efd8b4; font-size: 13px; line-height: 1.45; }
 .testBanner { display: flex; gap: 9px; align-items: flex-start; padding: 11px 16px; background: #e8f3ee; color: #2a5f57; font-size: 12px; line-height: 1.55; border-bottom: 1px solid #d7e6df; }
+.workspaceStatus { display: flex; gap: 9px; align-items: flex-start; padding: 9px 16px; background: #f2f6f3; color: #42655f; border-bottom: 1px solid #dfe7e2; font-size: 11px; line-height: 1.5; }
+.workspaceStatus div { display: grid; gap: 2px; }
+.workspaceStatus strong { color: #23685e; font-size: 12px; }
+.workspaceError { background: #fff1e8; color: #8b4c36; border-bottom-color: #efd2c3; }
+.workspaceError strong { color: #9b442d; }
 .messages { flex: 1; padding: 20px 24px; overflow-y: auto; min-height: 360px; max-height: 62dvh; overscroll-behavior: contain; scroll-padding-bottom: 24px; overflow-anchor: none; }
 .messages p { font-size: 22px; line-height: 1.7; margin: 6px 0 18px; overflow-wrap: anywhere; }
 .user, .assistant { padding: 10px 0 4px 20px; border-left: 3px solid; margin-bottom: 12px; }

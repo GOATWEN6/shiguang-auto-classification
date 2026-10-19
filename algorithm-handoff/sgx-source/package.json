@@ -9,7 +9,10 @@
     "start": "next start -H 127.0.0.1",
     "typecheck": "tsc --noEmit --incremental false",
     "prepare:vad": "node scripts/prepare-vad-assets.mjs",
-    "test:handoff": "node --experimental-strip-types --test harness/live-baseline/v0.1/algorithm-composition.test.mts harness/live-baseline/v0.1/g2-real-provider-regressions.test.mts harness/live-baseline/v0.1/g4-derived-artifact-runtime.test.mts"
+    "test:handoff": "npm run test:handoff:core && npm run test:handoff:persistence && npm run test:handoff:api",
+    "test:handoff:core": "node --experimental-strip-types --test harness/live-baseline/v0.1/algorithm-composition.test.mts harness/live-baseline/v0.1/g2-real-provider-regressions.test.mts harness/live-baseline/v0.1/g4-derived-artifact-runtime.test.mts",
+    "test:handoff:persistence": "node --experimental-strip-types --test harness/live-baseline/v0.1/test-workspace-store.test.mts harness/live-baseline/v0.1/evidence-store-persistence.test.mts harness/live-baseline/v0.1/algorithm-composition-persistence.test.mts harness/live-baseline/v0.1/algorithm-lab-workspace-ui.test.mts harness/live-baseline/v0.1/cost-ledger.test.mts harness/live-baseline/v0.1/cloudflare-deployment-config.test.mts harness/live-baseline/v0.1/macos-service-config.test.mts",
+    "test:handoff:api": "node --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-test-module-mocks --loader ./harness/live-baseline/v0.1/next-server-loader.mjs --test harness/live-baseline/v0.1/workspace-api.test.mts harness/live-baseline/v0.1/http-route-boundary.test.mts"
   },
   "dependencies": {
     "@ricky0123/vad-web": "^0.0.30",

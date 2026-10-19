@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { internalAlgorithmRuntime as runtime, internalRequestError, jsonBody } from '../../../../_shared/runtime.ts';
+import { internalAlgorithmRuntime as runtime, sessionRequestError, jsonBody } from '../../../../_shared/runtime.ts';
 
 export const dynamic = 'force-dynamic';
 const schema = z.object({ schemaVersion: z.literal('algorithm-asr-chunk-v0.1'),
@@ -8,7 +8,7 @@ const schema = z.object({ schemaVersion: z.literal('algorithm-asr-chunk-v0.1'),
   base64Audio: z.string().min(4).max(8600).regex(/^[A-Za-z0-9+/]+={0,2}$/u) }).strict();
 
 export async function POST(request: Request, context: { params: { opaqueSessionHandle: string; asrStreamId: string } }) {
-  const blocked = internalRequestError(request);
+  const blocked = sessionRequestError(request, context.params.opaqueSessionHandle);
   if (blocked) return blocked;
   const state = runtime.asrStreams.get(context.params.asrStreamId);
   if (!state || state.handle !== context.params.opaqueSessionHandle || state.controller.signal.aborted) {

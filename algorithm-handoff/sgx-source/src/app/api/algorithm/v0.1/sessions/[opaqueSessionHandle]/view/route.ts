@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { internalAlgorithmRuntime as runtime, internalRequestError } from '../../../_shared/runtime.ts';
+import { internalAlgorithmRuntime as runtime, sessionRequestError } from '../../../_shared/runtime.ts';
 
 export const dynamic = 'force-dynamic';
 export async function GET(request: Request, context: { params: { opaqueSessionHandle: string } }) {
-  const blocked = internalRequestError(request);
+  const blocked = sessionRequestError(request, context.params.opaqueSessionHandle);
   if (blocked) return blocked;
   try {
     const handle = context.params.opaqueSessionHandle;

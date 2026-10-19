@@ -303,9 +303,11 @@ function interviewPlan(
   naturalizeQuestions: boolean,
   ordinaryNarrativeContinuation = false,
 ): InterviewGenerationPlan {
+  const reflectiveListening = action.reasonCodes.includes('REFLECTIVE_LISTENING_TURN');
   return {
     schemaVersion: '0.1',
-    promptId: ordinaryNarrativeContinuation ? 'interview-realizer-v0.3'
+    promptId: reflectiveListening ? 'interview-realizer-v0.4'
+      : ordinaryNarrativeContinuation ? 'interview-realizer-v0.3'
       : naturalizeQuestions ? 'interview-realizer-v0.2' : 'interview-realizer-v0.1',
     schemaId: 'interview-response-v0.1',
     decisionId: action.decisionId,

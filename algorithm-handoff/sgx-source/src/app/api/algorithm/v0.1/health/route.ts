@@ -12,7 +12,14 @@ export async function GET(request: Request): Promise<NextResponse> {
     providerConfigurationPresent: internalAlgorithmRuntime.configurationReady,
     budgetAuthorized: internalAlgorithmRuntime.budgetAuthorized,
     budget: internalAlgorithmRuntime.budget(),
-    storage: 'process_memory_fictional_only', transport: 'continuous_pcm_asr_and_incremental_pcm_tts',
+    storage: 'sqlite_test_workspace_noncanonical',
+    storageDetails: {
+      deviceWorkspaceDurable: true,
+      governedMemoryDurable: Boolean(internalAlgorithmRuntime.composition),
+      canonicalWriteCapability: false,
+      scope: 'internal_test_only',
+    },
+    transport: 'continuous_pcm_asr_and_incremental_pcm_tts',
     localContentRetention: { days: 40, sourceWithdrawal: 'immediate', expirySweepSeconds: 60,
       externalProviderDeletionVerified: false } }, { status: result.status });
 }

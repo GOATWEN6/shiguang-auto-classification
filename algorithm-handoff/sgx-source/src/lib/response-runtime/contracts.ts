@@ -105,7 +105,8 @@ export interface DailyChatResponseRuntime {
 
 export interface InterviewGenerationPlan {
   schemaVersion: '0.1';
-  promptId: 'interview-realizer-v0.1' | 'interview-realizer-v0.2' | 'interview-realizer-v0.3';
+  promptId: 'interview-realizer-v0.1' | 'interview-realizer-v0.2' | 'interview-realizer-v0.3'
+    | 'interview-realizer-v0.4';
   schemaId: 'interview-response-v0.1';
   decisionId: string;
   mode: 'FORMAL_INTERVIEW';
