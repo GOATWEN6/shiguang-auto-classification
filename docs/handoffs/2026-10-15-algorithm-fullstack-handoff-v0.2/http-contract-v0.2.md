@@ -7,7 +7,7 @@
 - 每次写操作都必须带唯一 `idempotencyKey`。
 - 服务端返回 `requestId`，全栈应把它写入自己的请求日志，便于定位问题。
 - 句柄、证据 ID、轮次 ID 和代际 ID 都由服务端生成，客户端只透传。
-- 当前内部测试接口只允许 loopback 或受控 SSH 隧道访问；生产接入时由全栈后端负责认证和家庭权限。
+- 当前内部测试接口只允许 loopback 或带认证的受控网关访问；生产接入时由全栈后端负责认证和家庭权限。
 
 ## 2. 健康和版本
 
@@ -30,6 +30,13 @@
     "policy": "ready",
     "responseTts": "ready",
     "asyncJobs": "ready"
+  },
+  "storage": "sqlite_test_workspace_noncanonical",
+  "storageDetails": {
+    "deviceWorkspaceDurable": true,
+    "governedMemoryDurable": true,
+    "canonicalWriteCapability": false,
+    "scope": "internal_test_only"
   }
 }
 ```
@@ -47,7 +54,7 @@
   "buildId": "pre-human-YYYY-MM-DD-build",
   "manifestSha256": "<sha256>",
   "fixtureSha256": "<sha256>",
-  "interviewPolicyVersion": "interview-policy-v0.3.4",
+  "interviewPolicyVersion": "interview-policy-v0.3.5",
   "rollbackCompatibility": "cancel_or_drain_then_replay_24_turns_10_interrupts",
   "paidExecutionEnabled": true
 }
@@ -60,6 +67,27 @@
 成本接口只读，不会触发模型调用。它返回当前测试账本的预算快照、按脱敏 IP/会话/轮次聚合的预留上限，以及无法反向归属的历史总账。当前豆包账单为 `PENDING` 时，`actualCostCny` 为 `null`。前端可以展示成本表，但不能让用户修改预算或提交明文 IP。
 
 当前预算口径见 [`docs/current-candidate-overlay.md`](./docs/current-candidate-overlay.md)。
+
+### 设备测试工作区
+
+公网工作台在创建算法会话前必须调用：
+
+```text
+POST /workspaces/bootstrap
+```
+
+服务端通过 HttpOnly Cookie 返回随机设备凭证；响应正文不包含明文 token。后续接口：
+
+```text
+GET    /workspaces/current
+PUT    /workspaces/current
+GET    /workspaces/current/export
+DELETE /workspaces/current
+```
+
+`PUT` 携带服务端返回的 `expectedRevision`；并发冲突返回 `409 workspace_revision_conflict`，客户端应读取最新资料、合并评审字段后重试。公网会话、ASR、turn、view、interrupt 和 end 都校验 Cookie 对应工作区是否拥有该 session。
+
+工作区导出只包含当前设备的测试资料、算法版本和该设备费用摘要。禁止导出 Cookie、凭据、明文 IP、服务器路径、原始音频、ASR partial、全局费用账本或其他设备资料。该工作区用于内部体验，不是正式 `CanonicalMemory`。
 
 ## 3. 创建会话
 

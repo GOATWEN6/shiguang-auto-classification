@@ -56,8 +56,8 @@
 
 | 内容 | 路径 |
 |---|---|
-| 成本账本实现 | [`src/lib/algorithm-service/cost-ledger.ts`](../../../../algorithm-handoff/sgx-source/src/lib/algorithm-service/cost-ledger.ts) |
-| 只读成本接口 | [`src/app/api/algorithm/v0.1/costs/route.ts`](../../../../algorithm-handoff/sgx-source/src/app/api/algorithm/v0.1/costs/route.ts) |
+| 成本账本实现 | [`src/lib/algorithm-service/cost-ledger.ts`](../../../sgx-source/src/lib/algorithm-service/cost-ledger.ts) |
+| 只读成本接口 | [`src/app/api/algorithm/v0.1/costs/route.ts`](../../../sgx-source/src/app/api/algorithm/v0.1/costs/route.ts) |
 | 本地账本文件 | `harness/live-baseline/v0.1/.local-runs/http-current/cost-ledger.jsonl` |
 | 工作台 | `/algorithm-lab` → “成本统计” |
 | 反馈包字段 | `costTable`，并保留 `budgetSnapshot` |

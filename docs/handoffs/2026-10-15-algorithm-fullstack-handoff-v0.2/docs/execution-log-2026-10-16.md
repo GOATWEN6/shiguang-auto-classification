@@ -2,7 +2,7 @@
 
 > 状态：`local_source_committed / remote_query_blocked / candidate_pre_human`
 >
-> 上一轮：[10 月 15 日执行记录](../../../../algorithm-handoff/docs/execution/2026-10-15-execution-log.md)；总控：项目本地 `docs/execution/SGX_CURRENT_MASTER_OBJECTIVES_AND_EXECUTION_ROADMAP.md`。
+> 上一轮：[10 月 15 日执行记录](../../execution/2026-10-15-execution-log.md)；总控：项目本地 `docs/execution/SGX_CURRENT_MASTER_OBJECTIVES_AND_EXECUTION_ROADMAP.md`。
 
 ## 目标与原因
 

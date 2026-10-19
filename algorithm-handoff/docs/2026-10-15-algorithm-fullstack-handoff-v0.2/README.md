@@ -2,7 +2,7 @@
 
 > 状态：`candidate/pre-human`
 >
-> 更新：2026-10-16；直接随仓库维护，不再生成 ZIP。
+> 更新：2026-10-19；直接随仓库维护，不再生成 ZIP。
 >
 > 面向：全栈、后端、产品和测试
 
@@ -10,7 +10,7 @@
 
 这份包把 SGX 当前算法侧已经形成的 HTTP 接口、字段含义、状态变化、错误处理和测试方式整理给全栈团队。全栈可以先用 Fake 模式打通页面和后端，再切换到算法侧的真实模型测试服务。
 
-这不是生产发布包，也不是最终真人验收结论。当前 Memory 结果仍是进程内的候选/派生结果，不能直接当作生产 `CanonicalMemory` 持久化。Shadow 只用于观察模型的语义理解，不改变正式访谈策略。
+这不是生产发布包，也不是最终真人验收结论。当前内部测试已经支持设备工作区、受治理 Memory 和故事画像跨刷新/服务重启持久化，但仍不能直接当作生产 `CanonicalMemory`。Shadow 只用于观察模型的语义理解，不改变正式访谈策略。
 
 ## 2. 当前状态
 
@@ -25,6 +25,7 @@
 | TTS | 服务端生成音频并通过结果/事件返回；取消和打断由服务端处理。当前采用模块化 TTS，不使用端到端实时语音模型 |
 | SemanticTurnProposal Shadow | 历史付费 24 轮已执行；修复后 24/24 离线归一化；未运行第二次付费整批 |
 | CanonicalMemory | 当前服务明确 `canonicalWriteCapability=false` |
+| 设备测试工作区 | SQLite 持久化、设备隔离、40 天到期、导出与删除已接通；不等于正式家庭账号库 |
 
 ## 3. 全栈如何使用
 
@@ -33,8 +34,9 @@
 1. 先调用 `/health` 和 `/version`，确认服务状态、接口版本和 build ID。
 2. 用 Fake 模式联调文字、状态、事件、取消和结束；语音识别、可播放音频和设备打断另用真实 provider 验证。
 3. 用 `view` 展示 Memory 候选、故事草稿、基础画像和当前 Shadow 诊断。
-4. 用固定样例运行错误、重试、幂等和版本回滚测试。
-5. 在服务端配置模型与累计预算后，进入 `REAL_INTERNAL` 做内部真实模型体验；正式发布须经过反馈修复与版本冻结。
+4. 公网或多测试者环境先调用 workspace bootstrap，并让浏览器保留服务端 HttpOnly Cookie。
+5. 用固定样例运行错误、重试、幂等、持久化和版本回滚测试。
+6. 在服务端配置模型与累计预算后，进入 `REAL_INTERNAL` 做内部真实模型体验；正式发布须经过反馈修复与版本冻结。
 
 算法服务不要求前端直接理解 provider、模型密钥或内部主体 ID。前端只保存服务返回的 `opaqueSessionHandle`，并把它作为后续请求路径的一部分。
 
@@ -102,6 +104,6 @@
 
 当前包的状态是 `candidate/pre-human`。它可以让全栈并行开发，但不能被标成正式算法版本，也不能用当前临时 Memory 结果替代生产 `CanonicalMemory`。
 
-## 9. 2026-10-16 当前覆盖
+## 9. 2026-10-19 当前覆盖
 
-请先阅读 [当前补充说明](./docs/current-candidate-overlay.md) 和 [本轮分发验证](./docs/reviews/2026-10-16-distribution-validation.md)。历史真实模型证据绑定 v23；本轮启动分发为 `v23-gitee.1`，74/74 聚焦测试、类型检查和构建通过，新增付费调用 0 次。400 元是累计上限，335.24 元是 10 月 15 日预留快照而非实际账单。当前仍是 `candidate/pre-human`，不包含可直接生产部署的 `CanonicalMemory` 后端。
+请先阅读 [当前补充说明](./docs/current-candidate-overlay.md) 和 [设备持久化验证](./docs/reviews/2026-10-19-device-workspace-persistence-validation.md)。当前 build 为 `v24.5-device-persistence`；设备工作区、受治理 Memory、故事画像跨重启、standalone 构建和本机服务恢复已验证。800 元为累计上限，429.44 元为保守预留快照，实际账单仍待供应商对账。本候选不包含可直接生产部署的 `CanonicalMemory` 后端。

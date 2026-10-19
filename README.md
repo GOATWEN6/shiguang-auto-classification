@@ -1,9 +1,9 @@
 # SGX 算法仓库：自动分类、访谈与 Memory
 
-当前更新目标为 Gitee 的 `aicreate369/shiguang-auto-classification`，沿用已有候选分支并通过正常合并集成；不再为每次更新创建新分支或生成 ZIP。
+当前访谈与 Memory 候选版本为 `pre-human-2026-10-19-candidate-v24.5-device-persistence`，同步到 GitHub `GOATWEN6/shiguang-auto-classification` 与 Gitee `aicreate369/sgx`。沿用同一候选分支并通过正常合并集成；不再为每次更新创建新分支或生成 ZIP。
 
 - **访谈、Memory、独立 ASR/TTS**：从 [算法入口](algorithm-handoff/README.md) 阅读，按 [源码启动说明](algorithm-handoff/sgx-source/README.md) 运行。
-- **当前验证与限制**：见 [2026-10-16 交付验证记录](algorithm-handoff/docs/reviews/2026-10-16-distribution-validation.md)。当前为 `candidate/pre-human`，未完成真人设备和生产验收。
+- **当前验证与限制**：见 [2026-10-19 设备持久化验证](algorithm-handoff/docs/2026-10-15-algorithm-fullstack-handoff-v0.2/docs/reviews/2026-10-19-device-workspace-persistence-validation.md)。当前为 `candidate/pre-human`，已完成内部设备工作区与真实豆包跨重启 Memory 定向验证；正式 CanonicalMemory、产品认证和生产验收仍未完成。
 - **自动分类**：原有代码、接口和说明继续保留，以下是其原交付说明。
 
 ---

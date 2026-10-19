@@ -1,5 +1,7 @@
 # SGX 算法候选接口包交接说明
 
+> 2026-10-19 更新：当前 build 为 `pre-human-2026-10-19-candidate-v24.5-device-persistence`。内部 TestWorkspace、受治理 Memory、故事画像和反馈已经支持跨刷新/算法服务重启恢复；正式 `CanonicalMemory` 仍关闭。全栈接入时先完成 workspace bootstrap，并区分测试持久化与产品权威记忆。完整证据见 [设备持久化验证](./reviews/2026-10-19-device-workspace-persistence-validation.md)。
+
 ## 这份说明给谁看
 
 这份说明面向全栈、后端、产品和测试同事，解释本候选包是什么、现在能做什么、全栈要接哪些内容，以及什么条件下才能称为正式版本。它不是生产上线批准，也不代表真人体验已经通过。
